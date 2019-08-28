@@ -15,6 +15,8 @@ import java.util.Timer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +26,18 @@ import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
 
 /**
- * theme:http://www.javasoft.de/synthetica/screenshots/plain/
+ * Development Kits
  * @author www.yudeshui.club
  * @datetime 2019年8月14日 下午11:59:05
  */
 public class App
 {
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args)
     {
+        initLookAndFeel();
+
         if (SystemTray.isSupported())
         {
             try
@@ -48,17 +52,36 @@ public class App
                 initNotice(trayIcon);
 
                 SystemTray.getSystemTray().add(trayIcon);
-                logger.info("初始化托盘功能成功！");
+                LOGGER.info("初始化托盘功能成功！");
             } catch (AWTException e)
             {
-                logger.error("初始化托盘功能失败！");
+                LOGGER.error("初始化托盘功能失败！");
             } catch (IOException e)
             {
-                logger.error("托盘图标加载失败！");
+                LOGGER.error("托盘图标加载失败！");
             }
         } else
         {
-            logger.error("系统不支持托盘菜单！");
+            LOGGER.error("系统不支持托盘菜单！");
+        }
+    }
+
+    /**
+     * more look and feel:<br>
+     * 1.http://www.javasoft.de/synthetica/screenshots/plain/ <br>
+     * 2.https://www.cnblogs.com/clarino/p/8668160.html
+     */
+    private static void initLookAndFeel()
+    {
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1)
+        {
+            LOGGER.error("Init Look And Feel error:" + e1.getMessage());
+        } catch (UnsupportedLookAndFeelException e)
+        {
+            LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
         }
     }
 
@@ -100,7 +123,7 @@ public class App
     {
         Menu devMenu = new Menu("Development Tools");
 
-         MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODEC);
+        MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODEC);
         MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODE_FORMAT);
 
         return devMenu;
