@@ -66,29 +66,12 @@ public class App
     {
         PopupMenu popupMenu = new PopupMenu();
 
-        Menu networkMenu = new Menu("Network Tools");
-        MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.SERVER_PORT);
-        popupMenu.add(networkMenu);
-
-        Menu devMenu = new Menu("Development Tools");
-
-        // MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.MD5);
-        MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODE_FORMAT);
-
-        Menu myComputerItem = new Menu("Computer", true);
-
-        MenuItemFactory.createClipboardItem(myComputerItem, MenuItemEnum.USER_NAME);
-        MenuItemFactory.createClipboardItem(myComputerItem, MenuItemEnum.OS_NAME);
-        MenuItemFactory.createClipboardItem(myComputerItem, MenuItemEnum.OS_ARCH);
-        MenuItemFactory.createClipboardItem(myComputerItem, MenuItemEnum.CPU_ENDIAN);
-        MenuItemFactory.createClipboardItem(myComputerItem, MenuItemEnum.SCREEN_SIZE);
-        MenuItemFactory.createClipboardItem(myComputerItem, MenuItemEnum.IP);
-        MenuItemFactory.createClipboardItem(myComputerItem, MenuItemEnum.MAC);
-
-        popupMenu.add(devMenu);
-        popupMenu.add(myComputerItem);
+        popupMenu.add(initNetworkMenu());// 网络工具
+        popupMenu.add(initDevMenu()); // 开发工具
+        popupMenu.add(initComputerMenu());// 系统
 
         popupMenu.addSeparator();
+        popupMenu.add("Settings...");
         popupMenu.add("About...");
         popupMenu.addSeparator();
         MenuItem quit = new MenuItem("Exit");
@@ -104,6 +87,47 @@ public class App
 
         // 为托盘图标加弹出菜弹
         trayIcon.setPopupMenu(popupMenu);
+    }
+
+    private static MenuItem initNetworkMenu()
+    {
+        Menu networkMenu = new Menu("Network Tools");
+        MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.SERVER_PORT);
+        return networkMenu;
+    }
+
+    private static Menu initDevMenu()
+    {
+        Menu devMenu = new Menu("Development Tools");
+
+         MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODEC);
+        MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODE_FORMAT);
+
+        return devMenu;
+    }
+
+    private static Menu initComputerMenu()
+    {
+        Menu computerItem = new Menu("Computer", true);
+
+        Menu sysInfoItem = new Menu("System Information", true);
+
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.USER_NAME);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.OS_NAME);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.OS_ARCH);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.CPU_ENDIAN);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.SCREEN_SIZE);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.IP);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.MAC);
+
+        computerItem.add(sysInfoItem);
+
+        Menu toolsItem = new Menu("Tools", true);
+        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.CLEAN);
+        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.ENV);
+        computerItem.add(toolsItem);
+
+        return computerItem;
     }
 
     private static void initDbClick(TrayIcon trayIcon)

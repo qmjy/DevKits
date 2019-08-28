@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Built-By: Administrator
-Class-Path: lib/gson-2.8.5.jar lib/commons-codec-1.12.jar lib/logback-
- classic-1.2.3.jar lib/logback-core-1.2.3.jar lib/slf4j-api-1.7.25.jar
-Build-Jdk: 1.8.0_65
-Created-By: Maven Integration for Eclipse
-Main-Class: cn.devkits.client.App
-

@@ -17,7 +17,7 @@ public class MenuItemFactory
         switch (itemType)
         {
             case SERVER_PORT:
-                menuItem = new MenuItem("Server Ports Detect");
+                menuItem = new MenuItem("Server Ports Detect...");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SERVER_PORT));
                 break;
 
@@ -93,18 +93,27 @@ public class MenuItemFactory
         switch (itemType)
         {
             case CODEC:
-                menuItem = new MenuItem("Codec");
+                menuItem = new MenuItem("Codec...");
+                menuItem.setEnabled(false);
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODEC));
                 break;
             case CODE_FORMAT:
-                menuItem = new MenuItem("Code Format");
+                menuItem = new MenuItem("Code Format...");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
+                break;
+            case ENV:
+                menuItem = new MenuItem("Environment Variable...");
+                menuItem.setEnabled(false);
+                break;
+            case CLEAN:
+                menuItem = new MenuItem("Waste Cleaning...");
+                menuItem.setEnabled(false);
                 break;
 
             default:
                 break;
         }
+
         parentItem.add(menuItem);
     }
-
 }

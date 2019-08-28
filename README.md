@@ -8,7 +8,7 @@ This is development kits written in java. We hope this kits will improve your of
 
 # Contact
 ---
-Any problem or suggesstion, [click](mailto:admin@devkits.cn) contact to me.
+Any problem or suggesstion, [click](mailto:admin@devkits.cn) to contact me.
 
 # License
 ---
