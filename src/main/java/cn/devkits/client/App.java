@@ -125,6 +125,7 @@ public class App
 
         MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODEC);
         MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODE_FORMAT);
+        MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.ENV);
 
         return devMenu;
     }
@@ -147,7 +148,7 @@ public class App
 
         Menu toolsItem = new Menu("Tools", true);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.CLEAN);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.ENV);
+        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.SCRSHOT);
         computerItem.add(toolsItem);
 
         return computerItem;
