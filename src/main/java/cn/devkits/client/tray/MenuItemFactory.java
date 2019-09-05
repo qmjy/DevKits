@@ -102,9 +102,9 @@ public class MenuItemFactory {
 			menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
 			break;
 
-		case SCRSHOT:
-			menuItem = new MenuItem("Screen Shot...");
-			menuItem.setEnabled(false);
+		case SCRCAPTURE:
+			menuItem = new MenuItem("Screen Capture...");
+			menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SCRCAPTURE));
 			break;
 		case CLEAN:
 			menuItem = new MenuItem("Waste Cleaning...");

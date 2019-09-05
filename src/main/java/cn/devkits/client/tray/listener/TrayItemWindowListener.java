@@ -2,29 +2,24 @@ package cn.devkits.client.tray.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
-
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.window.CodeFormatFrame;
+import cn.devkits.client.tray.window.ScreenCaptureWindow;
 import cn.devkits.client.tray.window.ServerPortsFrame;
 
-public class TrayItemWindowListener implements ActionListener
-{
+public class TrayItemWindowListener implements ActionListener {
 
     private MenuItemEnum itemEnum;
 
-    public TrayItemWindowListener(MenuItemEnum codeFormat)
-    {
+    public TrayItemWindowListener(MenuItemEnum codeFormat) {
         this.itemEnum = codeFormat;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         JFrame frame = null;
-        switch (itemEnum)
-        {
+        switch (itemEnum) {
             case CODEC:
 
                 break;
@@ -34,7 +29,9 @@ public class TrayItemWindowListener implements ActionListener
             case CODE_FORMAT:
                 frame = new CodeFormatFrame();
                 break;
-
+            case SCRCAPTURE:
+                new ScreenCaptureWindow().setVisible(true);;
+                return;
             default:
                 break;
         }

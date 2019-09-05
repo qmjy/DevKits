@@ -14,11 +14,16 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.devkits.client.util.DKStringUtil;
 
 public class CodeFormatFrame extends JFrame implements DKWindowable {
 
 	private static final long serialVersionUID = -3324482544348779089L;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeFormatFrame.class);
 
 	private JSplitPane currentComponent;
 

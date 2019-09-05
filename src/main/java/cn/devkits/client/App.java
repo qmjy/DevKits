@@ -12,36 +12,61 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.Timer;
-
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.melloware.jintellitype.HotkeyListener;
+import com.melloware.jintellitype.JIntellitype;
 import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
+import cn.devkits.client.tray.window.AboutWindow;
+import cn.devkits.client.tray.window.ScreenCaptureWindow;
+
 
 /**
+ * 
  * Development Kits
- * @author www.yudeshui.club
- * @datetime 2019年8月14日 下午11:59:05
+ * 
+ * @author fengshao
+ * @version 1.0.0
+ * @datetime 2019年9月5日 下午10:51:07
  */
-public class App
-{
+public class App {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         initLookAndFeel();
+        initSystemHotKey();
+        initSystemTrayIcon();
+    }
 
-        if (SystemTray.isSupported())
-        {
-            try
-            {
+    private static void initSystemHotKey() {
+        JIntellitype.getInstance().registerHotKey(DKConstant.DK_HOTKEY_SCR_CAP, JIntellitype.MOD_ALT + JIntellitype.MOD_CONTROL, (int) 'A');
+
+        JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
+
+            @Override
+            public void onHotKey(int identifier) {
+                switch (identifier) {
+                    case DKConstant.DK_HOTKEY_SCR_CAP:
+                        new ScreenCaptureWindow().setVisible(true);;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    private static void initSystemTrayIcon() {
+        if (SystemTray.isSupported()) {
+            try {
                 TrayIcon trayIcon = new TrayIcon(ImageIO.read(App.class.getClassLoader().getResource("20.png")));
                 trayIcon.setImageAutoSize(true);
                 // 添加工具提示文本
@@ -53,15 +78,12 @@ public class App
 
                 SystemTray.getSystemTray().add(trayIcon);
                 LOGGER.info("初始化托盘功能成功！");
-            } catch (AWTException e)
-            {
+            } catch (AWTException e) {
                 LOGGER.error("初始化托盘功能失败！");
-            } catch (IOException e)
-            {
+            } catch (IOException e) {
                 LOGGER.error("托盘图标加载失败！");
             }
-        } else
-        {
+        } else {
             LOGGER.error("系统不支持托盘菜单！");
         }
     }
@@ -71,22 +93,17 @@ public class App
      * 1.http://www.javasoft.de/synthetica/screenshots/plain/ <br>
      * 2.https://www.cnblogs.com/clarino/p/8668160.html
      */
-    private static void initLookAndFeel()
-    {
-        try
-        {
+    private static void initLookAndFeel() {
+        try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1)
-        {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
             LOGGER.error("Init Look And Feel error:" + e1.getMessage());
-        } catch (UnsupportedLookAndFeelException e)
-        {
+        } catch (UnsupportedLookAndFeelException e) {
             LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
         }
     }
 
-    private static void initContextMenu(TrayIcon trayIcon)
-    {
+    private static void initContextMenu(TrayIcon trayIcon) {
         PopupMenu popupMenu = new PopupMenu();
 
         popupMenu.add(initNetworkMenu());// 网络工具
@@ -95,14 +112,21 @@ public class App
 
         popupMenu.addSeparator();
         popupMenu.add("Settings...");
-        popupMenu.add("About...");
+
+        MenuItem mi = new MenuItem("About...");
+        mi.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AboutWindow().setVisible(true);;
+            }
+        });
+        popupMenu.add(mi);
         popupMenu.addSeparator();
         MenuItem quit = new MenuItem("Exit");
-        quit.addActionListener(new ActionListener()
-        {
+        quit.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
@@ -112,15 +136,13 @@ public class App
         trayIcon.setPopupMenu(popupMenu);
     }
 
-    private static MenuItem initNetworkMenu()
-    {
+    private static MenuItem initNetworkMenu() {
         Menu networkMenu = new Menu("Network Tools");
         MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.SERVER_PORT);
         return networkMenu;
     }
 
-    private static Menu initDevMenu()
-    {
+    private static Menu initDevMenu() {
         Menu devMenu = new Menu("Development Tools");
 
         MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODEC);
@@ -130,8 +152,7 @@ public class App
         return devMenu;
     }
 
-    private static Menu initComputerMenu()
-    {
+    private static Menu initComputerMenu() {
         Menu computerItem = new Menu("Computer", true);
 
         Menu sysInfoItem = new Menu("System Information", true);
@@ -148,29 +169,24 @@ public class App
 
         Menu toolsItem = new Menu("Tools", true);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.CLEAN);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.SCRSHOT);
+        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.SCRCAPTURE);
         computerItem.add(toolsItem);
 
         return computerItem;
     }
 
-    private static void initDbClick(TrayIcon trayIcon)
-    {
-        trayIcon.addMouseListener(new MouseAdapter()
-        {
-            public void mouseClicked(MouseEvent e)
-            {
+    private static void initDbClick(TrayIcon trayIcon) {
+        trayIcon.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
                 // 判断是否双击了鼠标
-                if (e.getClickCount() == 2)
-                {
+                if (e.getClickCount() == 2) {
                     JOptionPane.showMessageDialog(null, "待开放");
                 }
             }
         });
     }
 
-    private static void initNotice(TrayIcon trayIcon)
-    {
+    private static void initNotice(TrayIcon trayIcon) {
         Timer timer = new Timer();
         long time = 1000 * 60 * 30;// 半小时执行一次
         timer.scheduleAtFixedRate(new WinNoticeTask(trayIcon), time, time);
