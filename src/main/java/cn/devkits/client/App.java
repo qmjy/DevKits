@@ -11,11 +11,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.apache.maven.model.Dependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.melloware.jintellitype.HotkeyListener;
@@ -23,8 +25,9 @@ import com.melloware.jintellitype.JIntellitype;
 import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
-import cn.devkits.client.tray.window.AboutWindow;
+import cn.devkits.client.tray.window.AboutFrame;
 import cn.devkits.client.tray.window.ScreenCaptureWindow;
+import cn.devkits.client.util.DKConfigUtil;
 
 
 /**
@@ -118,7 +121,7 @@ public class App {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AboutWindow().setVisible(true);;
+                new AboutFrame().setVisible(true);;
             }
         });
         popupMenu.add(mi);
@@ -170,6 +173,7 @@ public class App {
         Menu toolsItem = new Menu("Tools", true);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.CLEAN);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.SCRCAPTURE);
+        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.LDF);
         computerItem.add(toolsItem);
 
         return computerItem;

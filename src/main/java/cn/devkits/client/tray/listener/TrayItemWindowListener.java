@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.window.CodeFormatFrame;
+import cn.devkits.client.tray.window.LargeDuplicateFilesFrame;
 import cn.devkits.client.tray.window.ScreenCaptureWindow;
 import cn.devkits.client.tray.window.ServerPortsFrame;
 
@@ -28,6 +29,9 @@ public class TrayItemWindowListener implements ActionListener {
                 break;
             case CODE_FORMAT:
                 frame = new CodeFormatFrame();
+                break;
+            case LDF:
+                frame = new LargeDuplicateFilesFrame();
                 break;
             case SCRCAPTURE:
                 new ScreenCaptureWindow().setVisible(true);;
