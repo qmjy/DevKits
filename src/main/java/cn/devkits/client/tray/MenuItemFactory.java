@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import cn.devkits.client.tray.listener.TrayItemClipboardListener;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKNetworkUtil;
+import cn.devkits.client.util.DKSystemUtil;
 
 public class MenuItemFactory {
     public static void createWindowItem(Menu parentItem, MenuItemEnum itemType) {
@@ -39,16 +40,19 @@ public class MenuItemFactory {
                 menuItem.addActionListener(new TrayItemClipboardListener(userName));
                 break;
             case OS_NAME:
-                String osName = System.getProperty("os.name") + " (" + System.getProperty("os.version") + ")";
 
-                menuItem = new MenuItem("OS Name: " + osName);
-                menuItem.addActionListener(new TrayItemClipboardListener(osName));
+                menuItem = new MenuItem("OS: " + DKSystemUtil.getOsInfo());
+                menuItem.addActionListener(new TrayItemClipboardListener(DKSystemUtil.getOsInfo()));
                 break;
             case OS_ARCH:
                 String osArch = System.getProperty("os.arch");
 
                 menuItem = new MenuItem("OS ARCH: " + osArch);
                 menuItem.addActionListener(new TrayItemClipboardListener(osArch));
+                break;
+            case CPU_INF:
+                menuItem = new MenuItem("CPU: " + DKSystemUtil.getCpuInfo());
+                menuItem.addActionListener(new TrayItemClipboardListener(DKSystemUtil.getCpuInfo()));
                 break;
             case CPU_ENDIAN:
                 String endian = System.getProperty("sun.cpu.endian");
@@ -68,12 +72,6 @@ public class MenuItemFactory {
 
                 menuItem = new MenuItem(itemType.toString() + ": " + internetIp);
                 menuItem.addActionListener(new TrayItemClipboardListener(internetIp));
-                break;
-            case MAC:
-                String mac = DKNetworkUtil.getMac();
-
-                menuItem = new MenuItem(itemType.toString() + ": " + mac);
-                menuItem.addActionListener(new TrayItemClipboardListener(mac));
                 break;
 
             default:

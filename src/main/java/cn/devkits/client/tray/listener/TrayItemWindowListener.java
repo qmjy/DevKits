@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import cn.devkits.client.tray.MenuItemEnum;
-import cn.devkits.client.tray.window.CodeFormatFrame;
-import cn.devkits.client.tray.window.LargeDuplicateFilesFrame;
+import cn.devkits.client.tray.frame.CodeFormatFrame;
+import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
+import cn.devkits.client.tray.frame.ServerPortsFrame;
 import cn.devkits.client.tray.window.ScreenCaptureWindow;
-import cn.devkits.client.tray.window.ServerPortsFrame;
 
 public class TrayItemWindowListener implements ActionListener {
 

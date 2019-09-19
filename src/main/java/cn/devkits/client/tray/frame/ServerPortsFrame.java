@@ -1,4 +1,4 @@
-package cn.devkits.client.tray.window;
+package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,7 +18,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -27,20 +26,19 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import cn.devkits.client.model.SocketReachableModel;
 import cn.devkits.client.util.DKNetworkUtil;
+import cn.devkits.client.util.DKStringUtil;
 
 /**
  * 端口检查
+ * 
  * @author www.yudeshui.club
  * @datetime 2019年8月26日 下午9:23:46
  */
-public class ServerPortsFrame extends JFrame implements DKWindowable
-{
+public class ServerPortsFrame extends DKAbstractFrame {
     private static final long serialVersionUID = -6406148296636175804L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerPortsFrame.class);
@@ -59,20 +57,12 @@ public class ServerPortsFrame extends JFrame implements DKWindowable
 
     private JScrollPane scrollPane;
 
-    public ServerPortsFrame()
-    {
+    public ServerPortsFrame() {
         super("Server Ports Detection");
-        super.setSize(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HEIGHT);
-
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        Dimension screenSize = tk.getScreenSize();
-
-        super.setLocation((screenSize.width - WINDOW_SIZE_WIDTH) / 2, (screenSize.height - WINDOW_SIZE_HEIGHT) / 2);
     }
 
     @Override
-    protected JRootPane createRootPane()
-    {
+    protected JRootPane createRootPane() {
         JRootPane jRootPane = new JRootPane();
 
         jRootPane.setLayout(new BorderLayout());
@@ -97,29 +87,29 @@ public class ServerPortsFrame extends JFrame implements DKWindowable
         return jRootPane;
     }
 
-    private void createSearchBtn(final JPanel northPanel)
-    {
+    private void createSearchBtn(final JPanel northPanel) {
         this.searchBtn = new JButton("查询");
-        searchBtn.addMouseListener(new MouseAdapter()
-        {
+        searchBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                userConsole.append("start to check port on server " + addressInputField.getText() + " ..." + System.getProperty("line.separator"));
-                startCheck(northPanel, addressInputField.getText());
+            public void mouseReleased(MouseEvent e) {
+                String inputText = addressInputField.getText();
+                if (DKStringUtil.isIP(inputText) || DKStringUtil.isDomain(inputText)) {
+                    userConsole.append("start to check port on server " + inputText + " ..." + System.getProperty("line.separator"));
+                    startCheck(northPanel, inputText);
+                } else {
+                    JOptionPane.showMessageDialog(scrollPane.getParent(), "The input IP or domain is invalid: " + inputText);
+                }
             }
         });
         northPanel.add(searchBtn, BorderLayout.EAST);
     }
 
-    private void startCheck(JPanel northPanel, final String address)
-    {
+    private void startCheck(JPanel northPanel, final String address) {
         long start = System.currentTimeMillis();
 
         ExecutorService pool = Executors.newFixedThreadPool(MAX_THREAD);
 
-        for (int port = 1; port <= SERVER_MAX_PORT; port++)
-        {
+        for (int port = 1; port <= SERVER_MAX_PORT; port++) {
             pool.submit(new CheckPortThread(address, port));
         }
 
@@ -127,45 +117,41 @@ public class ServerPortsFrame extends JFrame implements DKWindowable
         new UpdateConsoleThread(pool, northPanel, address, start).start();
     }
 
-    private void createInputTextField(final JPanel northPanel)
-    {
+    private void createInputTextField(final JPanel northPanel) {
         final String defaultText = "input domain or ip address please...";
 
         this.addressInputField = new JTextField(20);
         addressInputField.setText(defaultText);
-        addressInputField.addFocusListener(new FocusAdapter()
-        {
+        addressInputField.addFocusListener(new FocusAdapter() {
             @Override
-            public void focusGained(FocusEvent e)
-            {
+            public void focusGained(FocusEvent e) {
                 JTextField textField = (JTextField) e.getSource();
-                if (defaultText.equals(textField.getText()))
-                {
+                if (defaultText.equals(textField.getText())) {
                     textField.setText("");
                 }
             }
 
             @Override
-            public void focusLost(FocusEvent e)
-            {
+            public void focusLost(FocusEvent e) {
                 JTextField textField = (JTextField) e.getSource();
-                if (textField.getText().trim().isEmpty())
-                {
+                if (textField.getText().trim().isEmpty()) {
                     textField.setText(defaultText);
                 }
             }
         });
-        addressInputField.addKeyListener(new KeyAdapter()
-        {
+        addressInputField.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e)
-            {
+            public void keyReleased(KeyEvent e) {
                 JTextField textField = (JTextField) e.getSource();
                 // 判断按下的键是否是回车键
-                if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                {
-                    userConsole.append("start to check port on server " + textField.getText() + " ..." + System.getProperty("line.separator"));
-                    startCheck(northPanel, textField.getText());
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String inputStr = textField.getText();
+                    if (DKStringUtil.isIP(inputStr) || DKStringUtil.isDomain(inputStr)) {
+                        userConsole.append("start to check port on server " + inputStr + " ..." + System.getProperty("line.separator"));
+                        startCheck(northPanel, inputStr);
+                    } else {
+                        JOptionPane.showMessageDialog(scrollPane.getParent(), "The input IP or domain is invalid: " + inputStr);
+                    }
                 }
             }
         });
@@ -174,21 +160,18 @@ public class ServerPortsFrame extends JFrame implements DKWindowable
     }
 
     @Override
-    public boolean isResizable()
-    {
+    public boolean isResizable() {
         return false;
     }
 
-    class UpdateConsoleThread extends Thread
-    {
+    class UpdateConsoleThread extends Thread {
         private List<String> ports = new ArrayList<String>();
         private long start;
         private JPanel northPanel;
         private String address;
         private ExecutorService pool;
 
-        public UpdateConsoleThread(ExecutorService pool, JPanel northPanel, String address, long startTime)
-        {
+        public UpdateConsoleThread(ExecutorService pool, JPanel northPanel, String address, long startTime) {
             this.pool = pool;
             this.northPanel = northPanel;
             this.address = address;
@@ -196,12 +179,9 @@ public class ServerPortsFrame extends JFrame implements DKWindowable
         }
 
         @Override
-        public void run()
-        {
-            while (true)
-            {
-                if (pool.isTerminated() && msgQuene.isEmpty())
-                {
+        public void run() {
+            while (true) {
+                if (pool.isTerminated() && msgQuene.isEmpty()) {
                     String duration = String.valueOf(System.currentTimeMillis() - start - 1 * 1000);
                     userConsole.insert("This detection took a total of " + duration + " milliseconds" + System.getProperty("line.separator"), 0);
                     String portsStr = String.join(",", ports);
@@ -215,52 +195,44 @@ public class ServerPortsFrame extends JFrame implements DKWindowable
                     return;
                 }
 
-                try
-                {
+                try {
                     SocketReachableModel take = msgQuene.poll(1, TimeUnit.SECONDS);
-                    if (take != null)
-                    {
+                    if (take != null) {
                         userConsole.insert(take.getMsg(), 0);
                         ports.add(take.getPort());
 
                         userConsole.update(userConsole.getGraphics());
                     }
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    LOGGER.error("Take port error: " + e.toString());
                 }
             }
         }
 
     }
 
-    class CheckPortThread extends Thread
-    {
+    class CheckPortThread extends Thread {
 
         private String address;
         private int port;
 
-        public CheckPortThread(String address, int port)
-        {
+        public CheckPortThread(String address, int port) {
             this.address = address;
             this.port = port;
         }
 
         @Override
-        public void run()
-        {
-            try
-            {
-                if (DKNetworkUtil.socketReachable(address, port))
-                {
+        public void run() {
+            try {
+                if (DKNetworkUtil.socketReachable(address, port)) {
                     msgQuene.put(new SocketReachableModel(port, true, "The port " + port + " is listening..." + System.getProperty("line.separator")));
                 }
                 // else
                 // {
-                // msgQuene.put(new SocketReachableModel(port, false, "The address " + address + " with port " + port + " can not be reached!" + System.getProperty("line.separator")));
+                // msgQuene.put(new SocketReachableModel(port, false, "The address " + address + " with port " +
+                // port + " can not be reached!" + System.getProperty("line.separator")));
                 // }
-            } catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 LOGGER.error("put check message error to 'msgQuene'!");
             }
         }

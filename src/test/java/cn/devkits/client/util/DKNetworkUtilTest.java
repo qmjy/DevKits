@@ -4,7 +4,6 @@
 package cn.devkits.client.util;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 /**
@@ -13,20 +12,23 @@ import org.junit.Test;
  */
 public class DKNetworkUtilTest {
 
-	/**
-	 * Test method for {@link cn.devkits.client.util.DKNetworkUtil#getMac()}.
-	 */
-	@Test
-	public void testGetMac() {
-		String mac = DKNetworkUtil.getMac();
+    /**
+     * Test method for {@link cn.devkits.client.util.DKNetworkUtil#getMac()}.
+     */
+    @Test
+    public void testGetMac() {
+        String mac = DKNetworkUtil.getMac();
 
-		assertNotNull(mac);
-		assertTrue(mac.matches(DKStringUtil.REG_EXP_MAC));
-	}
-	
-	
-	public static void main(String[] args) {
-		System.out.println("0.2.3.5".matches("\\A(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}\\z"));
-	}
+        assertNotNull(mac);
+        assertTrue(mac.matches(DKStringUtil.REG_EXP_MAC));
+    }
+
+    @Test
+    public void testHostReachable() {
+        assertTrue(DKNetworkUtil.hostReachable("127.0.0.1"));
+        assertTrue(DKNetworkUtil.hostReachable("localhost"));
+        assertTrue(DKNetworkUtil.hostReachable("www.huawei.com"));
+        assertFalse(DKNetworkUtil.hostReachable("ww.test.cmvvv"));
+    }
 
 }

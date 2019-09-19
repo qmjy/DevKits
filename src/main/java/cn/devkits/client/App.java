@@ -11,13 +11,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.List;
 import java.util.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.apache.maven.model.Dependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.melloware.jintellitype.HotkeyListener;
@@ -25,9 +23,8 @@ import com.melloware.jintellitype.JIntellitype;
 import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
-import cn.devkits.client.tray.window.AboutFrame;
+import cn.devkits.client.tray.frame.AboutFrame;
 import cn.devkits.client.tray.window.ScreenCaptureWindow;
-import cn.devkits.client.util.DKConfigUtil;
 
 
 /**
@@ -163,10 +160,10 @@ public class App {
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.USER_NAME);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.OS_NAME);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.OS_ARCH);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.CPU_INF);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.CPU_ENDIAN);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.SCREEN_SIZE);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.IP);
-        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.MAC);
 
         computerItem.add(sysInfoItem);
 
