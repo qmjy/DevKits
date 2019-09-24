@@ -1,13 +1,19 @@
 package cn.devkits.client.tray.frame;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.JFrame;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -26,26 +32,58 @@ public class CodeFormatFrame extends DKAbstractFrame {
 
     public CodeFormatFrame() {
         super("Code Format");
-
-        initPane();
-        initListener();
     }
 
-    private void initPane() {
+    @Override
+    protected JRootPane createRootPane() {
+        JRootPane jRootPane = new JRootPane();
+        jRootPane.setLayout(new BorderLayout());
+
         JTabbedPane tabbedPane = new JTabbedPane();
-
         addTabContent(tabbedPane, "Json Format");
-
-        add(tabbedPane, "Center");
-
+        addTabContent(tabbedPane, "XML Format");
         tabbedPane.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HEIGHT));
+
+        jRootPane.add(tabbedPane, BorderLayout.CENTER);
+
+        return jRootPane;
     }
+
+    @Override
+    protected void initListener() {
+        /**
+         * add resize listener, change divider location when windows resized.
+         */
+        super.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                currentComponent.setDividerLocation(getWidth() / 2);
+            }
+        });
+
+        super.addWindowFocusListener(new WindowFocusListener() {
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                if (e.getComponent() instanceof CodeFormatFrame) {
+                    CodeFormatFrame frame = (CodeFormatFrame) e.getComponent();
+                    // TODO
+                }
+            }
+        });
+    }
+
+
 
     private void addTabContent(JTabbedPane tabbedPane, String title) {
         currentComponent = new JSplitPane();
 
-        JTextArea leftTextArea = new JTextArea("Ugly Json");
-        JTextArea rightTextArea = new JTextArea("Format Json");
+        JTextArea leftTextArea = new JTextArea("Ugly String");
+        JTextArea rightTextArea = new JTextArea("Format String");
 
         leftTextArea.addKeyListener(new JsonKeyListener(rightTextArea));
 
@@ -59,17 +97,7 @@ public class CodeFormatFrame extends DKAbstractFrame {
         tabbedPane.setEnabledAt(0, true);
     }
 
-    /**
-     * add resize listener, change divider location when windows resized.
-     */
-    private void initListener() {
-        super.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                currentComponent.setDividerLocation(getWidth() / 2);
-            }
-        });
-    }
+
 
     class JsonKeyListener extends KeyAdapter {
         private JTextArea rightTextArea;
@@ -96,4 +124,13 @@ public class CodeFormatFrame extends DKAbstractFrame {
 
         }
     }
+
+
+
+    public JSplitPane getCurrentComponent() {
+        return currentComponent;
+    }
+
+
+
 }

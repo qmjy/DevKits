@@ -15,7 +15,13 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
         super(title);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
         this.setBounds((screenSize.width - WINDOW_SIZE_WIDTH) / 2, (screenSize.height - WINDOW_SIZE_HEIGHT) / 2, WINDOW_SIZE_WIDTH, WINDOW_SIZE_HEIGHT);
+
+        initListener();
     }
+
+    /**
+     * 需要初始化的监听器
+     */
+    protected abstract void initListener();
 }

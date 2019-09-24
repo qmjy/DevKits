@@ -1,8 +1,7 @@
 package cn.devkits.client.tray.frame;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import cn.devkits.client.util.DKConfigUtil;
@@ -21,20 +20,36 @@ public class AboutFrame extends DKAbstractFrame {
 
 
     public AboutFrame() {
-
         super("About Devkits");
-
-        initPane();
     }
 
 
-    private void initPane() {
+    @Override
+    protected JRootPane createRootPane() {
+        JRootPane jRootPane = new JRootPane();
+        jRootPane.setLayout(new BorderLayout());
+
         JTextArea jTextArea = new JTextArea(10, 50);
         jTextArea.setEditable(false);
         jTextArea.setText(DKConfigUtil.getInstance().getAboutTxt());
 
         JScrollPane comp = new JScrollPane(jTextArea);
+        jRootPane.add(comp, BorderLayout.CENTER);
 
-        add(comp);
+        return jRootPane;
+    }
+
+
+
+    private void JLabel() {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    @Override
+    protected void initListener() {
+        // TODO Auto-generated method stub
+
     }
 }

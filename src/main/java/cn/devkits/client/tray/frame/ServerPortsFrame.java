@@ -1,7 +1,6 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -19,7 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
@@ -35,7 +33,7 @@ import cn.devkits.client.util.DKStringUtil;
 /**
  * 端口检查
  * 
- * @author www.yudeshui.club
+ * @author www.devkits.cn
  * @datetime 2019年8月26日 下午9:23:46
  */
 public class ServerPortsFrame extends DKAbstractFrame {
@@ -44,8 +42,8 @@ public class ServerPortsFrame extends DKAbstractFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerPortsFrame.class);
 
     private static final int SERVER_MAX_PORT = 65535;
-    // 端口检查线程
-    private static final int MAX_THREAD = 4000;
+    // 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值
+    private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() * 250;
 
     private ArrayBlockingQueue<SocketReachableModel> msgQuene = new ArrayBlockingQueue<SocketReachableModel>(64);
 
@@ -164,6 +162,11 @@ public class ServerPortsFrame extends DKAbstractFrame {
         return false;
     }
 
+    @Override
+    protected void initListener() {
+
+    }
+
     class UpdateConsoleThread extends Thread {
         private List<String> ports = new ArrayList<String>();
         private long start;
@@ -237,4 +240,6 @@ public class ServerPortsFrame extends DKAbstractFrame {
             }
         }
     }
+
+
 }
