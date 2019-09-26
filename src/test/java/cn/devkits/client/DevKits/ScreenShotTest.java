@@ -1,4 +1,4 @@
-package cn.devkits.client;
+package cn.devkits.client.DevKits;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
