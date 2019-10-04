@@ -1,18 +1,19 @@
 package cn.devkits.client.tray.model;
 
 import java.io.File;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
+import oshi.util.FormatUtil;
 
 public class LargeDuplicateFilesTableModel extends AbstractTableModel {
 
     private static final long serialVersionUID = 5068639881692339753L;
 
     private List<File> files;
-    private String[] names = {"Index", "File Path", "File Size", "Create Time", "Last Modify Time", "Action"};
+    private String[] names = {"File Name", "File Path", "File Size", "Create Time", "Last Modify Time"};
 
 
     public LargeDuplicateFilesTableModel() {
@@ -43,15 +44,15 @@ public class LargeDuplicateFilesTableModel extends AbstractTableModel {
         File file = files.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return rowIndex + 1;
+                return file.getName();
             case 1:
-                return file.getAbsolutePath();
+                return file.getParent();
             case 2:
-                return file.length();
+                return FormatUtil.formatBytes(file.length());
             case 3:
-                return Instant.ofEpochSecond(DKFileUtil.getFileAttr(file).creationTime().toMillis());
+                return DKDateTimeUtil.long2Str(DKFileUtil.getFileAttr(file).creationTime().toMillis());
             case 4:
-                return Instant.ofEpochSecond(file.lastModified());
+                return DKDateTimeUtil.long2Str(file.lastModified());
 
             default:
                 return null;

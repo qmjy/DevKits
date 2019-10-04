@@ -47,9 +47,10 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 6081895254576694963L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LargeDuplicateFilesFrame.class);
     /** 50MB */
     private final int MAX_FILE_LEN = 1024 * 1024 * 50;
+
     /** 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值 */
     private static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 100;
 
@@ -63,7 +64,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     private HashMap<String, List<File>> fileMd5Map = new HashMap<String, List<File>>();
 
     public LargeDuplicateFilesFrame() {
-        super("Large Duplicate Files");
+        super("Large Duplicate Files", 1.2f);
 
         // 启动异步线程开始检查文件
         new Thread(new SearchFileThread(this, newFixedThreadPool, MAX_FILE_LEN)).start();
@@ -85,6 +86,8 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         jSplitPane.setLeftComponent(comp);
 
         jTable = new JTable(new LargeDuplicateFilesTableModel());
+        // 列自适应
+        jTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         jSplitPane.setRightComponent(new JScrollPane(jTable));
 
         jRootPane.add(jSplitPane, BorderLayout.CENTER);
@@ -160,19 +163,18 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) rootModel.getRoot();
 
         int childCount = treeNode.getChildCount();
-        if (childCount > 0) {
-            Enumeration<?> children = treeNode.children();
-            while (children.hasMoreElements()) {
-                DefaultMutableTreeNode childTreeNode = (DefaultMutableTreeNode) children.nextElement();
-                if (childTreeNode.getUserObject().toString().equals(md5)) {
-                    rootModel.insertNodeInto(new DefaultMutableTreeNode(file), childTreeNode, childTreeNode.getChildCount());
-                }
+        Enumeration<?> children = treeNode.children();
+        while (children.hasMoreElements()) {
+            DefaultMutableTreeNode childTreeNode = (DefaultMutableTreeNode) children.nextElement();
+            if (childTreeNode.getUserObject().toString().equals(md5)) {
+                rootModel.insertNodeInto(new DefaultMutableTreeNode(file), childTreeNode, childTreeNode.getChildCount());
+                return;
             }
-        } else {
-            DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(md5);
-            rootModel.insertNodeInto(newChild, treeNode, childCount);
-            rootModel.insertNodeInto(new DefaultMutableTreeNode(file), newChild, newChild.getChildCount());
         }
+
+        DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(md5);
+        rootModel.insertNodeInto(newChild, treeNode, childCount);
+        rootModel.insertNodeInto(new DefaultMutableTreeNode(file), newChild, newChild.getChildCount());
     }
 }
 
@@ -229,6 +231,7 @@ class SearchFileThread extends Thread {
         }
     }
 }
+
 
 
 /**
