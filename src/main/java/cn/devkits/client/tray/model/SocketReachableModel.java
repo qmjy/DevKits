@@ -1,4 +1,4 @@
-package cn.devkits.client.model;
+package cn.devkits.client.tray.model;
 
 public class SocketReachableModel
 {

@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -30,10 +31,13 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.App;
+import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 
 /**
  * 
- * 重复大文件检查
+ * 重复大文件检查<br>
+ * Oracle Swing
+ * DEMO:https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#GlassPaneDemo
  * 
  * @author shaofeng liu
  * @version 1.0.0
@@ -51,6 +55,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private static DefaultTreeModel rootModel = null;
     private static JTree tree = null;
+    private static JTable jTable = null;
     private static JLabel statusLine = null;
 
     private ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
@@ -68,6 +73,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     @Override
     protected void initUI(JRootPane jRootPane) {
         jRootPane.setLayout(new BorderLayout());
+        jRootPane.setBorder(new EmptyBorder(5, 5, 0, 5));
 
         JSplitPane jSplitPane = new JSplitPane();
 
@@ -78,10 +84,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
         jSplitPane.setLeftComponent(comp);
 
-        Object[][] data = {{"zz", "sdfgd", "sdfgd", "sdfgd", "sdfgd", ""}, {"12312", "sdfgd", "sdfgd", "3452345", "sdfgd", ""}};
-        String[] names = {"Index", "MD5", "File Path", "File Size", "File Size", "Action"};
-
-        JTable jTable = new JTable(data, names);
+        jTable = new JTable(new LargeDuplicateFilesTableModel());
         jSplitPane.setRightComponent(new JScrollPane(jTable));
 
         jRootPane.add(jSplitPane, BorderLayout.CENTER);
@@ -110,7 +113,16 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
                 JTree tree = (JTree) e.getSource();
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-                LOGGER.info(node.getLevel() + " : " + node.getUserObject().toString());
+                List<File> fileList = null;
+                if (node.getLevel() == 0) {
+                    return;
+                } else if (node.getLevel() == 1) {
+                    fileList = fileMd5Map.get(node.getUserObject().toString());
+                } else if (node.getLevel() == 2) {
+                    fileList = new ArrayList<File>();
+                    fileList.add(new File(node.getUserObject().toString()));
+                }
+                updateTableData(fileList);
             }
         });
     }
@@ -123,6 +135,10 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         });
     }
 
+    public void updateTableData(List<File> files) {
+        jTable.setModel(new LargeDuplicateFilesTableModel(files));
+    }
+
     public void updateTreeData(String md5, File file) {
         List<File> list = null;
         if (fileMd5Map.containsKey(md5)) {
@@ -133,7 +149,6 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
             list.add(file);
             insertTreeNode(md5, file);
-            tree.repaint();
         } else {
             list = new ArrayList<File>();
             list.add(file);

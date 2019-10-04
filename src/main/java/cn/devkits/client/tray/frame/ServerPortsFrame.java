@@ -26,7 +26,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.devkits.client.model.SocketReachableModel;
+import cn.devkits.client.tray.model.SocketReachableModel;
 import cn.devkits.client.util.DKNetworkUtil;
 import cn.devkits.client.util.DKStringUtil;
 
