@@ -60,9 +60,7 @@ public class ServerPortsFrame extends DKAbstractFrame {
     }
 
     @Override
-    protected JRootPane createRootPane() {
-        JRootPane jRootPane = new JRootPane();
-
+    protected void initUI(JRootPane jRootPane) {
         jRootPane.setLayout(new BorderLayout());
 
         JPanel northPane = new JPanel();
@@ -82,7 +80,6 @@ public class ServerPortsFrame extends DKAbstractFrame {
         jRootPane.add(northPane, BorderLayout.NORTH);
         jRootPane.add(scrollPane, BorderLayout.CENTER);
 
-        return jRootPane;
     }
 
     private void createSearchBtn(final JPanel northPanel) {
@@ -240,6 +237,7 @@ public class ServerPortsFrame extends DKAbstractFrame {
             }
         }
     }
+
 
 
 }

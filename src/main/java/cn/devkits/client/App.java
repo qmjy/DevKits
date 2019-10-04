@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
@@ -40,9 +41,14 @@ public class App {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) {
-        initLookAndFeel();
-        initSystemHotKey();
-        initSystemTrayIcon();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                initLookAndFeel();
+                initSystemHotKey();
+                initSystemTrayIcon();
+            }
+        });
     }
 
     private static void initSystemHotKey() {

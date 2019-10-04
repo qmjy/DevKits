@@ -24,9 +24,9 @@ public class AboutFrame extends DKAbstractFrame {
     }
 
 
+
     @Override
-    protected JRootPane createRootPane() {
-        JRootPane jRootPane = new JRootPane();
+    protected void initUI(JRootPane jRootPane) {
         jRootPane.setLayout(new BorderLayout());
 
         JTextArea jTextArea = new JTextArea(10, 50);
@@ -35,16 +35,8 @@ public class AboutFrame extends DKAbstractFrame {
 
         JScrollPane comp = new JScrollPane(jTextArea);
         jRootPane.add(comp, BorderLayout.CENTER);
-
-        return jRootPane;
     }
 
-
-
-    private void JLabel() {
-        // TODO Auto-generated method stub
-
-    }
 
 
     @Override

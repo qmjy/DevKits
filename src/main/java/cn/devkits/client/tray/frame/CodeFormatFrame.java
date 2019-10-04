@@ -34,9 +34,9 @@ public class CodeFormatFrame extends DKAbstractFrame {
         super("Code Format");
     }
 
+
     @Override
-    protected JRootPane createRootPane() {
-        JRootPane jRootPane = new JRootPane();
+    protected void initUI(JRootPane jRootPane) {
         jRootPane.setLayout(new BorderLayout());
 
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -45,9 +45,8 @@ public class CodeFormatFrame extends DKAbstractFrame {
         tabbedPane.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HEIGHT));
 
         jRootPane.add(tabbedPane, BorderLayout.CENTER);
-
-        return jRootPane;
     }
+
 
     @Override
     protected void initListener() {

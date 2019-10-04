@@ -1,18 +1,21 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.swing.JLabel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -41,17 +44,18 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     private static final long serialVersionUID = 6081895254576694963L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
-    /** 10MB */
-    private final int MAX_FILE_LEN = 1024 * 1024 * 1;
+    /** 50MB */
+    private final int MAX_FILE_LEN = 1024 * 1024 * 50;
     /** 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值 */
     private static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 100;
 
-    private static final DefaultTreeModel rootModel = new DefaultTreeModel(new DefaultMutableTreeNode("Duplicate Files"));
-    private static final JTree tree = new JTree(rootModel);
+    private static DefaultTreeModel rootModel = null;
+    private static JTree tree = null;
+    private static JLabel statusLine = null;
 
     private ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
 
-    private HashMap<String, Set<File>> fileMd5Map = new HashMap<String, Set<File>>();
+    private HashMap<String, List<File>> fileMd5Map = new HashMap<String, List<File>>();
 
     public LargeDuplicateFilesFrame() {
         super("Large Duplicate Files");
@@ -60,28 +64,32 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         new Thread(new SearchFileThread(this, newFixedThreadPool, MAX_FILE_LEN)).start();
     }
 
+
     @Override
-    protected JRootPane createRootPane() {
-        JRootPane jRootPane = new JRootPane();
+    protected void initUI(JRootPane jRootPane) {
         jRootPane.setLayout(new BorderLayout());
 
         JSplitPane jSplitPane = new JSplitPane();
 
+        rootModel = new DefaultTreeModel(new DefaultMutableTreeNode("Duplicate Files"));
+        tree = new JTree(rootModel);
+        JScrollPane comp = new JScrollPane(tree);
+        comp.setPreferredSize(new Dimension((int) (WINDOW_SIZE_WIDTH * 0.3), WINDOW_SIZE_HEIGHT));
 
-        jSplitPane.setLeftComponent(new JScrollPane(tree));
+        jSplitPane.setLeftComponent(comp);
 
         Object[][] data = {{"zz", "sdfgd", "sdfgd", "sdfgd", "sdfgd", ""}, {"12312", "sdfgd", "sdfgd", "3452345", "sdfgd", ""}};
         String[] names = {"Index", "MD5", "File Path", "File Size", "File Size", "Action"};
 
         JTable jTable = new JTable(data, names);
         jSplitPane.setRightComponent(new JScrollPane(jTable));
-        jSplitPane.setDividerLocation(0.4);
 
         jRootPane.add(jSplitPane, BorderLayout.CENTER);
 
-        return jRootPane;
+        statusLine = new JLabel("Welcome to DK Tool: Large Duplicate Files Scanner...");
+        statusLine.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, 25));
+        jRootPane.add(statusLine, BorderLayout.SOUTH);
     }
-
 
     @Override
     protected void initListener() {
@@ -101,17 +109,35 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
             public void valueChanged(TreeSelectionEvent e) {
                 JTree tree = (JTree) e.getSource();
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-                LOGGER.info(node.getUserObject().toString());
+
+                LOGGER.info(node.getLevel() + " : " + node.getUserObject().toString());
+            }
+        });
+    }
+
+    public void updateStatusLineText(final String text) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                statusLine.setText(text);
             }
         });
     }
 
     public void updateTreeData(String md5, File file) {
-        updateFileMap(md5, file);
+        List<File> list = null;
+        if (fileMd5Map.containsKey(md5)) {
+            list = fileMd5Map.get(md5);
+            if (list.size() == 1) {
+                insertTreeNode(md5, list.get(0));
+            }
 
-        // 存在重复的文件才显示
-        if (fileMd5Map.containsKey(md5) && fileMd5Map.get(md5).size() > 2) {
+            list.add(file);
             insertTreeNode(md5, file);
+            tree.repaint();
+        } else {
+            list = new ArrayList<File>();
+            list.add(file);
+            fileMd5Map.put(md5, list);
         }
     }
 
@@ -120,29 +146,17 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
         int childCount = treeNode.getChildCount();
         if (childCount > 0) {
-            Enumeration children = treeNode.children();
+            Enumeration<?> children = treeNode.children();
             while (children.hasMoreElements()) {
                 DefaultMutableTreeNode childTreeNode = (DefaultMutableTreeNode) children.nextElement();
                 if (childTreeNode.getUserObject().toString().equals(md5)) {
-                    rootModel.insertNodeInto(new DefaultMutableTreeNode(file.getName()), childTreeNode, childTreeNode.getChildCount());
+                    rootModel.insertNodeInto(new DefaultMutableTreeNode(file), childTreeNode, childTreeNode.getChildCount());
                 }
             }
         } else {
             DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(md5);
             rootModel.insertNodeInto(newChild, treeNode, childCount);
-            rootModel.insertNodeInto(new DefaultMutableTreeNode(file.getName()), newChild, newChild.getChildCount());
-        }
-    }
-
-    private void updateFileMap(String md5, File file) {
-        Set<File> list = null;
-        if (fileMd5Map.containsKey(md5)) {
-            list = fileMd5Map.get(md5);
-            list.add(file);
-        } else {
-            list = new HashSet<File>();
-            list.add(file);
-            fileMd5Map.put(md5, list);
+            rootModel.insertNodeInto(new DefaultMutableTreeNode(file), newChild, newChild.getChildCount());
         }
     }
 }
@@ -187,7 +201,10 @@ class SearchFileThread extends Thread {
                     if (file.length() > maxLength) {
                         // 窗口关闭以后，快速退出
                         if (!newFixedThreadPool.isShutdown()) {
-                            newFixedThreadPool.submit(new FileMd5Thread(frame, file));
+                            if (!file.getAbsolutePath().contains(".svn") && !file.getAbsolutePath().contains(".git")) {
+                                frame.updateStatusLineText("Scanner File: " + file.getAbsolutePath());
+                                newFixedThreadPool.submit(new FileMd5Thread(frame, file));
+                            }
                         } else {
                             return;
                         }
