@@ -9,11 +9,11 @@ public class LargeDuplicateActionModel {
     private LargeDuplicateFilesFrame frame;
     private ExecutorService threadPool;
     private FilenameFilter fileFilter;
-    private int minFileSize;
-    private int maxFileSize;
+    private long minFileSize;
+    private long maxFileSize;
 
 
-    public LargeDuplicateActionModel(LargeDuplicateFilesFrame frame, ExecutorService threadPool, FilenameFilter fileFilter, int maxFileSize, int minFileSize) {
+    public LargeDuplicateActionModel(LargeDuplicateFilesFrame frame, ExecutorService threadPool, FilenameFilter fileFilter, long maxFileSize, long minFileSize) {
         this.frame = frame;
         this.threadPool = threadPool;
         this.fileFilter = fileFilter;
@@ -52,22 +52,22 @@ public class LargeDuplicateActionModel {
     }
 
 
-    public int getMinFileSize() {
+    public long getMinFileSize() {
         return minFileSize;
     }
 
 
-    public void setMinFileSize(int minFileSize) {
+    public void setMinFileSize(long minFileSize) {
         this.minFileSize = minFileSize;
     }
 
 
-    public int getMaxFileSize() {
+    public long getMaxFileSize() {
         return maxFileSize;
     }
 
 
-    public void setMaxFileSize(int maxFileSize) {
+    public void setMaxFileSize(long maxFileSize) {
         this.maxFileSize = maxFileSize;
     }
 }
