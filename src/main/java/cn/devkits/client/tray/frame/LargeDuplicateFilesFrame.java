@@ -9,12 +9,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JButton;
@@ -35,9 +33,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.devkits.client.DKConstant;
 import cn.devkits.client.tray.frame.asyn.SearchFileThread;
-import cn.devkits.client.tray.model.LargeDuplicateActionModel;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 
 /**
@@ -45,20 +41,17 @@ import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
  * Oracle Swing DEMO:https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#
  * GlassPaneDemo
  * 
- * @author shaofeng liu
+ * @author Shaofeng Liu
  * @version 1.0.0
- * @datetime 2019年9月26日 下午9:34:49
+ * @time 2019年9月26日 下午9:34:49
  */
 public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 6081895254576694963L;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(LargeDuplicateFilesFrame.class);
-    private static final String[] FILE_TYPE_UNITS = {"All", "Document", "Image", "Audio", "Video"};
-    private static final String[] FILE_UNITS = {"KB", "MB", "GB", "TB", "PB"};
 
-    /** 50MB */
-    private final int MAX_FILE_LEN = 1024 * 1024 * 50;
+    private static final String[] FILE_TYPE_UNITS = {"All", "Document", "Image", "Audio", "Video"};
+    private static final String[] FILE_UNITS = {"Byte", "KB", "MB", "GB", "TB", "PB"};
 
     /** 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值 */
     public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 100;
@@ -70,9 +63,9 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     private static JTextField minFileSizeInput = null;
     private static JTextField maxFileSizeInput = null;
     private static JComboBox<String> fileSizeUnitComboBox = null;
-    private static JButton startBtn = null;
+    private static JButton startCancelBtn = null;
+    private static ExecutorService theadPool = null;
 
-    private ExecutorService theadPool = null;
     private HashMap<String, List<File>> fileMd5Map = null;
 
     public LargeDuplicateFilesFrame() {
@@ -98,13 +91,13 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);// 列自适应
         jSplitPane.setRightComponent(new JScrollPane(table));
 
-        initDataModel();
-
         jRootPane.add(jSplitPane, BorderLayout.CENTER);
 
-        statusLine = new JLabel("Large Duplicate Files Scanner...");
+        statusLine = new JLabel("Ready to go...");
         statusLine.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, 25));
         jRootPane.add(statusLine, BorderLayout.SOUTH);
+
+        initDataModel();
     }
 
     private JPanel initNorthPane() {
@@ -130,14 +123,13 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         fileSizeUnitComboBox.setLightWeightPopupEnabled(false);
         northRootPane.add(fileSizeUnitComboBox);
 
-        startBtn = new JButton("Start");
-        theadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
-        LargeDuplicateActionModel actionModel = new LargeDuplicateActionModel(this, theadPool, new DKFilenameFilter(fileTypeComboBox), Long.MAX_VALUE, 1024 * 1024 * 1);
-        startBtn.addActionListener(new StartEndListener(actionModel));
-        northRootPane.add(startBtn);
+        startCancelBtn = new JButton("Start");
+        northRootPane.add(startCancelBtn);
 
         return northRootPane;
     }
+
+
 
     @Override
     protected void initListener() {
@@ -151,6 +143,8 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
                 }
             }
         });
+
+        startCancelBtn.addActionListener(new StartEndListener(this));
 
         // 左侧树单选事件
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -185,11 +179,13 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         tree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("Duplicate Files")));
         tree.repaint();
         table.setModel(new LargeDuplicateFilesTableModel());
+
+        theadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
     }
 
     public void finishedSearch() {
         updateStatusLineText("Files Search Completed!");
-        startBtn.setText("Start");
+        startCancelBtn.setText("Start");
     }
 
     public void updateStatusLineText(final String text) {
@@ -240,53 +236,29 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         rootModel.insertNodeInto(newChild, treeNode, childCount);
         rootModel.insertNodeInto(new DefaultMutableTreeNode(file), newChild, newChild.getChildCount());
     }
-}
 
 
-class DKFilenameFilter implements FilenameFilter {
-
-    private JComboBox<String> fileTypeComboBox;
-
-    public DKFilenameFilter(JComboBox<String> fileTypeComboBox) {
-        this.fileTypeComboBox = fileTypeComboBox;
+    public static JComboBox<String> getFileTypeComboBox() {
+        return fileTypeComboBox;
     }
 
-    @Override
-    public boolean accept(File dir, String name) {
+    public static JTextField getMinFileSizeInput() {
+        return minFileSizeInput;
+    }
 
-        File file = new File(dir, name);
-        if (file.isDirectory()) {
-            return true;
-        }
+    public static JTextField getMaxFileSizeInput() {
+        return maxFileSizeInput;
+    }
 
-        if (dir.getAbsolutePath().contains(".git") || dir.getAbsolutePath().contains(".svn")) {
-            return false;
-        }
+    public static JComboBox<String> getFileSizeUnitComboBox() {
+        return fileSizeUnitComboBox;
+    }
 
-        String fileType = (String) fileTypeComboBox.getSelectedItem();
-
-        if ("All".equals(fileType)) {
-            return true;
-        } else {
-            if (name.indexOf(".") > 0) {
-                String suffix = name.substring(name.lastIndexOf(".")).toLowerCase(Locale.getDefault());
-                if ("Document".equals(fileType)) {
-                    return DKConstant.FILE_TYPE_DOC.contains(suffix);
-                } else if ("Image".equals(fileType)) {
-                    return DKConstant.FILE_TYPE_IMG.contains(suffix);
-                } else if ("Audio".equals(fileType)) {
-                    return DKConstant.FILE_TYPE_AUDIO.contains(suffix);
-                } else if ("Video".equals(fileType)) {
-                    return DKConstant.FILE_TYPE_VEDIO.contains(suffix);
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
+    public static ExecutorService getTheadPool() {
+        return theadPool;
     }
 }
+
 
 
 /**
@@ -298,26 +270,24 @@ class DKFilenameFilter implements FilenameFilter {
  */
 class StartEndListener implements ActionListener {
 
-    private LargeDuplicateActionModel actionModel;
+    private static final Logger LOGGER = LoggerFactory.getLogger(StartEndListener.class);
 
-    public StartEndListener(LargeDuplicateActionModel actionModel) {
-        this.actionModel = actionModel;
+    private LargeDuplicateFilesFrame frame;
+
+    public StartEndListener(LargeDuplicateFilesFrame frame) {
+        this.frame = frame;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton btn = (JButton) e.getSource();
-
-        ExecutorService threadPool = actionModel.getThreadPool();
-        LargeDuplicateFilesFrame frame = actionModel.getFrame();
+        ExecutorService threadPool = LargeDuplicateFilesFrame.getTheadPool();
 
         if ("Start".equals(e.getActionCommand())) {
             if (threadPool.isShutdown()) {
-                threadPool = Executors.newFixedThreadPool(LargeDuplicateFilesFrame.FIXED_THREAD_NUM);
-                actionModel.setThreadPool(threadPool);
                 frame.initDataModel();
             }
-            new Thread(new SearchFileThread(actionModel)).start();
+            new Thread(new SearchFileThread(frame, getFileSizeThreshold(true), getFileSizeThreshold(false))).start();
             btn.setText("Cancel");
             frame.updateStatusLineText("Start to scanner File...");
         } else {
@@ -326,4 +296,47 @@ class StartEndListener implements ActionListener {
             frame.updateStatusLineText("Scanner file canceled by user!");
         }
     }
+
+
+    private long getFileSizeThreshold(boolean isMaxThreshold) {
+        long val = convertUnti2Val();
+        String minText = LargeDuplicateFilesFrame.getMinFileSizeInput().getText();
+        String maxText = LargeDuplicateFilesFrame.getMaxFileSizeInput().getText();
+        if (isMaxThreshold) {
+            try {
+                return (long) (Double.parseDouble(maxText) * val);
+            } catch (NumberFormatException e) {
+                LOGGER.error("Convert Max File Size Failed: " + minText);
+                return Long.MAX_VALUE;
+            }
+        } else {
+            try {
+                return (long) (Double.parseDouble(minText) * val);
+            } catch (NumberFormatException e) {
+                LOGGER.error("Convert Min File Size Failed: " + minText);
+                return 0;
+            }
+        }
+    }
+
+    private long convertUnti2Val() {
+        String fileUnit = (String) LargeDuplicateFilesFrame.getFileSizeUnitComboBox().getSelectedItem();
+        switch (fileUnit) {
+            case "Byte":
+                return 1L;
+            case "KB":
+                return 1L * 1024;
+            case "MB":
+                return 1L * 1024 * 1024;
+            case "GB":
+                return 1L * 1024 * 1024 * 1024;
+            case "TB":
+                return 1L * 1024 * 1024 * 1024 * 1024;
+            case "PB":
+                return 1L * 1024 * 1024 * 1024 * 1024 * 1024;
+            default:
+                return 1L;
+        }
+    }
+
 }
