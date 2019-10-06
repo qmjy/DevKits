@@ -24,6 +24,7 @@ class FileMd5Thread extends Thread {
     private LargeDuplicateFilesFrame frame;
 
     public FileMd5Thread(LargeDuplicateFilesFrame frame, File file) {
+        super(file.getName());
         this.frame = frame;
         this.file = file;
     }
