@@ -56,20 +56,26 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     /** 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值 */
     public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 100;
 
-    private static JTree tree = null;
-    private static JTable table = null;
-    private static JLabel statusLine = null;
-    private static JComboBox<String> fileTypeComboBox = null;
-    private static JTextField minFileSizeInput = null;
-    private static JTextField maxFileSizeInput = null;
-    private static JComboBox<String> fileSizeUnitComboBox = null;
-    private static JButton startCancelBtn = null;
-    private static ExecutorService theadPool = null;
+    private JTree tree = null;
+    private JTable table = null;
+    private JLabel statusLine = null;
+    private JComboBox<String> fileTypeComboBox = null;
+    private JTextField minFileSizeInput = null;
+    private JTextField maxFileSizeInput = null;
+    private JComboBox<String> fileSizeUnitComboBox = null;
+    private JButton startCancelBtn = null;
+    private ExecutorService theadPool = null;
 
+    private DefaultMutableTreeNode treeNode = null;
+    private DefaultTreeModel treeModel = null;
     private HashMap<String, List<File>> fileMd5Map = null;
+
 
     public LargeDuplicateFilesFrame() {
         super("Large Duplicate Files", 1.2f);
+
+        initUI(getRootPane());
+        initListener();
     }
 
     @Override
@@ -81,7 +87,9 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
         JSplitPane jSplitPane = new JSplitPane();
 
-        tree = new JTree();
+        treeNode = new DefaultMutableTreeNode("Duplicate Files");
+        treeModel = new DefaultTreeModel(treeNode);
+        tree = new JTree(treeModel);
 
         JScrollPane scrollPane = new JScrollPane(tree);
         scrollPane.setPreferredSize(new Dimension((int) (WINDOW_SIZE_WIDTH * 0.3), WINDOW_SIZE_HEIGHT));
@@ -176,8 +184,9 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     public void initDataModel() {
         fileMd5Map = new HashMap<String, List<File>>();
 
-        tree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("Duplicate Files")));
-        tree.repaint();
+        treeNode.removeAllChildren();
+        treeModel.reload();
+
         table.setModel(new LargeDuplicateFilesTableModel());
 
         theadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
@@ -238,23 +247,23 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     }
 
 
-    public static JComboBox<String> getFileTypeComboBox() {
+    public JComboBox<String> getFileTypeComboBox() {
         return fileTypeComboBox;
     }
 
-    public static JTextField getMinFileSizeInput() {
+    public JTextField getMinFileSizeInput() {
         return minFileSizeInput;
     }
 
-    public static JTextField getMaxFileSizeInput() {
+    public JTextField getMaxFileSizeInput() {
         return maxFileSizeInput;
     }
 
-    public static JComboBox<String> getFileSizeUnitComboBox() {
+    public JComboBox<String> getFileSizeUnitComboBox() {
         return fileSizeUnitComboBox;
     }
 
-    public static ExecutorService getTheadPool() {
+    public ExecutorService getTheadPool() {
         return theadPool;
     }
 }
@@ -281,13 +290,13 @@ class StartEndListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton btn = (JButton) e.getSource();
-        ExecutorService threadPool = LargeDuplicateFilesFrame.getTheadPool();
+        ExecutorService threadPool = frame.getTheadPool();
 
         if ("Start".equals(e.getActionCommand())) {
             if (threadPool.isShutdown()) {
                 frame.initDataModel();
             }
-            new Thread(new SearchFileThread(frame, getFileSizeThreshold(true), getFileSizeThreshold(false))).start();
+            new Thread(new SearchFileThread(frame, getFileSizeThreshold(frame, true), getFileSizeThreshold(frame, false))).start();
             btn.setText("Cancel");
             frame.updateStatusLineText("Start to scanner File...");
         } else {
@@ -298,10 +307,10 @@ class StartEndListener implements ActionListener {
     }
 
 
-    private long getFileSizeThreshold(boolean isMaxThreshold) {
-        long val = convertUnti2Val();
-        String minText = LargeDuplicateFilesFrame.getMinFileSizeInput().getText();
-        String maxText = LargeDuplicateFilesFrame.getMaxFileSizeInput().getText();
+    private long getFileSizeThreshold(LargeDuplicateFilesFrame frame, boolean isMaxThreshold) {
+        long val = convertUnti2Val(frame);
+        String minText = frame.getMinFileSizeInput().getText();
+        String maxText = frame.getMaxFileSizeInput().getText();
         if (isMaxThreshold) {
             try {
                 return (long) (Double.parseDouble(maxText) * val);
@@ -319,8 +328,8 @@ class StartEndListener implements ActionListener {
         }
     }
 
-    private long convertUnti2Val() {
-        String fileUnit = (String) LargeDuplicateFilesFrame.getFileSizeUnitComboBox().getSelectedItem();
+    private long convertUnti2Val(LargeDuplicateFilesFrame frame) {
+        String fileUnit = (String) frame.getFileSizeUnitComboBox().getSelectedItem();
         switch (fileUnit) {
             case "Byte":
                 return 1L;

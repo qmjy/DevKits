@@ -57,6 +57,9 @@ public class ServerPortsFrame extends DKAbstractFrame {
 
     public ServerPortsFrame() {
         super("Server Ports Detection");
+        
+        initUI(getRootPane());
+        initListener();
     }
 
     @Override

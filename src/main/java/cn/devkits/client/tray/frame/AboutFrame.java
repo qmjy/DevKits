@@ -21,6 +21,9 @@ public class AboutFrame extends DKAbstractFrame {
 
     public AboutFrame() {
         super("About Devkits");
+        
+        initUI(getRootPane());
+        initListener();
     }
 
 

@@ -33,7 +33,7 @@ public class SearchFileThread extends Thread {
         for (File file : listRoots) {
             recursiveSearch(file);
         }
-        LargeDuplicateFilesFrame.getTheadPool().shutdown();
+        frame.getTheadPool().shutdown();
         frame.finishedSearch();
     }
 
@@ -45,7 +45,7 @@ public class SearchFileThread extends Thread {
                     recursiveSearch(file);
                 } else {
                     // 窗口关闭以后，快速退出
-                    ExecutorService theadPool = LargeDuplicateFilesFrame.getTheadPool();
+                    ExecutorService theadPool = frame.getTheadPool();
                     if (!theadPool.isShutdown()) {
                         if (file.length() < maxFileSize && file.length() > minFileSize) {
                             frame.updateStatusLineText("Scanner File: " + file.getAbsolutePath());

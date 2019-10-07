@@ -12,7 +12,7 @@ public class DKFilenameFilter implements FilenameFilter {
     private JComboBox<String> fileTypeComboBox;
 
     public DKFilenameFilter(LargeDuplicateFilesFrame frame) {
-        this.fileTypeComboBox = LargeDuplicateFilesFrame.getFileTypeComboBox();
+        this.fileTypeComboBox = frame.getFileTypeComboBox();
     }
 
     @Override

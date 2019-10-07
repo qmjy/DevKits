@@ -21,6 +21,9 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      */
     protected DKAbstractFrame(String title) {
         this(title, DEFAULT_LOAD_FACTOR);
+        
+        initUI(getRootPane());
+        initListener();
     }
 
     /**
@@ -38,9 +41,6 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
         float newHeight = WINDOW_SIZE_HEIGHT * loadFactor;
 
         this.setBounds((int) ((screenSize.width - newWidth) / 2), (int) ((screenSize.height - newHeight) / 2), (int) newWidth, (int) newHeight);
-
-        initUI(getRootPane());
-        initListener();
     }
 
     /**

@@ -32,6 +32,9 @@ public class CodeFormatFrame extends DKAbstractFrame {
 
     public CodeFormatFrame() {
         super("Code Format");
+
+        initUI(getRootPane());
+        initListener();
     }
 
 
@@ -86,8 +89,13 @@ public class CodeFormatFrame extends DKAbstractFrame {
 
         leftTextArea.addKeyListener(new JsonKeyListener(rightTextArea));
 
-        currentComponent.setLeftComponent(new JScrollPane(leftTextArea));
-        currentComponent.setRightComponent(new JScrollPane(rightTextArea));
+        JScrollPane leftScrollPane = new JScrollPane(leftTextArea);
+        leftScrollPane.setRowHeaderView(new LineNumberHeaderView(18));
+        currentComponent.setLeftComponent(leftScrollPane);
+
+        JScrollPane rightScrollPane = new JScrollPane(rightTextArea);
+        rightScrollPane.setRowHeaderView(new LineNumberHeaderView(18));
+        currentComponent.setRightComponent(rightScrollPane);
 
         currentComponent.setDividerLocation(WINDOW_SIZE_WIDTH / 2);
         currentComponent.setOneTouchExpandable(true);
