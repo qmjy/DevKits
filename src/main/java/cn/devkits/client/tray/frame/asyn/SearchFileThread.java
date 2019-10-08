@@ -34,28 +34,27 @@ public class SearchFileThread extends Thread {
             recursiveSearch(file);
         }
         frame.getTheadPool().shutdown();
-        frame.finishedSearch();
+        frame.updateStatusLineText("Files Search Completed!");
     }
 
     private void recursiveSearch(File dirFile) {
-        File[] listFiles = dirFile.listFiles(filenameFilter);
-        if (listFiles != null) {
-            for (File file : listFiles) {
-                if (file.isDirectory()) {
-                    recursiveSearch(file);
-                } else {
-                    // 窗口关闭以后，快速退出
-                    ExecutorService theadPool = frame.getTheadPool();
-                    if (!theadPool.isShutdown()) {
+        ExecutorService theadPool = frame.getTheadPool(); // 窗口关闭以后，快速退出
+        if (!theadPool.isShutdown()) {
+            File[] listFiles = dirFile.listFiles(filenameFilter);
+            if (listFiles != null) {
+                for (File file : listFiles) {
+                    frame.updateStatusLineText("Scanning: " + file.getAbsolutePath());
+                    if (file.isDirectory()) {
+                        recursiveSearch(file);
+                    } else {
                         if (file.length() < maxFileSize && file.length() > minFileSize) {
-                            frame.updateStatusLineText("Scanner File: " + file.getAbsolutePath());
                             theadPool.submit(new FileMd5Thread(frame, file));
                         }
-                    } else {
-                        return;
                     }
                 }
             }
         }
+
+
     }
 }

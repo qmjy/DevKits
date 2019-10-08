@@ -1,14 +1,18 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -91,14 +95,18 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         treeModel = new DefaultTreeModel(treeNode);
         tree = new JTree(treeModel);
 
+        // ToolTipManager.sharedInstance().registerComponent(tree);
+        // TreeCellRenderer renderer = new LargeDuplicateFilesTreeCellRenderer();
+        // tree.setCellRenderer(renderer);
+
         JScrollPane scrollPane = new JScrollPane(tree);
-        scrollPane.setPreferredSize(new Dimension((int) (WINDOW_SIZE_WIDTH * 0.3), WINDOW_SIZE_HEIGHT));
         jSplitPane.setLeftComponent(scrollPane);
 
         table = new JTable();
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);// 列自适应
         jSplitPane.setRightComponent(new JScrollPane(table));
 
+        jSplitPane.setResizeWeight(0.3);
         jRootPane.add(jSplitPane, BorderLayout.CENTER);
 
         statusLine = new JLabel("Ready to go...");
@@ -179,6 +187,23 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
                 }
             }
         });
+
+        // 叶子节点双击打开文件所在目录
+        tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTree tree = (JTree) e.getSource();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                if (e.getClickCount() == 2 && node.getLevel() == 2) {
+                    File file = new File(node.getUserObject().toString());
+                    try {
+                        Desktop.getDesktop().open(file.getParentFile());
+                    } catch (IOException e1) {
+                        LOGGER.error("Open file failed: " + file.getParentFile().getAbsolutePath());
+                    }
+                }
+            }
+        });
     }
 
     public void initDataModel() {
@@ -192,10 +217,6 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         theadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
     }
 
-    public void finishedSearch() {
-        updateStatusLineText("Files Search Completed!");
-        startCancelBtn.setText("Start");
-    }
 
     public void updateStatusLineText(final String text) {
         EventQueue.invokeLater(new Runnable() {
@@ -266,6 +287,12 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     public ExecutorService getTheadPool() {
         return theadPool;
     }
+
+    public JButton getStartCancelBtn() {
+        return startCancelBtn;
+    }
+
+
 }
 
 

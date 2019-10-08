@@ -20,6 +20,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import cn.devkits.client.tray.frame.assist.LineNumberHeaderView;
 import cn.devkits.client.util.DKStringUtil;
 
 public class CodeFormatFrame extends DKAbstractFrame {
