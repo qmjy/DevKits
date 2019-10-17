@@ -177,6 +177,7 @@ public class App {
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.CLEAN);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.SCRCAPTURE);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.LDF);
+        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.TODOS);
         computerItem.add(toolsItem);
 
         return computerItem;

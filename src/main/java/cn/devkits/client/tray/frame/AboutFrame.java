@@ -1,9 +1,15 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import javax.swing.JEditorPane;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import cn.devkits.client.util.DKConfigUtil;
 
 /**
@@ -17,11 +23,12 @@ import cn.devkits.client.util.DKConfigUtil;
 public class AboutFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 3737746590178589617L;
+    private JEditorPane jEditorPane;
 
 
     public AboutFrame() {
-        super("About Devkits");
-        
+        super("About Devkits", 0.5f, 0.7f);
+
         initUI(getRootPane());
         initListener();
     }
@@ -32,11 +39,13 @@ public class AboutFrame extends DKAbstractFrame {
     protected void initUI(JRootPane jRootPane) {
         jRootPane.setLayout(new BorderLayout());
 
-        JTextArea jTextArea = new JTextArea(10, 50);
-        jTextArea.setEditable(false);
-        jTextArea.setText(DKConfigUtil.getInstance().getAboutTxt());
-
-        JScrollPane comp = new JScrollPane(jTextArea);
+        this.jEditorPane = new JEditorPane();
+        jEditorPane.setContentType("text/html");
+        jEditorPane.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
+        jEditorPane.setEditable(false);
+        jEditorPane.setText(DKConfigUtil.getInstance().getAboutHtml());
+        
+        JScrollPane comp = new JScrollPane(jEditorPane);
         jRootPane.add(comp, BorderLayout.CENTER);
     }
 
@@ -44,7 +53,21 @@ public class AboutFrame extends DKAbstractFrame {
 
     @Override
     protected void initListener() {
-        // TODO Auto-generated method stub
+        jEditorPane.addHyperlinkListener(new HyperlinkListener() {
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    if(Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().browse(e.getURL().toURI());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } catch (URISyntaxException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
 
     }
 }

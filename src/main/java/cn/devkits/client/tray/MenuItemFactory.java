@@ -110,6 +110,11 @@ public class MenuItemFactory {
                 menuItem = new MenuItem("Large Duplicate Files...");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LDF));
                 break;
+            case TODOS:
+                menuItem = new MenuItem("To-do List...");
+                menuItem.setEnabled(false);
+                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.TODOS));
+                break;
             default:
                 break;
         }

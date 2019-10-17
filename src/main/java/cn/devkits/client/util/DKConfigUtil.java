@@ -53,32 +53,35 @@ public class DKConfigUtil {
     }
 
 
-    public String getAboutTxt() {
+
+    public String getAboutHtml() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("DevKits is a kits for programmer effective working.");
-        sb.append(System.getProperty("line.separator"));
-        sb.append(System.getProperty("line.separator"));
+        sb.append("Devkits is a toolkit for improving work efficiency.");
+        sb.append("<br/><br/>");
         sb.append("Author: shaofeng liu");
-        sb.append(System.getProperty("line.separator"));
+        sb.append("<br/>");
         sb.append("Version: " + model.getVersion());
-        sb.append(System.getProperty("line.separator"));
+        sb.append("<br/>");
         sb.append("BuildTime: 20190812120334");
-        sb.append(System.getProperty("line.separator"));
-        sb.append("HomePage: " + model.getUrl());
-        sb.append(System.getProperty("line.separator"));
-        sb.append("Issue: https://github.com/qmjy/DevKits/issues");
-        sb.append(System.getProperty("line.separator"));
-        sb.append(System.getProperty("line.separator"));
+        sb.append("<br/>");
+        sb.append("HomePage: <a href='");
+        sb.append(model.getUrl());
+        sb.append("'>");
+        sb.append(model.getUrl());
+        sb.append("</a>");
+        sb.append("<br/>");
+        sb.append("Issue: <a href='https://github.com/qmjy/DevKits/issues'>https://github.com/qmjy/DevKits/issues</a>");
+        sb.append("<br/><br/>");
         sb.append("Thanks for the open source as follow:");
-        sb.append(System.getProperty("line.separator"));
+        sb.append("<br/>");
 
         List<Dependency> dependencies = model.getDependencies();
         for (Dependency dependency : dependencies) {
             sb.append(dependency.getArtifactId());
             sb.append("-");
             sb.append(dependency.getVersion());
-            sb.append(System.getProperty("line.separator"));
+            sb.append("<br/>");
         }
 
         return sb.toString();

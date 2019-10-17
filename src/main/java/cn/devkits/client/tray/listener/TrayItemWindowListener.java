@@ -1,7 +1,10 @@
 package cn.devkits.client.tray.listener;
 
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JFrame;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.CodeFormatFrame;
@@ -34,7 +37,7 @@ public class TrayItemWindowListener implements ActionListener {
                 frame = new LargeDuplicateFilesFrame();
                 break;
             case SCRCAPTURE:
-                new ScreenCaptureWindow().setVisible(true);;
+                invokeScreenTool();
                 return;
             default:
                 break;
@@ -42,6 +45,14 @@ public class TrayItemWindowListener implements ActionListener {
 
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private void invokeScreenTool() {
+        try {
+            Desktop.getDesktop().open(new File("QQSnapShot.exe"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

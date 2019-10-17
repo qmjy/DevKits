@@ -10,7 +10,7 @@
 	<version>1.0.0</version>
 
 	<name>DevKits</name>
-	<url>http://www.devkits.cn</url>
+	<url>https://www.devkits.cn</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
