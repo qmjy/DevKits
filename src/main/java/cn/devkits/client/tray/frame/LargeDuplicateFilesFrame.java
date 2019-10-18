@@ -217,6 +217,10 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         theadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
     }
 
+    public void searchComplete() {
+        updateStatusLineText("Files Search Completed!");
+        startCancelBtn.setText("Start");
+    }
 
     public void updateStatusLineText(final String text) {
         EventQueue.invokeLater(new Runnable() {
@@ -293,6 +297,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     }
 
 
+
 }
 
 
@@ -342,14 +347,14 @@ class StartEndListener implements ActionListener {
             try {
                 return (long) (Double.parseDouble(maxText) * val);
             } catch (NumberFormatException e) {
-                LOGGER.error("Convert Max File Size Failed: " + minText);
+                LOGGER.error("Resolve the max value of user input failed: " + maxText);
                 return Long.MAX_VALUE;
             }
         } else {
             try {
                 return (long) (Double.parseDouble(minText) * val);
             } catch (NumberFormatException e) {
-                LOGGER.error("Convert Min File Size Failed: " + minText);
+                LOGGER.error("Resolve the min value of user input failed: " + minText);
                 return 0;
             }
         }

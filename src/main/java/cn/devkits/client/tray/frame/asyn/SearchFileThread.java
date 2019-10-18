@@ -34,7 +34,7 @@ public class SearchFileThread extends Thread {
             recursiveSearch(file);
         }
         frame.getTheadPool().shutdown();
-        frame.updateStatusLineText("Files Search Completed!");
+        frame.searchComplete();
     }
 
     private void recursiveSearch(File dirFile) {
