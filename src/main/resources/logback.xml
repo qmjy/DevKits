@@ -5,7 +5,7 @@
 	<!--用于区分不同应用程序的记录 <contextName>springmvc</contextName> -->
 
 	<!-- 定义日志文件所在目录 -->
-	<property name="LOG_HOME" value="./logs/" />
+	<property name="LOG_HOME" value="../logs/" />
 
 	<!--控制台输出 -->
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">

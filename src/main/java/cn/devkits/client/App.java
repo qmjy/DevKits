@@ -73,7 +73,7 @@ public class App {
     private static void initSystemTrayIcon() {
         if (SystemTray.isSupported()) {
             try {
-                TrayIcon trayIcon = new TrayIcon(ImageIO.read(App.class.getClassLoader().getResource("20.png")));
+                TrayIcon trayIcon = new TrayIcon(ImageIO.read(App.class.getClassLoader().getResource("logo.png")));
                 trayIcon.setImageAutoSize(true);
                 // 添加工具提示文本
                 trayIcon.setToolTip("开发工具包\r\n官网：www.devkits.cn");
