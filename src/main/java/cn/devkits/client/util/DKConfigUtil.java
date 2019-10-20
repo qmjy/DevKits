@@ -54,9 +54,12 @@ public class DKConfigUtil {
         return cfgProperties;
     }
 
-
-
     public String getAboutHtml() {
+        if (model == null) {
+            LOGGER.debug("Clean this maven project please, if you are running this app in your IDE.");
+            return "";
+        }
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("Devkits is a toolkit for improving work efficiency.");

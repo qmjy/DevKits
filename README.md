@@ -14,6 +14,7 @@ This kits is mainly developed for software engineers, networker, and office work
 
 - Server Port Detection
 - Large Duplicate Files Detection
+- Screenshot like QQ
 
 
 # Contact
