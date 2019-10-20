@@ -1,8 +1,5 @@
 package cn.devkits.client.util;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.net.InetAddresses;

@@ -8,12 +8,31 @@ import oshi.hardware.CentralProcessor;
 import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
 
+/**
+ * 
+ * System Util
+ * 
+ * @author shaofeng liu
+ * @version 1.0.0
+ * @time 2019年10月20日 下午9:37:03
+ */
 public final class DKSystemUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUtil.class);
     private static final SystemInfo SYSTEM_INFO = new SystemInfo();
 
 
     private DKSystemUtil() {}
+
+
+    /**
+     * 判断当前程序是否是以jar的方式运行
+     * 
+     * @return 是否是以jar运行
+     */
+    public static boolean isRunWithJar() {
+        String protocol = DKSystemUtil.class.getResource("").getProtocol();
+        return "jar".equals(protocol);
+    }
 
     /**
      * get system startup time

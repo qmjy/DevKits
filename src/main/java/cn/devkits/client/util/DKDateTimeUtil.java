@@ -2,10 +2,8 @@ package cn.devkits.client.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 public final class DKDateTimeUtil {
 

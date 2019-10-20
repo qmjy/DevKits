@@ -7,9 +7,10 @@ import java.net.URISyntaxException;
 import javax.swing.JEditorPane;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import cn.devkits.client.util.DKConfigUtil;
 
 /**
@@ -23,6 +24,7 @@ import cn.devkits.client.util.DKConfigUtil;
 public class AboutFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 3737746590178589617L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AboutFrame.class);
     private JEditorPane jEditorPane;
 
 
@@ -32,8 +34,6 @@ public class AboutFrame extends DKAbstractFrame {
         initUI(getRootPane());
         initListener();
     }
-
-
 
     @Override
     protected void initUI(JRootPane jRootPane) {
@@ -55,14 +55,14 @@ public class AboutFrame extends DKAbstractFrame {
     protected void initListener() {
         jEditorPane.addHyperlinkListener(new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
-                if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    if(Desktop.isDesktopSupported()) {
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    if (Desktop.isDesktopSupported()) {
                         try {
                             Desktop.getDesktop().browse(e.getURL().toURI());
                         } catch (IOException e1) {
-                            e1.printStackTrace();
+                            LOGGER.error("Open url failed: " + e1.getMessage());
                         } catch (URISyntaxException e1) {
-                            e1.printStackTrace();
+                            LOGGER.error("URL exception: " + e1.getMessage());
                         }
                     }
                 }

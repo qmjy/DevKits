@@ -28,8 +28,10 @@ public class DKConfigUtil {
     private DKConfigUtil() {
         try {
             cfgProperties.load(DKConfigUtil.class.getResourceAsStream("/META-INF/maven/cn.devkits.client/devkits/pom.properties"));
+        } catch (NullPointerException e) {
+            LOGGER.error("Load devkits pom.properties file failed: " + e.getMessage());
         } catch (IOException e) {
-            LOGGER.error("Load config file failed: " + e.getMessage());
+            LOGGER.error("Load devkits pom.xml file failed: " + e.getMessage());
         }
 
         MavenXpp3Reader reader = new MavenXpp3Reader();
@@ -83,7 +85,6 @@ public class DKConfigUtil {
             sb.append(dependency.getVersion());
             sb.append("<br/>");
         }
-
         return sb.toString();
     }
 

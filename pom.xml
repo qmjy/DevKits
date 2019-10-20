@@ -89,8 +89,6 @@
 				<version>2.6</version>
 				<configuration>
 					<archive>
-						<!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
-						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifest>
 							<!-- 是否要把第三方jar放到manifest的classpath中 -->
 							<addClasspath>true</addClasspath>
