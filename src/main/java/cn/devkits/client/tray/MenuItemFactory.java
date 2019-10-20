@@ -4,12 +4,17 @@ import java.awt.Dimension;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.Toolkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.listener.TrayItemClipboardListener;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKNetworkUtil;
 import cn.devkits.client.util.DKSystemUtil;
 
 public class MenuItemFactory {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(MenuItemFactory.class);
+    
     public static void createWindowItem(Menu parentItem, MenuItemEnum itemType) {
         MenuItem menuItem = null;
         switch (itemType) {
@@ -97,9 +102,8 @@ public class MenuItemFactory {
                 menuItem.setEnabled(false);
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
                 break;
-
             case SCRCAPTURE:
-                menuItem = new MenuItem("Screen Capture...");
+                menuItem = new MenuItem("Screenshots");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SCRCAPTURE));
                 break;
             case CLEAN:
