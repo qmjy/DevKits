@@ -12,6 +12,7 @@ import cn.devkits.client.App;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.CodeFormatFrame;
 import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
+import cn.devkits.client.tray.frame.OsInfoDetailFrame;
 import cn.devkits.client.tray.frame.ServerPortsFrame;
 import cn.devkits.client.util.DKSystemUtil;
 
@@ -43,6 +44,9 @@ public class TrayItemWindowListener implements ActionListener {
             case SCRCAPTURE:
                 invokeScreenTool();
                 return;
+            case OS_INFO_MORE:
+                frame = new OsInfoDetailFrame();
+                break;
             default:
                 break;
         }

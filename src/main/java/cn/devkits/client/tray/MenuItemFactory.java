@@ -78,7 +78,7 @@ public class MenuItemFactory {
                 menuItem = new MenuItem(itemType.toString() + ": " + internetIp);
                 menuItem.addActionListener(new TrayItemClipboardListener(internetIp));
                 break;
-
+            
             default:
                 break;
         }
@@ -118,6 +118,10 @@ public class MenuItemFactory {
                 menuItem = new MenuItem("To-do List...");
                 menuItem.setEnabled(false);
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.TODOS));
+                break;
+            case OS_INFO_MORE:
+                menuItem = new MenuItem("More Details...");
+                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.OS_INFO_MORE));
                 break;
             default:
                 break;

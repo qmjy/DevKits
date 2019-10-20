@@ -140,6 +140,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         northRootPane.add(fileSizeUnitComboBox);
 
         startCancelBtn = new JButton("Start");
+        startCancelBtn.setFocusPainted(false);// 不显示焦点虚线边框
         northRootPane.add(startCancelBtn);
 
         return northRootPane;

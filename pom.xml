@@ -47,12 +47,6 @@
 			<version>3.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.9.10</version>
-		</dependency>
-
 		<!-- 硬件信息获取：It's more powerful than Sigar -->
 		<dependency>
 			<groupId>com.github.oshi</groupId>
