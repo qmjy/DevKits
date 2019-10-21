@@ -25,7 +25,7 @@ import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
 import cn.devkits.client.tray.frame.AboutFrame;
-import cn.devkits.client.tray.window.ScreenCaptureWindow;
+import cn.devkits.client.util.DKSystemUtil;
 
 
 /**
@@ -60,7 +60,7 @@ public class App {
             public void onHotKey(int identifier) {
                 switch (identifier) {
                     case DKConstant.DK_HOTKEY_SCR_CAP:
-                        new ScreenCaptureWindow().setVisible(true);;
+                        DKSystemUtil.invokeLocalApp("QQSnapShot.exe");
                         break;
 
                     default:

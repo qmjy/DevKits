@@ -1,14 +1,10 @@
 package cn.devkits.client.tray.listener;
 
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.devkits.client.App;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.CodeFormatFrame;
 import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
@@ -42,7 +38,7 @@ public class TrayItemWindowListener implements ActionListener {
                 frame = new LargeDuplicateFilesFrame();
                 break;
             case SCRCAPTURE:
-                invokeScreenTool();
+                DKSystemUtil.invokeLocalApp("QQSnapShot.exe");
                 return;
             case OS_INFO_MORE:
                 frame = new OsInfoDetailFrame();
@@ -54,20 +50,4 @@ public class TrayItemWindowListener implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
-
-    private void invokeScreenTool() {
-        if (Desktop.isDesktopSupported()) {
-            try {
-                if (DKSystemUtil.isRunWithJar()) {
-                    Desktop.getDesktop().open(new File("./QQSnapShot.exe"));
-                } else {
-                    String filePath = TrayItemWindowListener.class.getClassLoader().getResource("").getPath() + "QQSnapShot.exe";
-                    Desktop.getDesktop().open(new File(filePath));
-                }
-            } catch (IOException e) {
-                LOGGER.error("Invoke file failed: " + e.getMessage());
-            }
-        }
-    }
-
 }

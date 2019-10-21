@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>com.github.oshi</groupId>
 			<artifactId>oshi-core</artifactId>
-			<version>4.0.0</version>
+			<version>4.1.0</version>
 		</dependency>
 
 		<!-- 提供Hex、DigestUtils、Base64等 -->
