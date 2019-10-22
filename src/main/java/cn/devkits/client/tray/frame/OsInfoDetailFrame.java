@@ -1,13 +1,24 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Enumeration;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import cn.devkits.client.util.DKSystemUIUtil;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.CentralProcessor.TickType;
@@ -253,28 +264,19 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     }
 
     private Component initDiskInfo(HardwareAbstractionLayer hal, OperatingSystem os) {
-        HWDiskStore[] diskStores = hal.getDiskStores();
+        JPanel diskRootPanel = new JPanel();
+        diskRootPanel.setLayout(new GridLayout(2, 1));
 
-        StringBuilder sb = new StringBuilder("<html><body>Disks:<br>");
 
-        for (HWDiskStore disk : diskStores) {
-            sb.append(" ");
-            sb.append(disk.toString());
-            sb.append("<br>");
-
-            HWPartition[] partitions = disk.getPartitions();
-            for (HWPartition part : partitions) {
-                sb.append(" |-- ");
-                sb.append(part.toString());
-                sb.append("<br>");
-            }
-        }
-
-        sb.append("<br>");
+        JTable partitionTable = new JTable(new DiskTableModel(hal.getDiskStores()));
+        DKSystemUIUtil.fitTableColumns(partitionTable);
+        JScrollPane comp = new JScrollPane();
+        comp.setViewportView(partitionTable);
+        diskRootPanel.add(comp);
 
         FileSystem fileSystem = os.getFileSystem();
 
-        sb.append("File System:<br>");
+        StringBuilder sb = new StringBuilder("<html><body>File System:<br>");
 
         sb.append(String.format(" File Descriptors: %d/%d", fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors()));
         sb.append("<br>");
@@ -293,8 +295,12 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         }
 
         sb.append("</body></html>");
-        return new JLabel(sb.toString());
+
+        diskRootPanel.add(new JLabel(sb.toString()));
+
+        return diskRootPanel;
     }
+
 
 
     private JLabel initDashboard(HardwareAbstractionLayer hal, OperatingSystem os) {
@@ -342,4 +348,114 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
     }
 
+}
+
+
+class DiskTableModel implements TableModel {
+
+    private HWDiskStore[] diskStores;
+
+    public DiskTableModel(HWDiskStore[] diskStores) {
+        this.diskStores = diskStores;
+    }
+
+    @Override
+    public int getRowCount() {
+        int count = 0;
+        for (int i = 0; i < diskStores.length; i++) {
+            count += diskStores[0].getPartitions().length;
+        }
+        return count;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return 8;
+    }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return "Identification";
+            case 1:
+                return "Name";
+            case 2:
+                return "Type";
+            case 3:
+                return "UUID";
+            case 4:
+                return "Size";
+            case 5:
+                return "Major";
+            case 6:
+                return "Minor";
+            case 7:
+                return "MountPoint";
+            default:
+                return "";
+        }
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return getValueAt(0, columnIndex).getClass();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        int rowCount = 0;
+        for (int i = 0; i < diskStores.length; i++) {
+            HWPartition[] partitions = diskStores[0].getPartitions();
+            for (int j = 0; j < partitions.length; j++) {
+                if (rowCount == rowIndex) {
+                    switch (columnIndex) {
+                        case 0:
+                            return partitions[j].getIdentification();
+                        case 1:
+                            return partitions[j].getName();
+                        case 2:
+                            return partitions[j].getType();
+                        case 3:
+                            return partitions[j].getUuid();
+                        case 4:
+                            return FormatUtil.formatBytesDecimal(partitions[j].getSize());
+                        case 5:
+                            return partitions[j].getMajor();
+                        case 6:
+                            return partitions[j].getMinor();
+                        case 7:
+                            return partitions[j].getMountPoint();
+                        default:
+                            return "";
+                    }
+                }
+                rowCount++;
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void addTableModelListener(TableModelListener l) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removeTableModelListener(TableModelListener l) {
+        // TODO Auto-generated method stub
+
+    }
 }
