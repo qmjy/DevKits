@@ -7,12 +7,14 @@ import java.awt.GridLayout;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Enumeration;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.JTableHeader;
@@ -55,7 +57,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private static final long serialVersionUID = 6295111163819170866L;
     private SystemInfo si = new SystemInfo();
 
-
     public OsInfoDetailFrame() {
         super("System Details", 1.2f);
 
@@ -73,7 +74,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         jTabbedPane.addTab("CPU", initCpu(si.getHardware()));
         jTabbedPane.addTab("Main Board", initMainboard());
         jTabbedPane.addTab("Memory", initMemory(si.getHardware()));
-        jTabbedPane.addTab("Disk", initDiskInfo(si.getHardware(), si.getOperatingSystem()));
+        jTabbedPane.addTab("Disk", initDisk(si.getHardware(), si.getOperatingSystem()));
         jTabbedPane.addTab("Sensors", initSensors(si.getHardware()));
         jTabbedPane.addTab("Displays", initDisplay(si.getHardware()));
         jTabbedPane.addTab("Network", initNetwork(si.getHardware(), si.getOperatingSystem()));
@@ -263,40 +264,21 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         return new JLabel(sb.toString());
     }
 
-    private Component initDiskInfo(HardwareAbstractionLayer hal, OperatingSystem os) {
+    private Component initDisk(HardwareAbstractionLayer hal, OperatingSystem os) {
         JPanel diskRootPanel = new JPanel();
         diskRootPanel.setLayout(new GridLayout(2, 1));
 
-
         JTable partitionTable = new JTable(new DiskTableModel(hal.getDiskStores()));
         DKSystemUIUtil.fitTableColumns(partitionTable);
-        JScrollPane comp = new JScrollPane();
-        comp.setViewportView(partitionTable);
-        diskRootPanel.add(comp);
+        JScrollPane diskScrollPanel = new JScrollPane(partitionTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        diskScrollPanel.setBorder(BorderFactory.createTitledBorder("Physical Disks"));
+        diskRootPanel.add(diskScrollPanel);
 
-        FileSystem fileSystem = os.getFileSystem();
-
-        StringBuilder sb = new StringBuilder("<html><body>File System:<br>");
-
-        sb.append(String.format(" File Descriptors: %d/%d", fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors()));
-        sb.append("<br>");
-
-        OSFileStore[] fsArray = fileSystem.getFileStores();
-        for (OSFileStore fs : fsArray) {
-            long usable = fs.getUsableSpace();
-            long total = fs.getTotalSpace();
-            sb.append(String.format(
-                    " %s (%s) [%s] %s of %s free (%.1f%%), %s of %s files free (%.1f%%) is %s " + (fs.getLogicalVolume() != null && fs.getLogicalVolume().length() > 0 ? "[%s]" : "%s")
-                            + " and is mounted at %s",
-                    fs.getName(), fs.getDescription().isEmpty() ? "file system" : fs.getDescription(), fs.getType(), FormatUtil.formatBytes(usable), FormatUtil.formatBytes(fs.getTotalSpace()),
-                    100d * usable / total, FormatUtil.formatValue(fs.getFreeInodes(), ""), FormatUtil.formatValue(fs.getTotalInodes(), ""), 100d * fs.getFreeInodes() / fs.getTotalInodes(),
-                    fs.getVolume(), fs.getLogicalVolume(), fs.getMount()));
-            sb.append("<br>");
-        }
-
-        sb.append("</body></html>");
-
-        diskRootPanel.add(new JLabel(sb.toString()));
+        JTable fileSystemTable = new JTable(new FileSystemModel(os.getFileSystem().getFileStores()));
+        DKSystemUIUtil.fitTableColumns(fileSystemTable);
+        JScrollPane fileScrollPane = new JScrollPane(fileSystemTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        fileScrollPane.setBorder(BorderFactory.createTitledBorder("File System:"));
+        diskRootPanel.add(fileScrollPane);
 
         return diskRootPanel;
     }
@@ -345,9 +327,115 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     @Override
     protected void initListener() {
         // TODO Auto-generated method stub
+    }
+}
 
+
+class FileSystemModel implements TableModel {
+    private OSFileStore[] fileStores;
+
+    public FileSystemModel(OSFileStore[] fileStores) {
+        this.fileStores = fileStores;
     }
 
+    @Override
+    public int getRowCount() {
+        return fileStores.length;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return 12;
+    }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return "Name";
+            case 1:
+                return "Volume";
+            case 2:
+                return "Logical Volume";
+            case 3:
+                return "Mount";
+            case 4:
+                return "Description";
+            case 5:
+                return "Type";
+            case 6:
+                return "UUID";
+            case 7:
+                return "Free Space";
+            case 8:
+                return "Usable Space";
+            case 9:
+                return "Total Space";
+            case 10:
+                return "Free Inodes";
+            case 11:
+                return "Total Inodes";
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return getValueAt(0, columnIndex).getClass();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return fileStores[rowIndex].getName();
+            case 1:
+                return fileStores[rowIndex].getVolume();
+            case 2:
+                return fileStores[rowIndex].getLogicalVolume();
+            case 3:
+                return fileStores[rowIndex].getMount();
+            case 4:
+                return fileStores[rowIndex].getDescription();
+            case 5:
+                return fileStores[rowIndex].getType();
+            case 6:
+                return fileStores[rowIndex].getUUID();
+            case 7:
+                return FormatUtil.formatBytesDecimal(fileStores[rowIndex].getFreeSpace());
+            case 8:
+                return FormatUtil.formatBytesDecimal(fileStores[rowIndex].getUsableSpace());
+            case 9:
+                return FormatUtil.formatBytesDecimal(fileStores[rowIndex].getTotalSpace());
+            case 10:
+                return fileStores[rowIndex].getFreeInodes();
+            case 11:
+                return fileStores[rowIndex].getTotalInodes();
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addTableModelListener(TableModelListener l) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeTableModelListener(TableModelListener l) {
+        // TODO Auto-generated method stub
+    }
 }
 
 
@@ -410,8 +498,8 @@ class DiskTableModel implements TableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         int rowCount = 0;
-        for (int i = 0; i < diskStores.length; i++) {
-            HWPartition[] partitions = diskStores[0].getPartitions();
+        for (HWDiskStore hwDiskStore : diskStores) {
+            HWPartition[] partitions = hwDiskStore.getPartitions();
             for (int j = 0; j < partitions.length; j++) {
                 if (rowCount == rowIndex) {
                     switch (columnIndex) {
