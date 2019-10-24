@@ -12,9 +12,9 @@ import cn.devkits.client.util.DKNetworkUtil;
 import cn.devkits.client.util.DKSystemUtil;
 
 public class MenuItemFactory {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuItemFactory.class);
-    
+
     public static void createWindowItem(Menu parentItem, MenuItemEnum itemType) {
         MenuItem menuItem = null;
         switch (itemType) {
@@ -78,7 +78,7 @@ public class MenuItemFactory {
                 menuItem = new MenuItem(itemType.toString() + ": " + internetIp);
                 menuItem.addActionListener(new TrayItemClipboardListener(internetIp));
                 break;
-            
+
             default:
                 break;
         }
@@ -118,6 +118,10 @@ public class MenuItemFactory {
                 menuItem = new MenuItem("To-do List...");
                 menuItem.setEnabled(false);
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.TODOS));
+                break;
+            case LOGONUI:
+                menuItem = new MenuItem("Logon Image...");
+                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LOGONUI));
                 break;
             case OS_INFO_MORE:
                 menuItem = new MenuItem("More Details...");

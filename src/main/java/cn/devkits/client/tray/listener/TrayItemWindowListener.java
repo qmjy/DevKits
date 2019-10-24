@@ -8,10 +8,19 @@ import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.CodeFormatFrame;
 import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
+import cn.devkits.client.tray.frame.LogonImageManageFrame;
 import cn.devkits.client.tray.frame.OsInfoDetailFrame;
 import cn.devkits.client.tray.frame.ServerPortsFrame;
 import cn.devkits.client.util.DKSystemUtil;
 
+/**
+ * 
+ * tray item click listener
+ * 
+ * @author shaofeng liu
+ * @version 1.0.0
+ * @time 2019年10月24日 下午9:38:36
+ */
 public class TrayItemWindowListener implements ActionListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrayItemWindowListener.class);
@@ -42,6 +51,9 @@ public class TrayItemWindowListener implements ActionListener {
                 return;
             case OS_INFO_MORE:
                 frame = new OsInfoDetailFrame();
+                break;
+            case LOGONUI:
+                frame = new LogonImageManageFrame();
                 break;
             default:
                 break;
