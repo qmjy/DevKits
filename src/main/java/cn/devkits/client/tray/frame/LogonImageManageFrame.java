@@ -18,14 +18,11 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.text.DefaultEditorKit.DefaultKeyTypedAction;
 import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.sun.jna.platform.win32.Advapi32Util;
-import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
-import com.sun.jna.platform.win32.WinReg.HKEY;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import net.coobird.thumbnailator.Thumbnails;
@@ -126,10 +123,12 @@ class LogonImgManageListener implements ActionListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogonImgManageListener.class);
 
-    private String registryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI\\Background";
-    private String registryKey = "OEMBackground";
-    private String bgImgPath = System.getenv("windir") + "\\System32\\oobe\\info\\Backgrounds";
-    private String bgImgFileName = "backgroundDefault.jpg";
+    private final int WIN_LOGONO_BG_MAX_SIZE = 256 * 1024;
+    private final String registryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI\\Background";
+    private final String registryKey = "OEMBackground";
+    private final String bgImgPath = System.getenv("windir") + "\\System32\\oobe\\info\\Backgrounds";
+    private final String bgImgFileName = "backgroundDefault.jpg";
+
 
     private LogonImageManageFrame frame;
 
@@ -154,7 +153,6 @@ class LogonImgManageListener implements ActionListener {
 
         if (sourceFile.isPresent()) {
             Optional<File> tempFile = doCompress(sourceFile.get());
-
             tempFile.ifPresent((file) -> {
                 File targetFile = new File(bgImgPath + File.separator + bgImgFileName);
                 if (targetFile.exists()) {
@@ -186,21 +184,22 @@ class LogonImgManageListener implements ActionListener {
         Dimension screenSize = DKSystemUtil.getScreenSize();
 
         // windows logon background image size threshold 256KB
-        if (sourceFile.length() > 256 * 1024 * 8) {
+        if (sourceFile.length() > WIN_LOGONO_BG_MAX_SIZE) {
             try {
                 for (int i = 9; i > 0; i--) {
                     Thumbnails.of(sourceFile).size(screenSize.width, screenSize.height).outputQuality(i * 0.1f).toFile(tempFile);
-                    if (tempFile.length() <= 256 * 1024 * 8) {
+                    if (tempFile.length() <= WIN_LOGONO_BG_MAX_SIZE) {
                         return Optional.of(tempFile);
                     }
                 }
-                return Optional.of(tempFile);
+                return Optional.empty();
             } catch (IOException e) {
                 LOGGER.error("Thumbnails compress file error: {}", e.getMessage());
             }
         } else {
             try {
                 FileUtils.copyFile(sourceFile, tempFile);
+                return Optional.of(tempFile);
             } catch (IOException e) {
                 LOGGER.error("Copy file '{}' to '{}' error: ", sourceFile.getAbsolutePath(), tempFile.getAbsolutePath(), e.getMessage());
             }
