@@ -2,6 +2,7 @@ package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -78,17 +81,30 @@ public class LogonImageManageFrame extends DKAbstractFrame {
     }
 
     private Component createButtonPanel(JRootPane jRootPane) {
+        JPanel buttonPane = new JPanel();
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+        buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        buttonPane.add(Box.createHorizontalGlue());
+
         JButton button = new JButton("OK");
         jRootPane.setDefaultButton(button);
 
         button.addActionListener(new LogonImgManageListener(this));
+        buttonPane.add(button);
+        buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        // Center the button in a panel with some space around it.
-        JPanel pane = new JPanel(); // use default FlowLayout
-        pane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        pane.add(button);
+        JButton cancelBtn = new JButton("Cancel");
+        cancelBtn.addActionListener(e -> {
+            JButton btn = (JButton) e.getSource();;
+            Container parent = btn.getParent().getParent().getParent();
+            if (parent instanceof LogonImageManageFrame) {
+                LogonImageManageFrame root = (LogonImageManageFrame) parent;
+                root.dispose();
+            }
+        });
+        buttonPane.add(cancelBtn);
 
-        return pane;
+        return buttonPane;
     }
 
     @Override
