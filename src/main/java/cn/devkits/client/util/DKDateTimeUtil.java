@@ -8,6 +8,7 @@ import java.util.Date;
 public final class DKDateTimeUtil {
 
     public static final String DATE_TIME_PATTERN_DEFAULT = "yyyy-MM-dd mm:HH:ss";
+    public static final String DATE_TIME_PATTERN_FULL = "yyyyMMddmmHHss";
 
     public static void main(String[] args) throws ParseException {
         System.out.println(DKDateTimeUtil.utc2CHNTime("2019-09-08T14:54:13Z"));
@@ -36,9 +37,22 @@ public final class DKDateTimeUtil {
         return null;
     }
 
+    /**
+     * 按照指定格式返回当前时间字符串
+     * 
+     * @param pattern 时间格式
+     * @return 当前时间字符串
+     */
+    public static String currentTimeStrWithPattern(String pattern) {
+        Calendar instance = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(instance.getTime());
+    }
+
 
     /**
      * convert long time to string time with pattern "yyyy-MM-dd mm:HH:ss"
+     * 
      * @param longTime long time
      * @return string time
      */

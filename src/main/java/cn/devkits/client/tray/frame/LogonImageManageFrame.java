@@ -2,28 +2,38 @@ package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.text.DefaultEditorKit.DefaultKeyTypedAction;
+import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 import com.sun.jna.platform.win32.WinReg.HKEY;
+import cn.devkits.client.util.DKDateTimeUtil;
+import cn.devkits.client.util.DKSystemUtil;
+import net.coobird.thumbnailator.Thumbnails;
 
 /**
  * 
- * 系统登录界面背景管理
+ * 系统登录界面背景管理<br>
+ * https://blogs.technet.microsoft.com/deploymentguys/2011/08/22/windows-7-background-customization/
  * 
  * @author shaofeng liu
  * @version 1.0.0
@@ -67,11 +77,12 @@ public class LogonImageManageFrame extends DKAbstractFrame {
 
         jRootPane.add(centerPanel, BorderLayout.CENTER);
 
-        jRootPane.add(createButtonPanel(), BorderLayout.PAGE_END);
+        jRootPane.add(createButtonPanel(jRootPane), BorderLayout.PAGE_END);
     }
 
-    private Component createButtonPanel() {
+    private Component createButtonPanel(JRootPane jRootPane) {
         JButton button = new JButton("OK");
+        jRootPane.setDefaultButton(button);
 
         button.addActionListener(new LogonImgManageListener(this));
 
@@ -117,7 +128,7 @@ class LogonImgManageListener implements ActionListener {
 
     private String registryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI\\Background";
     private String registryKey = "OEMBackground";
-    private String bgImgPath = "C:\\Windows\\System32\\oobe\\info\\Backgrounds\\info\\Backgrounds";
+    private String bgImgPath = System.getenv("windir") + "\\System32\\oobe\\info\\Backgrounds";
     private String bgImgFileName = "backgroundDefault.jpg";
 
     private LogonImageManageFrame frame;
@@ -128,6 +139,76 @@ class LogonImgManageListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        copyFile();
+        updateRegistry();
+        frame.close();
+    }
+
+    private void copyFile() {
+        File targetFolder = new File(bgImgPath + File.separator);
+        if (!targetFolder.exists()) {
+            targetFolder.mkdirs();
+        }
+
+        Optional<File> sourceFile = loadUserChoosedFile();
+
+        if (sourceFile.isPresent()) {
+            Optional<File> tempFile = doCompress(sourceFile.get());
+
+            tempFile.ifPresent((file) -> {
+                File targetFile = new File(bgImgPath + File.separator + bgImgFileName);
+                if (targetFile.exists()) {
+                    boolean delete = targetFile.delete();
+                    if (!delete) {
+                        LOGGER.error("Delete old file failed: {}", targetFile);
+                    }
+                }
+                file.renameTo(targetFile);
+            });
+        } else {
+            JOptionPane.showMessageDialog(frame, "The select file error!", "File Error", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private Optional<File> loadUserChoosedFile() {
+        String text = frame.getImgFilePathTextField().getText();
+        if (text == null || text.trim().isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new File(text));
+    }
+
+    private Optional<File> doCompress(File sourceFile) {
+        String tempTimeStr = DKDateTimeUtil.currentTimeStrWithPattern(DKDateTimeUtil.DATE_TIME_PATTERN_FULL);
+        File tempFile = new File(DKSystemUtil.getSystemTempDir() + tempTimeStr + "." + FileUtils.getExtension(sourceFile.getName()));
+
+        Dimension screenSize = DKSystemUtil.getScreenSize();
+
+        // windows logon background image size threshold 256KB
+        if (sourceFile.length() > 256 * 1024 * 8) {
+            try {
+                for (int i = 9; i > 0; i--) {
+                    Thumbnails.of(sourceFile).size(screenSize.width, screenSize.height).outputQuality(i * 0.1f).toFile(tempFile);
+                    if (tempFile.length() <= 256 * 1024 * 8) {
+                        return Optional.of(tempFile);
+                    }
+                }
+                return Optional.of(tempFile);
+            } catch (IOException e) {
+                LOGGER.error("Thumbnails compress file error: {}", e.getMessage());
+            }
+        } else {
+            try {
+                FileUtils.copyFile(sourceFile, tempFile);
+            } catch (IOException e) {
+                LOGGER.error("Copy file '{}' to '{}' error: ", sourceFile.getAbsolutePath(), tempFile.getAbsolutePath(), e.getMessage());
+            }
+        }
+        return Optional.empty();
+    }
+
+    private void updateRegistry() {
         boolean registryValueExists = Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, registryPath, registryKey);
         if (registryValueExists) {
             int val = Advapi32Util.registryGetIntValue(WinReg.HKEY_LOCAL_MACHINE, registryPath, registryKey);
@@ -141,23 +222,6 @@ class LogonImgManageListener implements ActionListener {
 
             System.out.println(Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, registryPath, registryKey));
         }
-
-        File targetFolder = new File(bgImgPath + File.separator);
-        if (!targetFolder.exists()) {
-            targetFolder.mkdirs();
-        }
-
-        File sourceFile = new File(frame.getImgFilePathTextField().getText());
-        File targetFile = new File(bgImgPath + File.separator + bgImgFileName);
-        if (targetFile.exists()) {
-            boolean delete = targetFile.delete();
-            if (!delete) {
-                LOGGER.error("Delete old file failed: {}", targetFile);
-            }
-        }
-        sourceFile.renameTo(targetFile);
-
-        frame.close();
     }
 }
 

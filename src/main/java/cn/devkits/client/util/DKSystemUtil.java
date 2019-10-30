@@ -1,9 +1,12 @@
 package cn.devkits.client.util;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
@@ -54,7 +57,7 @@ public final class DKSystemUtil {
     }
 
     public static void main(String[] args) {
-        DKSystemUtil.invokeLocalApp("test.exe");
+        System.out.println(DKSystemUtil.getSystemTempDir());
     }
 
 
@@ -66,6 +69,25 @@ public final class DKSystemUtil {
     public static boolean isRunWithJar() {
         String protocol = DKSystemUtil.class.getResource("").getProtocol();
         return "jar".equals(protocol);
+    }
+
+    /**
+     * 获取系统临时文件目录<br>
+     * Windows: "C:\Users\ADMINI~1\AppData\Local\Temp\"
+     * 
+     * @return 临时文件目录
+     */
+    public static String getSystemTempDir() {
+        return System.getProperty("java.io.tmpdir");
+    }
+
+    /**
+     * 获取屏幕宽度和高度
+     * 
+     * @return 屏幕宽度和高度
+     */
+    public static Dimension getScreenSize() {
+        return Toolkit.getDefaultToolkit().getScreenSize();
     }
 
     /**
