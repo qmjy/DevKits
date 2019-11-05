@@ -1,6 +1,7 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -63,17 +64,20 @@ public class LogonImageManageFrame extends DKAbstractFrame {
         jRootPane.setLayout(new BorderLayout());
 
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        centerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(15, 5, 5, 5));
 
         centerPanel.add(new JLabel("Choose a picture:"));
-        this.imgFilePathTextField = new JTextField(40);
+        this.imgFilePathTextField = new JTextField(43);
         imgFilePathTextField.setEditable(false);
         centerPanel.add(imgFilePathTextField);
 
         JButton browseBtn = new JButton("Browse...");
         browseBtn.addActionListener(new BrowserActionListener(this));
         centerPanel.add(browseBtn);
+        JLabel note = new JLabel("Note: The feature is only valid for Windows 7!");
+        note.setForeground(Color.RED);
+        centerPanel.add(note);
 
         jRootPane.add(centerPanel, BorderLayout.CENTER);
 
@@ -86,7 +90,7 @@ public class LogonImageManageFrame extends DKAbstractFrame {
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         buttonPane.add(Box.createHorizontalGlue());
 
-        JButton button = new JButton("OK");
+        JButton button = new JButton("Apply");
         jRootPane.setDefaultButton(button);
 
         button.addActionListener(new LogonImgManageListener(this));

@@ -14,7 +14,8 @@ This kits is mainly developed for software engineers, networker, and office work
 
 - Server Port Detection
 - Large Duplicate Files Detection
-- Screenshot like QQ
+- QQ Screenshot
+- Custom logon background image of Windows 7
 
 
 # Contact
