@@ -1,20 +1,27 @@
 package cn.devkits.client.tray.frame;
 
+import static javax.swing.JFileChooser.SELECTED_FILE_CHANGED_PROPERTY;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -22,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +52,7 @@ public class LogonImageManageFrame extends DKAbstractFrame {
 
     /** serialVersionUID */
     private static final long serialVersionUID = 950625064408939379L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogonImageManageFrame.class);
     // file path text
     private JTextField imgFilePathTextField;
 
@@ -68,7 +77,7 @@ public class LogonImageManageFrame extends DKAbstractFrame {
         centerPanel.setBorder(BorderFactory.createEmptyBorder(15, 5, 5, 5));
 
         centerPanel.add(new JLabel("Choose a picture:"));
-        this.imgFilePathTextField = new JTextField(43);
+        this.imgFilePathTextField = new JTextField(35);
         imgFilePathTextField.setEditable(false);
         centerPanel.add(imgFilePathTextField);
 
@@ -254,6 +263,7 @@ class LogonImgManageListener implements ActionListener {
  * @time 2019年10月24日 下午10:09:27
  */
 class BrowserActionListener implements ActionListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BrowserActionListener.class);
     private LogonImageManageFrame frame;
 
     public BrowserActionListener(LogonImageManageFrame logonImageManageFrame) {
@@ -264,23 +274,108 @@ class BrowserActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JFileChooser jfc = new JFileChooser();
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        jfc.setFileFilter(new FileFilter() {
-            @Override
-            public String getDescription() {
-                return "*.jpg;*.jpeg";
-            }
+        jfc.setAccessory(new FilePreviewer(jfc));
+        createFilter(jfc);// 添加文件支持的类型
 
-            @Override
-            public boolean accept(File f) {
-                return f.getName().toLowerCase().endsWith(".jpg") || f.getName().toLowerCase().endsWith(".jpeg");
-            }
-        });
+        int retval = jfc.showDialog(frame, "OK");
 
-        int showDialog = jfc.showDialog(new JLabel(), "选择");
-        if (JFileChooser.APPROVE_OPTION == showDialog) {
+        if (retval == JFileChooser.APPROVE_OPTION) {
             if (jfc.getSelectedFile() != null) {
                 frame.updateSelectFilePath(jfc.getSelectedFile().getAbsolutePath());
             }
+        } else if (retval == JFileChooser.CANCEL_OPTION) {
+            LOGGER.info("User cancelled operation. No file was chosen.");
+        } else if (retval == JFileChooser.ERROR_OPTION) {
+            JOptionPane.showMessageDialog(frame, "An error occurred. No file was chosen.");
+        } else {
+            JOptionPane.showMessageDialog(frame, "Unknown operation occurred.");
+        }
+    }
+
+    private void createFilter(JFileChooser jfc) {
+        FileFilter jpgFilter = createFileFilter("JPEG Compressed Image Files", true, "jpg");
+        FileFilter gifFilter = createFileFilter("GIF Image Files", true, "gif");
+        FileFilter bothFilter = createFileFilter("JPEG and GIF Image Files", true, "jpg", "gif");
+        jfc.addChoosableFileFilter(bothFilter);
+        jfc.addChoosableFileFilter(jpgFilter);
+        jfc.addChoosableFileFilter(gifFilter);
+    }
+
+    private FileFilter createFileFilter(String description, boolean showExtensionInDescription, String... extensions) {
+        if (showExtensionInDescription) {
+            description = createFileNameFilterDescriptionFromExtensions(description, extensions);
+        }
+        return new FileNameExtensionFilter(description, extensions);
+    }
+
+    private String createFileNameFilterDescriptionFromExtensions(String description, String[] extensions) {
+        String fullDescription = (description == null) ? "(" : description + " (";
+        // build the description from the extension list
+        fullDescription += "." + extensions[0];
+        for (int i = 1; i < extensions.length; i++) {
+            fullDescription += ", .";
+            fullDescription += extensions[i];
+        }
+        fullDescription += ")";
+        return fullDescription;
+    }
+}
+
+
+/**
+ * 
+ * 文件预览
+ * @author shaofeng liu
+ * @version 1.0.0
+ * @time 2019年11月11日 下午11:09:31
+ */
+class FilePreviewer extends JComponent implements PropertyChangeListener {
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = 5051395170955469946L;
+    ImageIcon thumbnail = null;
+
+    public FilePreviewer(JFileChooser fc) {
+        setPreferredSize(new Dimension(100, 50));
+        fc.addPropertyChangeListener(this);
+    }
+
+    public void loadImage(File f) {
+        if (f == null) {
+            thumbnail = null;
+        } else {
+            ImageIcon tmpIcon = new ImageIcon(f.getPath());
+            if (tmpIcon.getIconWidth() > 90) {
+                thumbnail = new ImageIcon(tmpIcon.getImage().getScaledInstance(90, -1, Image.SCALE_DEFAULT));
+            } else {
+                thumbnail = tmpIcon;
+            }
+        }
+    }
+
+    public void propertyChange(PropertyChangeEvent e) {
+        String prop = e.getPropertyName();
+        if (SELECTED_FILE_CHANGED_PROPERTY.equals(prop)) {
+            if (isShowing()) {
+                loadImage((File) e.getNewValue());
+                repaint();
+            }
+        }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        if (thumbnail != null) {
+            int x = getWidth() / 2 - thumbnail.getIconWidth() / 2;
+            int y = getHeight() / 2 - thumbnail.getIconHeight() / 2;
+            if (y < 0) {
+                y = 0;
+            }
+
+            if (x < 5) {
+                x = 5;
+            }
+            thumbnail.paintIcon(this, g, x, y);
         }
     }
 }

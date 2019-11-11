@@ -5,7 +5,9 @@ import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
+import cn.devkits.client.task.ClipboardTask;
 import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
@@ -47,8 +50,16 @@ public class App {
                 initLookAndFeel();
                 initSystemHotKey();
                 initSystemTrayIcon();
+                registryAsynTask();
             }
         });
+    }
+
+    private static void registryAsynTask() {
+        Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Timer timer = new Timer();
+        long time = 1000;// 一秒钟执行一次
+        timer.scheduleAtFixedRate(new ClipboardTask(sysClip), time, time);
     }
 
     private static void initSystemHotKey() {
@@ -100,8 +111,11 @@ public class App {
      * 2.https://www.cnblogs.com/clarino/p/8668160.html
      */
     private static void initLookAndFeel() {
+
+        // UIManager.getSystemLookAndFeelClassName() get system defualt;
+        String lookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(lookAndFeel);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
             LOGGER.error("Init Look And Feel error:" + e1.getMessage());
         } catch (UnsupportedLookAndFeelException e) {
