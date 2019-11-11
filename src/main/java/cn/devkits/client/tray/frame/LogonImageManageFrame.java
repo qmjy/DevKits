@@ -167,12 +167,13 @@ class LogonImgManageListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        copyFile();
-        updateRegistry();
-        frame.close();
+        if (copyFile()) {
+            updateRegistry();
+            frame.close();
+        }
     }
 
-    private void copyFile() {
+    private boolean copyFile() {
         File targetFolder = new File(bgImgPath + File.separator);
         if (!targetFolder.exists()) {
             targetFolder.mkdirs();
@@ -182,18 +183,17 @@ class LogonImgManageListener implements ActionListener {
 
         if (sourceFile.isPresent()) {
             Optional<File> tempFile = doCompress(sourceFile.get());
-            tempFile.ifPresent((file) -> {
-                File targetFile = new File(bgImgPath + File.separator + bgImgFileName);
-                if (targetFile.exists()) {
-                    boolean delete = targetFile.delete();
-                    if (!delete) {
-                        LOGGER.error("Delete old file failed: {}", targetFile);
-                    }
+            File file = tempFile.get();
+            File targetFile = new File(bgImgPath + File.separator + bgImgFileName);
+            if (targetFile.exists()) {
+                if (!targetFile.delete()) {
+                    LOGGER.error("Delete old file failed: {}", targetFile);
                 }
-                file.renameTo(targetFile);
-            });
+            }
+            return file.renameTo(targetFile);
         } else {
-            JOptionPane.showMessageDialog(frame, "The select file error!", "File Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Select file error, you have to select one file at least!", "File Error", JOptionPane.WARNING_MESSAGE);
+            return false;
         }
     }
 
@@ -293,9 +293,9 @@ class BrowserActionListener implements ActionListener {
     }
 
     private void createFilter(JFileChooser jfc) {
-        FileFilter jpgFilter = createFileFilter("JPEG Compressed Image Files", true, "jpg");
-        FileFilter gifFilter = createFileFilter("GIF Image Files", true, "gif");
-        FileFilter bothFilter = createFileFilter("JPEG and GIF Image Files", true, "jpg", "gif");
+        FileFilter jpgFilter = createFileFilter("JPEG Compge Files", true, "gif");
+        FileFilter bothFilter = createFileFilter("JPEressed Image Files", true, "jpg");
+        FileFilter gifFilter = createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif");
         jfc.addChoosableFileFilter(bothFilter);
         jfc.addChoosableFileFilter(jpgFilter);
         jfc.addChoosableFileFilter(gifFilter);
