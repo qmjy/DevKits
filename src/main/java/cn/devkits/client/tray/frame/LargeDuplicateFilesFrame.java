@@ -5,6 +5,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -118,22 +119,24 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private JPanel initNorthPane() {
         JPanel northRootPane = new JPanel();
-        northRootPane.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
+        northRootPane.setLayout(new GridLayout(1, 9));
 
-        northRootPane.add(new JLabel("File Type:"));
+        northRootPane.add(new JLabel("File Type Filter: ", JLabel.RIGHT));
         fileTypeComboBox = new JComboBox<String>(FILE_TYPE_UNITS);
         fileTypeComboBox.setLightWeightPopupEnabled(false);
         northRootPane.add(fileTypeComboBox);
 
-        northRootPane.add(new JLabel("File Size:"));
+        northRootPane.add(new JLabel("Minimum Size: ", JLabel.RIGHT));
         minFileSizeInput = new JTextField(6);
         minFileSizeInput.setText("0");
         northRootPane.add(minFileSizeInput);
 
-        northRootPane.add(new JLabel("-"));
+        northRootPane.add(new JLabel("Maximum Size: ", JLabel.RIGHT));
 
         maxFileSizeInput = new JTextField(6);
         northRootPane.add(maxFileSizeInput);
+        
+        northRootPane.add(new JLabel("File Size Unit: ", JLabel.RIGHT));
 
         fileSizeUnitComboBox = new JComboBox<String>(FILE_UNITS);
         fileSizeUnitComboBox.setLightWeightPopupEnabled(false);
