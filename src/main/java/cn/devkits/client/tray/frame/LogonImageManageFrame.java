@@ -77,7 +77,7 @@ public class LogonImageManageFrame extends DKAbstractFrame {
         centerPanel.setBorder(BorderFactory.createEmptyBorder(15, 5, 5, 5));
 
         centerPanel.add(new JLabel("Choose a picture:"));
-        this.imgFilePathTextField = new JTextField(35);
+        this.imgFilePathTextField = new JTextField(38);
         imgFilePathTextField.setEditable(false);
         centerPanel.add(imgFilePathTextField);
 

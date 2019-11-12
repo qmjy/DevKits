@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,7 +22,9 @@ import java.util.concurrent.Executors;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -35,6 +36,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +64,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 100;
 
     private JTree tree = null;
+    private JPopupMenu jtreeMenu = null;
     private JTable table = null;
     private JLabel statusLine = null;
     private JComboBox<String> fileTypeComboBox = null;
@@ -95,6 +98,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         treeNode = new DefaultMutableTreeNode("Duplicate Files");
         treeModel = new DefaultTreeModel(treeNode);
         tree = new JTree(treeModel);
+        initPopupMenu();
 
         // ToolTipManager.sharedInstance().registerComponent(tree);
         // TreeCellRenderer renderer = new LargeDuplicateFilesTreeCellRenderer();
@@ -117,6 +121,14 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         initDataModel();
     }
 
+    private void initPopupMenu() {
+        this.jtreeMenu = new JPopupMenu();
+
+        jtreeMenu.add(new JMenuItem("Open"));
+        jtreeMenu.addSeparator();
+        jtreeMenu.add(new JMenuItem("Delete"));
+    }
+
     private JPanel initNorthPane() {
         JPanel northRootPane = new JPanel();
         northRootPane.setLayout(new GridLayout(1, 9));
@@ -135,7 +147,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
         maxFileSizeInput = new JTextField(6);
         northRootPane.add(maxFileSizeInput);
-        
+
         northRootPane.add(new JLabel("File Size Unit: ", JLabel.RIGHT));
 
         fileSizeUnitComboBox = new JComboBox<String>(FILE_UNITS);
@@ -196,18 +208,47 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JTree tree = (JTree) e.getSource();
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-                if (e.getClickCount() == 2 && node.getLevel() == 2) {
-                    File file = new File(node.getUserObject().toString());
-                    try {
-                        Desktop.getDesktop().open(file.getParentFile());
-                    } catch (IOException e1) {
-                        LOGGER.error("Open file failed: " + file.getParentFile().getAbsolutePath());
+                if (e.isPopupTrigger()) {
+                    showPopupMenu(e);
+                    return;
+                }
+                if (e.getButton() == MouseEvent.BUTTON1) {// 鼠标左键
+                    JTree tree = (JTree) e.getSource();
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                    if (e.getClickCount() == 2 && node.getLevel() == 2) {
+                        File file = new File(node.getUserObject().toString());
+                        try {
+                            Desktop.getDesktop().open(file.getParentFile());
+                        } catch (IOException e1) {
+                            LOGGER.error("Open file failed: " + file.getParentFile().getAbsolutePath());
+                        }
                     }
                 }
             }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showPopupMenu(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showPopupMenu(e);
+                }
+            }
+
+            private void showPopupMenu(MouseEvent e) {
+                TreePath tp = tree.getClosestPathForLocation(e.getX(), e.getY());
+                if (tp != null) {
+                    tree.setSelectionPath(tp);
+                }
+                jtreeMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
         });
+
     }
 
     public void initDataModel() {
@@ -299,9 +340,6 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     public JButton getStartCancelBtn() {
         return startCancelBtn;
     }
-
-
-
 }
 
 
@@ -383,5 +421,4 @@ class StartEndListener implements ActionListener {
                 return 1L;
         }
     }
-
 }

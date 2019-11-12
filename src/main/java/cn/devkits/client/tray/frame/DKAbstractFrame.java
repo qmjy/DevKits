@@ -10,6 +10,9 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
     private static final int DEFAULT_LOAD_FACTOR = 1;
 
+    protected int currentWidth = 0;
+    protected int currentHeight = 0;
+
     protected DKAbstractFrame() {
 
     }
@@ -23,7 +26,6 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
         this(title, DEFAULT_LOAD_FACTOR);
 
         initUI(getRootPane());
-        initListener();
     }
 
     /**
@@ -48,14 +50,24 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        float newWidth = WINDOW_SIZE_WIDTH;
-        float newHeight = WINDOW_SIZE_HEIGHT;
+        currentWidth = WINDOW_SIZE_WIDTH;
+        currentHeight = WINDOW_SIZE_HEIGHT;
         if (widthLoadFactor > 0 && heightLoadFactor > 0) {
-            newWidth *= widthLoadFactor;
-            newHeight *= heightLoadFactor;
+
+            if (currentWidth * widthLoadFactor > screenSize.getWidth()) {
+                currentWidth = (int) screenSize.getWidth();
+            } else {
+                currentWidth *= widthLoadFactor;
+            }
+
+            if (currentHeight * heightLoadFactor > screenSize.getHeight()) {
+                currentHeight = (int) screenSize.getHeight();
+            } else {
+                currentHeight *= heightLoadFactor;
+            }
         }
 
-        this.setBounds((int) ((screenSize.width - newWidth) / 2), (int) ((screenSize.height - newHeight) / 2), (int) newWidth, (int) newHeight);
+        this.setBounds((int) ((screenSize.width - currentWidth) / 2), (int) ((screenSize.height - currentHeight) / 2), (int) currentWidth, (int) currentHeight);
     }
 
     /**

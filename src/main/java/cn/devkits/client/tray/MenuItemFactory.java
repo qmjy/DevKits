@@ -123,6 +123,10 @@ public class MenuItemFactory {
                 menuItem = new MenuItem("Logon Image...");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LOGONUI));
                 break;
+            case FILEEXPLORER:
+                menuItem = new MenuItem("File Explorer...");
+                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILEEXPLORER));
+                break;
             case OS_INFO_MORE:
                 menuItem = new MenuItem("More Details...");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.OS_INFO_MORE));
