@@ -6,12 +6,12 @@ import javax.swing.JButton;
 import javax.swing.JRootPane;
 import javax.swing.JSplitPane;
 
-public class FileExplorerFrame extends DKAbstractFrame {
+public class FileExplorersFrame extends DKAbstractFrame {
 
     /** serialVersionUID */
     private static final long serialVersionUID = 3555313857984383501L;
 
-    public FileExplorerFrame() {
+    public FileExplorersFrame() {
         super("File Explorer", 1.2f);
 
         initUI(getRootPane());
@@ -39,7 +39,7 @@ public class FileExplorerFrame extends DKAbstractFrame {
     }
 
     private Component getDirs() {
-        return new JButton("tset");
+        return new FileExplorerPanel();
     }
 
     @Override

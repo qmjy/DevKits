@@ -16,6 +16,7 @@ This kits is mainly developed for software engineers, networker, and office work
 - Large Duplicate Files Detection
 - QQ Screenshot
 - Custom logon background image of Windows 7
+- Multi File Explorer
 
 
 # Contact

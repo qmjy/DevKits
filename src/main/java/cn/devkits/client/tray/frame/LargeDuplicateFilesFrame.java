@@ -1,7 +1,6 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
@@ -12,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -42,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.frame.asyn.SearchFileThread;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
+import cn.devkits.client.util.DKFileUtil;
 
 /**
  * 重复大文件检查<br>
@@ -217,11 +216,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
                     if (e.getClickCount() == 2 && node.getLevel() == 2) {
                         File file = new File(node.getUserObject().toString());
-                        try {
-                            Desktop.getDesktop().open(file.getParentFile());
-                        } catch (IOException e1) {
-                            LOGGER.error("Open file failed: " + file.getParentFile().getAbsolutePath());
-                        }
+                        DKFileUtil.openFile(file.getParentFile());
                     }
                 }
             }

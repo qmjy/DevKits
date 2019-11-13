@@ -124,7 +124,7 @@ public class MenuItemFactory {
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LOGONUI));
                 break;
             case FILEEXPLORER:
-                menuItem = new MenuItem("File Explorer...");
+                menuItem = new MenuItem("File Explorers...");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILEEXPLORER));
                 break;
             case OS_INFO_MORE:

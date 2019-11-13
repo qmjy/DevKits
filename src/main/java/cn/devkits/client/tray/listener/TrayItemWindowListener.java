@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.CodeFormatFrame;
-import cn.devkits.client.tray.frame.FileExplorerFrame;
+import cn.devkits.client.tray.frame.FileExplorersFrame;
 import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
 import cn.devkits.client.tray.frame.LogonImageManageFrame;
 import cn.devkits.client.tray.frame.OsInfoDetailFrame;
@@ -57,7 +57,7 @@ public class TrayItemWindowListener implements ActionListener {
                 frame = new LogonImageManageFrame();
                 break;
             case FILEEXPLORER:
-                frame = new FileExplorerFrame();
+                frame = new FileExplorersFrame();
                 break;
             default:
                 break;
