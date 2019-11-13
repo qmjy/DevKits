@@ -34,7 +34,10 @@ public class FileTableModel extends AbstractTableModel {
     }
 
     public int getRowCount() {
-        return filenames.length;
+        if (filenames != null) {
+            return filenames.length;
+        }
+        return 0;
     }
 
     public String getColumnName(int col) {
