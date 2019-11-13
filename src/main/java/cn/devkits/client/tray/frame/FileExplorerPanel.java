@@ -1,11 +1,14 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Optional;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -45,6 +48,30 @@ public class FileExplorerPanel extends JPanel {
 
 
     private void initListener() {
+        currentPathTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // 判断按下的键是否是回车键
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String text = currentPathTextField.getText();
+                    if (text.trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(currentPathTextField, "The input file path is empty!");
+                    }
+
+                    File file = new File(text.trim());
+                    if (!file.exists()) {
+                        JOptionPane.showMessageDialog(currentPathTextField, "The input file path is invalid!");
+                    }
+
+                    if (file.isDirectory()) {
+                        updateTable(file, true);
+                    } else {
+                        DKFileUtil.openFile(file);
+                    }
+                }
+            }
+        });
+
         filesTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -61,9 +88,12 @@ public class FileExplorerPanel extends JPanel {
         });
     }
 
-    private void updateTable(File newFileDir) {
+    private void updateTable(File newFileDir, boolean isUserInput) {
         defaultPath = newFileDir.getAbsolutePath();
-        currentPathTextField.setText(defaultPath);
+
+        if (!isUserInput) {
+            currentPathTextField.setText(defaultPath);
+        }
 
         model.updateRoot(new File(defaultPath));
         filesTable.validate();
@@ -93,7 +123,7 @@ public class FileExplorerPanel extends JPanel {
         if (selectFile.isPresent()) {
             File file = selectFile.get();
             if (file.isDirectory()) {
-                updateTable(file);
+                updateTable(file, false);
             } else {
                 DKFileUtil.openFile(file);
             }
