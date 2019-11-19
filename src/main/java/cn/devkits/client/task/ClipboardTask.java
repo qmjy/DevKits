@@ -6,8 +6,13 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.util.List;
 import java.util.TimerTask;
+import org.springframework.beans.factory.annotation.Autowired;
+import cn.devkits.client.service.ClipboardService;
 
 public class ClipboardTask extends TimerTask {
+
+    @Autowired
+    private ClipboardService service;
 
     private Clipboard sysClip;
 
@@ -39,6 +44,7 @@ public class ClipboardTask extends TimerTask {
                 } else if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                     String ret = (String) contents.getTransferData(DataFlavor.stringFlavor);
                     System.out.println(ret);
+                    service.insert();
                 } else {
 
                 }
