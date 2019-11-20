@@ -1,7 +1,8 @@
 package cn.devkits.client;
 
 import javax.swing.SwingUtilities;
-import cn.devkits.client.tray.frame.asyn.AppStarter;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import cn.devkits.client.asyn.AppStarter;
 
 
 /**
@@ -13,7 +14,11 @@ import cn.devkits.client.tray.frame.asyn.AppStarter;
  * @datetime 2019年9月5日 下午10:51:07
  */
 public class App {
+    
+    @SuppressWarnings("resource")
     public static void main(String[] args) {
+        new AnnotationConfigApplicationContext(AppSpringContext.class);
+
         SwingUtilities.invokeLater(new AppStarter());
     }
 }

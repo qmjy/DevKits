@@ -3,6 +3,7 @@ package cn.devkits.client;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,9 +20,22 @@ import com.alibaba.druid.pool.DruidDataSource;
  * @time 2019年11月19日 下午9:50:59
  */
 @Configuration
-@ComponentScan(basePackages = "cn.devkits.client")
 @PropertySource("classpath:application.properties")
+@ComponentScan({"cn.devkits.client", "cn.devkits.client.asyn"})
+@MapperScan("cn.devkits.client.dao")
 public class AppSpringContext {
+
+    @Value("${jdbcDriver}")
+    private String driver;
+
+    @Value("${jdbcUrl}")
+    private String url;
+
+    @Value("${jdbcUsername}")
+    private String user;
+
+    @Value("${jdbcPassword}")
+    private String password;
 
     private DruidDataSource ds;
 
@@ -35,7 +49,22 @@ public class AppSpringContext {
      */
     @Bean("dataSource")
     @Lazy(false)
-    public DataSource dataSource(@Value("${jdbcDriver}") String driver, @Value("${jdbcUrl}") String url, @Value("${jdbcUsername}") String user, @Value("${jdbcPassword}") String password) {
+    public DataSource dataSource() {
+        if (ds == null) {
+            return createDataSource();
+        } else {
+            return ds;
+        }
+    }
+
+    @Bean
+    public SqlSessionFactory sqlSessionFactory() throws Exception {
+        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+        factoryBean.setDataSource(dataSource());
+        return factoryBean.getObject();
+    }
+
+    private DataSource createDataSource() {
         this.ds = new DruidDataSource();
         ds.setDriverClassName(driver);
         ds.setUrl(url);
@@ -57,13 +86,6 @@ public class AppSpringContext {
         ds.setMaxOpenPreparedStatements(20);
         ds.setAsyncInit(true);
         return ds;
-    }
-
-    @Bean
-    public SqlSessionFactory sqlSessionFactory() throws Exception {
-        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-        factoryBean.setDataSource(ds);
-        return factoryBean.getObject();
     }
 
 }

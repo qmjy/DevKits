@@ -1,27 +1,39 @@
-package cn.devkits.client.task;
+package cn.devkits.client.asyn;
 
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.util.List;
-import java.util.TimerTask;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import cn.devkits.client.model.ClipboardModel;
 import cn.devkits.client.service.ClipboardService;
+import cn.devkits.client.util.DKDateTimeUtil;
 
-public class ClipboardTask extends TimerTask {
-
+/**
+ * 
+ * 系统异步定时任务
+ * @author shaofeng liu
+ * @version 1.0.0
+ * @time 2019年11月20日 下午9:55:38
+ */
+@Component
+@EnableScheduling
+public class DKAsyncService {
     @Autowired
     private ClipboardService service;
 
-    private Clipboard sysClip;
-
-    public ClipboardTask(Clipboard sysClip) {
-        this.sysClip = sysClip;
-    }
-
-    @Override
-    public void run() {
+    /**
+     * 每一秒执行一次<br>
+     * https://blog.csdn.net/qq_25652213/article/details/93635540
+     */
+    @Scheduled(cron = "0/1 * *  * * ? ")
+    public void hello() {
+        Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
         Transferable contents = sysClip.getContents(null);
         if (contents != null) {
             try {
@@ -39,12 +51,11 @@ public class ClipboardTask extends TimerTask {
                     Object transferData = contents.getTransferData(DataFlavor.javaFileListFlavor);
                     if (transferData instanceof List<?>) {
                         List<String> fileLists = (List<String>) transferData;
-                        System.out.println(fileLists);
+                        service.insert(new ClipboardModel(fileLists.toString(), ClipboardModel.CLIPBOARD_CONTENT_TYPE_FILES, DKDateTimeUtil.currentTimeStr()));
                     }
                 } else if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                     String ret = (String) contents.getTransferData(DataFlavor.stringFlavor);
-                    System.out.println(ret);
-                    service.insert();
+                    service.insert(new ClipboardModel(ret, ClipboardModel.CLIPBOARD_CONTENT_TYPE_STR, DKDateTimeUtil.currentTimeStr()));
                 } else {
 
                 }
@@ -52,5 +63,6 @@ public class ClipboardTask extends TimerTask {
                 e.printStackTrace();
             }
         }
+
     }
 }

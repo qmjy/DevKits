@@ -49,6 +49,16 @@ public final class DKDateTimeUtil {
         return simpleDateFormat.format(instance.getTime());
     }
 
+    /**
+     * 当前时间，默认格式：yyyyMMddmmHHss
+     * @return “yyyyMMddmmHHss”格式的当前时间
+     */
+    public static String currentTimeStr() {
+        Calendar instance = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_TIME_PATTERN_FULL);
+        return simpleDateFormat.format(instance.getTime());
+    }
+
 
     /**
      * convert long time to string time with pattern "yyyy-MM-dd mm:HH:ss"

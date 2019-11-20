@@ -53,6 +53,7 @@
 			<outputDirectory>bin</outputDirectory>
 			<includes>
 				<include>QQSnapShot.exe</include>
+				<include>devkits.db</include>
 				<include>startup.*</include>
 			</includes>
 		</fileSet>

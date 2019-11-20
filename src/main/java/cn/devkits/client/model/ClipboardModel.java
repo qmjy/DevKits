@@ -2,9 +2,18 @@ package cn.devkits.client.model;
 
 public class ClipboardModel {
 
+    public static final int CLIPBOARD_CONTENT_TYPE_STR = 1;
+    public static final int CLIPBOARD_CONTENT_TYPE_FILES = 2;
+
     private String content;
-    int type;
+    private int type;
     private String createTime;
+
+    public ClipboardModel(String ret, int i, String string) {
+        this.content = ret;
+        this.type = i;
+        this.createTime = string;
+    }
 
     public String getContent() {
         return content;

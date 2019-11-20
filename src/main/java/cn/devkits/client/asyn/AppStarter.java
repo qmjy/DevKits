@@ -1,13 +1,12 @@
-package cn.devkits.client.tray.frame.asyn;
+package cn.devkits.client.asyn;
 
 import java.awt.AWTException;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
-import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.awt.datatransfer.Clipboard;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -20,13 +19,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import cn.devkits.client.App;
-import cn.devkits.client.AppSpringContext;
 import cn.devkits.client.DKConstant;
-import cn.devkits.client.task.ClipboardTask;
 import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
@@ -38,24 +34,9 @@ public class AppStarter implements Runnable {
 
     @Override
     public void run() {
-        initSpringContext();
-
         initLookAndFeel();
         initSystemHotKey();
         initSystemTrayIcon();
-        registryAsynTask();
-    }
-
-    private static void initSpringContext() {
-        AnnotationConfigApplicationContext springCtx = new AnnotationConfigApplicationContext(AppSpringContext.class);
-        springCtx.getBean("");
-    }
-
-    private static void registryAsynTask() {
-        Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
-        Timer timer = new Timer();
-        long time = 1000;// 一秒钟执行一次
-        timer.scheduleAtFixedRate(new ClipboardTask(sysClip), time, time);
     }
 
     private static void initSystemHotKey() {
@@ -90,6 +71,7 @@ public class AppStarter implements Runnable {
                 initNotice(trayIcon);
 
                 SystemTray.getSystemTray().add(trayIcon);
+                trayIcon.displayMessage("感谢您的使用", "简单高效是我的责任...", MessageType.INFO);
                 LOGGER.info("初始化托盘功能成功！");
             } catch (AWTException e) {
                 LOGGER.error("初始化托盘功能失败！");
