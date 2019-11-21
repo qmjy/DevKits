@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Enumeration;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,10 +13,17 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelListener;
+import javax.swing.event.TreeModelListener;
 import javax.swing.table.TableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import cn.devkits.client.util.DKSystemUIUtil;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -33,6 +41,7 @@ import oshi.hardware.Sensors;
 import oshi.hardware.SoundCard;
 import oshi.hardware.UsbDevice;
 import oshi.hardware.VirtualMemory;
+import oshi.hardware.platform.windows.WindowsUsbDevice;
 import oshi.software.os.NetworkParams;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
@@ -93,8 +102,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         for (NetworkIF net : networkIFs) {
             sb.append("<br> ").append(net.toString());
         }
-        sb.append(sb.toString());
-
 
         NetworkParams networkParams = os.getNetworkParams();
 
@@ -221,15 +228,14 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     }
 
     private Component initUsb(HardwareAbstractionLayer hal) {
+
         UsbDevice[] usbDevices = hal.getUsbDevices(true);
 
-        StringBuilder sb = new StringBuilder("<html><body>USB Devices: <br>");
+        UsbTreeNode treeNode = new UsbTreeNode(usbDevices);
+        UsbTreeModel treeModel = new UsbTreeModel(treeNode);
+        JTree jTree = new JTree(treeModel);
 
-        for (UsbDevice usbDevice : usbDevices) {
-            sb.append(String.valueOf(usbDevice)).append("<br>");
-        }
-        sb.append("</body></html>");
-        return new JLabel(sb.toString());
+        return jTree;
     }
 
     private Component initSoundCards(HardwareAbstractionLayer hal) {
@@ -541,4 +547,111 @@ class DiskTableModel implements TableModel {
         // TODO Auto-generated method stub
 
     }
+}
+
+
+class UsbTreeNode implements TreeNode {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3155916586226628151L;
+    private UsbDevice[] usbDevices;
+
+
+    public UsbTreeNode(UsbDevice[] usbDevices) {
+        this.usbDevices = usbDevices;
+    }
+
+
+    @Override
+    public TreeNode getChildAt(int childIndex) {
+        if (this instanceof UsbTreeNode) {
+            UsbTreeNode treeNodes = (UsbTreeNode) this;
+            return new DefaultMutableTreeNode(treeNodes.getUsbDevices()[childIndex]);
+        }
+        return null;
+    }
+
+
+    @Override
+    public int getChildCount() {
+        if (this instanceof UsbTreeNode) {
+            UsbTreeNode treeNodes = (UsbTreeNode) this;
+            return treeNodes.getUsbDevices().length;
+        }
+        return 0;
+    }
+
+
+    @Override
+    public TreeNode getParent() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    public int getIndex(TreeNode node) {
+        if (node instanceof DefaultMutableTreeNode) {
+            DefaultMutableTreeNode treeNodel = (DefaultMutableTreeNode) node;
+            if (treeNodel.getUserObject() instanceof WindowsUsbDevice) {
+                WindowsUsbDevice usbDev = (WindowsUsbDevice) treeNodel.getUserObject();
+                for (int i = 0; i < usbDevices.length; i++) {
+                    if (usbDevices[i] == usbDev) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+
+    @Override
+    public boolean getAllowsChildren() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    @Override
+    public boolean isLeaf() {
+        if (this instanceof UsbTreeNode) {
+            return false;
+        }
+        return false;
+    }
+
+
+    @Override
+    public Enumeration children() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public UsbDevice[] getUsbDevices() {
+        return usbDevices;
+    }
+}
+
+
+class UsbTreeModel extends DefaultTreeModel {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3912353585028071999L;
+
+    public UsbTreeModel(TreeNode root) {
+        super(root);
+    }
+
+    @Override
+    public Object getRoot() {
+        return "Root";
+    }
+
+
+
 }

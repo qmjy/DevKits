@@ -70,20 +70,28 @@ public class AppSpringContext {
         ds.setUrl(url);
         ds.setUsername(user);
         ds.setPassword(password);
+        
+        ds.setDefaultAutoCommit(true);//自动提交事务
 
         ds.setMaxActive(20);
         ds.setInitialSize(1);
         ds.setMaxWait(60000);
         ds.setMinIdle(1);
-        ds.setTimeBetweenEvictionRunsMillis(60000);
-        ds.setMinEvictableIdleTimeMillis(30000);
+        ds.setTimeBetweenEvictionRunsMillis(60000);//每60秒运行一次空闲连接回收器
+        ds.setMinEvictableIdleTimeMillis(30000);//池中的连接空闲30秒钟后被回收,默认值就是30分钟。
+
+        ds.setPoolPreparedStatements(false);
+        ds.setMaxPoolPreparedStatementPerConnectionSize(20);
 
         ds.setTestWhileIdle(true);
-        ds.setTestOnBorrow(false);
+        ds.setTestOnBorrow(false);//借出连接时不要测试，否则很影响性能
         ds.setTestOnReturn(false);
+        
+        ds.setTestWhileIdle(true);//指明连接是否被空闲连接回收器(如果有)进行检验.如果检测失败,则连接将被从池中去除.
+        ds.setValidationQuery("SELECT 1");//验证连接是否可用，使用的SQL语句
 
         ds.setPoolPreparedStatements(true);
-        ds.setMaxOpenPreparedStatements(20);
+        ds.setMaxOpenPreparedStatements(0);
         ds.setAsyncInit(true);
         return ds;
     }

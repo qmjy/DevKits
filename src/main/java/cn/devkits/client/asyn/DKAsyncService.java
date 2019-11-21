@@ -6,10 +6,14 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.util.List;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import cn.devkits.client.App;
 import cn.devkits.client.model.ClipboardModel;
 import cn.devkits.client.service.ClipboardService;
 import cn.devkits.client.util.DKDateTimeUtil;
@@ -24,18 +28,21 @@ import cn.devkits.client.util.DKDateTimeUtil;
 @Component
 @EnableScheduling
 public class DKAsyncService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DKAsyncService.class);
     @Autowired
     private ClipboardService service;
+
+    private Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
 
     /**
      * 每一秒执行一次<br>
      * https://blog.csdn.net/qq_25652213/article/details/93635540
      */
-    @Scheduled(cron = "0/1 * *  * * ? ")
+    @Scheduled(cron = "0/1 * * * * ? ")
     public void hello() {
-        Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
-        Transferable contents = sysClip.getContents(null);
-        if (contents != null) {
+        Optional<Transferable> transferable = getTransferable();
+        if (transferable.isPresent()) {
+            Transferable contents = transferable.get();
             try {
                 if (contents.isDataFlavorSupported(DataFlavor.allHtmlFlavor)) {
                     String ret = (String) contents.getTransferData(DataFlavor.allHtmlFlavor);
@@ -60,9 +67,20 @@ public class DKAsyncService {
 
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
         }
 
+    }
+
+    private Optional<Transferable> getTransferable() {
+        Transferable contents = null;
+        try {
+            contents = sysClip.getContents(null);
+            return Optional.of(contents);
+        } catch (IllegalStateException e) {
+            LOGGER.error("Get clipboard data failed: {}", e.getMessage());
+        }
+        return Optional.empty();
     }
 }
