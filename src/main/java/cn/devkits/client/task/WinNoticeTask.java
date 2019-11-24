@@ -4,7 +4,7 @@ import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.util.Calendar;
 import java.util.TimerTask;
-import cn.devkits.client.util.LunarUtil;
+import cn.devkits.client.util.calendar.Lunar;
 
 public class WinNoticeTask extends TimerTask {
     private TrayIcon trayIcon;
@@ -16,13 +16,8 @@ public class WinNoticeTask extends TimerTask {
     }
 
     private String getLunar() {
-        Calendar calendar = Calendar.getInstance();
-        int[] solarToLunar = LunarUtil.solarToLunar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH + 1), calendar.get(Calendar.DATE));
-
-        // Lunar lunar = new Lunar(Calendar.getInstance());
-        StringBuilder sb = new StringBuilder("农历");
-        sb.append(solarToLunar[0]).append("年").append(solarToLunar[1]).append("月").append(solarToLunar[2]).append("日");
-        return sb.toString();
+        Lunar lunar = new Lunar(Calendar.getInstance());
+        return lunar.toString();
     }
 
     @Override

@@ -7,7 +7,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  * for the specific language governing permissions and limitations under the License.
  */
-package cn.devkits.client.util;
+package cn.devkits.client.util.calendar;
 
 /**
  * 农历计算方法
@@ -74,7 +74,6 @@ public final class LunarUtil {
      * @param day 公历日
      * @return [0]农历年 [1]农历月 [2]农历日 [3]是否闰月 0 false : 1 true
      */
-    @SuppressWarnings("all")
     public static int[] solarToLunar(int year, int month, int day) {
         int[] lunarInt = new int[4];
         int index = year - SOLAR[0];
@@ -131,7 +130,6 @@ public final class LunarUtil {
      * @param isLeap 是否是闰年 0 false : 1 true
      * @return [0]新历年 [1]新历月 [2]新历日 [3]是否闰月 0 false : 1 true
      */
-    @SuppressWarnings("unused")
     public static int[] lunarToSolar(int lunarYear, int lunarMonth, int lunarDay, boolean isLeap) {
         int days = LUNAR_MONTH_DAYS[lunarYear - LUNAR_MONTH_DAYS[0]];
         int leap = getBitInt(days, 4, 13);

@@ -233,7 +233,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
         UsbTreeNode treeNode = new UsbTreeNode(usbDevices);
         UsbTreeModel treeModel = new UsbTreeModel(treeNode);
-        JTree jTree = new JTree(treeModel);
+        JTree jTree = new JTree();
 
         return jTree;
     }
