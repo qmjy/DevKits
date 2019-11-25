@@ -1,5 +1,6 @@
 package cn.devkits.client.service;
 
+import java.util.List;
 import cn.devkits.client.model.ClipboardModel;
 
 /**
@@ -11,4 +12,6 @@ import cn.devkits.client.model.ClipboardModel;
  */
 public interface ClipboardService {
     int insert(ClipboardModel model);
+
+    List<ClipboardModel> findByPaging(int page, int pageSize);
 }

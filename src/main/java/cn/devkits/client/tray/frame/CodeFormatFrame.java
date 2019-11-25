@@ -16,7 +16,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.devkits.client.tray.frame.assist.LineNumberHeaderView;
+import cn.devkits.client.tray.frame.assist.TextLineNumber;
 import cn.devkits.client.util.DKStringUtil;
 
 public class CodeFormatFrame extends DKAbstractFrame {
@@ -81,21 +81,20 @@ public class CodeFormatFrame extends DKAbstractFrame {
     private void addTabContent(JTabbedPane tabbedPane, String title) {
         currentComponent = new JSplitPane();
 
-        JTextArea leftTextArea = new JTextArea("Ugly String");
+        JTextArea leftTextArea = new JTextArea("Ugly String(Auto format after key release.)");
         JTextArea rightTextArea = new JTextArea("Format String");
 
         leftTextArea.addKeyListener(new JsonKeyListener(rightTextArea));
 
         JScrollPane leftScrollPane = new JScrollPane(leftTextArea);
-        leftScrollPane.setRowHeaderView(new LineNumberHeaderView(18));
+        leftScrollPane.setRowHeaderView(new TextLineNumber(leftTextArea));
         currentComponent.setLeftComponent(leftScrollPane);
 
         JScrollPane rightScrollPane = new JScrollPane(rightTextArea);
-        rightScrollPane.setRowHeaderView(new LineNumberHeaderView(18));
+        rightScrollPane.setRowHeaderView(new TextLineNumber(rightTextArea));
         currentComponent.setRightComponent(rightScrollPane);
 
         currentComponent.setDividerLocation(WINDOW_SIZE_WIDTH / 2);
-        currentComponent.setOneTouchExpandable(true);
 
         tabbedPane.addTab(title, currentComponent);
         tabbedPane.setEnabledAt(0, true);
@@ -120,7 +119,7 @@ public class CodeFormatFrame extends DKAbstractFrame {
             }
 
             String jsonFormat = DKStringUtil.jsonFormat(text);
-            if (jsonFormat.startsWith("Iinvalid")) {
+            if (jsonFormat.startsWith("Invalid")) {
                 JOptionPane.showMessageDialog(currentComponent, jsonFormat);
             } else {
                 rightTextArea.setText(jsonFormat);
