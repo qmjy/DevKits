@@ -1,5 +1,13 @@
 package cn.devkits.client.util;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.net.InetAddresses;
@@ -9,6 +17,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
+/**
+ * 
+ * 字符串格式化工具
+ * @author shaofeng liu
+ * @version 1.0.0
+ * @time 2019年11月25日 下午11:18:58
+ */
 public class DKStringUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKStringUtil.class);
 
@@ -26,6 +41,11 @@ public class DKStringUtil {
         return InetAddresses.isInetAddress(str);
     }
 
+    /**
+     * 是否是域名
+     * @param ipOrDomain 待校验的字符串
+     * @return 是否是域名
+     */
     public static boolean isDomain(String ipOrDomain) {
         if ("localhost".equalsIgnoreCase(ipOrDomain)) {
             return true;
@@ -68,11 +88,48 @@ public class DKStringUtil {
             JsonElement je = jp.parse(uglyJSONString);
             return gson.toJson(je);
         } catch (JsonSyntaxException e) {
-            String errorMsg = "Iinvalid json string: " + uglyJSONString;
-            LOGGER.error(errorMsg);
-
-            return errorMsg;
+            LOGGER.error("Parse Json Failed: {}", uglyJSONString);
+            return "Invalid json string: " + uglyJSONString;
         }
+    }
+
+    /**
+     * XML 格式化接口
+     * @param uglyXmlStr 待格式化的XML
+     * @return 格式化以后的XML
+     */
+    public static String xmlFormat(String uglyXmlStr) {
+        SAXReader reader = new SAXReader();
+        // 注释：创建一个串的字符输入流
+        StringReader in = new StringReader(uglyXmlStr);
+        XMLWriter writer = null;
+        StringWriter out = null;
+        try {
+            Document doc = reader.read(in);
+            // 注释：创建输出格式
+            OutputFormat formater = new OutputFormat("    ", true, "utf-8");
+            formater.setTrimText(true);
+            formater.setPadText(true);
+            // OutputFormat formater = OutputFormat.createPrettyPrint();
+            // formater=OutputFormat.createCompactFormat();
+            // 注释：设置xml的输出编码
+            // 注释：创建输出(目标)
+            out = new StringWriter();
+            // 注释：创建输出流
+            writer = new XMLWriter(out, formater);
+            // 注释：输出格式化的串到目标中，执行后。格式化后的串保存在out中。
+            writer.write(doc);
+        } catch (DocumentException e) {
+            LOGGER.error("Parse XML Failed: {}", uglyXmlStr);
+            return "Invalid xml string: " + uglyXmlStr;
+        } catch (IOException e) {
+            LOGGER.error("Parse XML Failed: {}", uglyXmlStr);
+            return "Invalid xml string: " + uglyXmlStr;
+        } finally {
+            IoUtils.closeQuietly(out, in);
+            IoUtils.closeQuietly(writer);
+        }
+        return out.toString();
     }
 
 

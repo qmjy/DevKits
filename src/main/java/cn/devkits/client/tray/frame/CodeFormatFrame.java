@@ -19,6 +19,13 @@ import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.frame.assist.TextLineNumber;
 import cn.devkits.client.util.DKStringUtil;
 
+/**
+ * 
+ * 代码格式化
+ * @author shaofeng liu
+ * @version 1.0.0
+ * @time 2019年11月25日 下午11:11:04
+ */
 public class CodeFormatFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = -3324482544348779089L;
@@ -84,7 +91,7 @@ public class CodeFormatFrame extends DKAbstractFrame {
         JTextArea leftTextArea = new JTextArea("Ugly String(Auto format after key release.)");
         JTextArea rightTextArea = new JTextArea("Format String");
 
-        leftTextArea.addKeyListener(new JsonKeyListener(rightTextArea));
+        leftTextArea.addKeyListener(new JsonKeyListener(rightTextArea, title));
 
         JScrollPane leftScrollPane = new JScrollPane(leftTextArea);
         leftScrollPane.setRowHeaderView(new TextLineNumber(leftTextArea));
@@ -101,12 +108,13 @@ public class CodeFormatFrame extends DKAbstractFrame {
     }
 
 
-
     class JsonKeyListener extends KeyAdapter {
         private JTextArea rightTextArea;
+        private String title;
 
-        public JsonKeyListener(JTextArea rightTextArea) {
+        public JsonKeyListener(JTextArea rightTextArea, String title) {
             this.rightTextArea = rightTextArea;
+            this.title = title;
         }
 
         @Override
@@ -118,22 +126,21 @@ public class CodeFormatFrame extends DKAbstractFrame {
                 return;
             }
 
-            String jsonFormat = DKStringUtil.jsonFormat(text);
-            if (jsonFormat.startsWith("Invalid")) {
-                JOptionPane.showMessageDialog(currentComponent, jsonFormat);
-            } else {
-                rightTextArea.setText(jsonFormat);
+            String formatStr = "";
+            if ("Json Format".equals(title)) {
+                formatStr = DKStringUtil.jsonFormat(text);
+            } else if ("XML Format".equals(title)) {
+                formatStr = DKStringUtil.xmlFormat(text);
             }
-
+            if (formatStr.startsWith("Invalid")) {
+                JOptionPane.showMessageDialog(currentComponent, formatStr);
+            } else {
+                rightTextArea.setText(formatStr);
+            }
         }
     }
-
-
 
     public JSplitPane getCurrentComponent() {
         return currentComponent;
     }
-
-
-
 }
