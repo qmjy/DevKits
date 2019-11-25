@@ -1,6 +1,8 @@
+[中文](./README.md) | [English](./README_en.md)
+
 # DevKits
 
-This kits is mainly developed for software engineers, networker, and office workers to improve work efficiency. Our goal is to do things more efficiently with the simplest tools.
+一款为软件工程师、网络工程师和办公室工作人员开发的，以提高工作效率的工具包。我们的目标是提高工作效率
 
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 [![issues](https://img.shields.io/github/issues/qmjy/DevKits)](https://github.com/qmjy/DevKits/issues)
@@ -9,21 +11,21 @@ This kits is mainly developed for software engineers, networker, and office work
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 
 
-# Feature
+# 特性
 ---
 
-- Server Port Detection
-- Large Duplicate Files Detection
-- QQ Screenshot
-- Custom logon background image of Windows 7
-- Multi File Explorer
+- 服务器端口检测
+- 重复大文件检测
+- QQ截屏
+- Windows 7登录壁纸修改
+- 多文件管理器
 
 
-# Contact
+# 联系方式
 ---
-Any problem or suggesstion, [contact to me]((mailto:admin@devkits.cn)) or post to [issues](https://github.com/qmjy/DevKits/issues).
+如果你有任何问题, [联系我]((mailto:admin@devkits.cn)) 或者到 [issues](https://github.com/qmjy/DevKits/issues)发帖。
 
 
-# License
+# 开源协议
 ---
-Devkits is released under the [MIT](https://choosealicense.com/licenses/mit/) and [Anti-996 License](https://github.com/996icu/996.ICU/blob/master/LICENSE_CN)
+Devkits 采用 [MIT](https://choosealicense.com/licenses/mit/) 和 [Anti-996 License](https://github.com/996icu/996.ICU/blob/master/LICENSE_CN)开源协议。
