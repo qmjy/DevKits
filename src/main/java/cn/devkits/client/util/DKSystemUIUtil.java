@@ -4,6 +4,8 @@ import java.util.Enumeration;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 
 public final class DKSystemUIUtil {
     /**
@@ -26,5 +28,12 @@ public final class DKSystemUIUtil {
             header.setResizingColumn(column); // 此行很重要
             column.setWidth(width + myTable.getIntercellSpacing().width);
         }
+    }
+
+    /**
+     * 注册图标
+     */
+    public static void regIcon() {
+        IconFontSwing.register(FontAwesome.getIconFont());
     }
 }

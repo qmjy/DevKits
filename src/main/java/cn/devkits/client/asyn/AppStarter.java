@@ -27,6 +27,7 @@ import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
 import cn.devkits.client.tray.frame.AboutFrame;
+import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 
 public class AppStarter implements Runnable {
@@ -37,6 +38,8 @@ public class AppStarter implements Runnable {
         initLookAndFeel();
         initSystemHotKey();
         initSystemTrayIcon();
+
+        DKSystemUIUtil.regIcon();
     }
 
     private static void initSystemHotKey() {

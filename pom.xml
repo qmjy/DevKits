@@ -111,6 +111,18 @@
 			<version>2.4</version>
 		</dependency>
 
+		<!-- http://jiconfont.github.io/swing -->
+		<dependency>
+			<groupId>com.github.jiconfont</groupId>
+			<artifactId>jiconfont-swing</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.jiconfont</groupId>
+			<artifactId>jiconfont-font_awesome</artifactId>
+			<version>4.7.0.1</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
 		<dependency>
