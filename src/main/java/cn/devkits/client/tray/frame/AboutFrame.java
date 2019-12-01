@@ -27,6 +27,7 @@ import org.apache.maven.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.util.DKConfigUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
 
 /**
  * 
@@ -114,7 +115,8 @@ public class AboutFrame extends DKAbstractFrame {
         Model pomInfo = DKConfigUtil.getInstance().getPomInfo();
 
         JTable jTable = new JTable(new OpenSourceTableModel(pomInfo));
-
+        DKSystemUIUtil.fitTableColumns(jTable);
+        
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setViewportView(jTable);
 

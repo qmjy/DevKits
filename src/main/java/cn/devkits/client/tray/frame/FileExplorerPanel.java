@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -23,24 +23,35 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import com.google.common.collect.Lists;
 import cn.devkits.client.tray.model.FileTableModel;
 import cn.devkits.client.util.DKFileUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
+/**
+ * 
+ * Mutil File Explorers
+ * @author shaofeng liu
+ * @version 1.0.0
+ * @time 2019年12月1日 下午3:03:56
+ */
 public class FileExplorerPanel extends JPanel {
 
     /** serialVersionUID */
     private static final long serialVersionUID = -2230863950855742735L;
+    private static final String HOME_PATH = System.getProperty("user.home");
+
     private JButton backBtn;
-    private JTextField currentPathTextField;
+    private JButton homeBtn;
     private JButton forwardBtn;
+    private JTextField currentPathTextField;
+
     private JTable filesTable;
     private JLabel statusBar;
-    private LinkedList<String> history = new LinkedList<String>();
-    private int historyIndex = -1;
+    private List<String> history = Lists.newArrayList(HOME_PATH);
+    private int historyIndex = 0;
 
-    private String newPath = System.getProperty("user.home");
     private FileTableModel model;
 
     public FileExplorerPanel() {
@@ -56,38 +67,47 @@ public class FileExplorerPanel extends JPanel {
         backBtn.setToolTipText("Back");
         backBtn.setEnabled(false);
 
-        this.currentPathTextField = new JTextField(newPath);
+        Icon homeIcon = IconFontSwing.buildIcon(FontAwesome.HOME, 16, new Color(50, 50, 50));
+        this.homeBtn = new JButton(homeIcon);
+        homeBtn.setToolTipText("Home");
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_RIGHT, 16, new Color(50, 50, 50));
         this.forwardBtn = new JButton(rightIcon);
         forwardBtn.setToolTipText("Forward");
+
+        this.currentPathTextField = new JTextField(HOME_PATH);
 
         JPanel jPanel = new JPanel();
         SpringLayout layout = new SpringLayout();
         jPanel.setLayout(layout);
 
         jPanel.add(backBtn);
-        jPanel.add(currentPathTextField);
+        jPanel.add(homeBtn);
         jPanel.add(forwardBtn);
+        jPanel.add(currentPathTextField);
 
-        SpringLayout.Constraints buttonCons = layout.getConstraints(backBtn);
-        buttonCons.setX(Spring.constant(5));
-        buttonCons.setY(Spring.constant(5));
+        SpringLayout.Constraints backBtnCons = layout.getConstraints(backBtn);
+        backBtnCons.setX(Spring.constant(5));
+        backBtnCons.setY(Spring.constant(5));
 
-        SpringLayout.Constraints textFieldCons = layout.getConstraints(currentPathTextField);
-        textFieldCons.setX(Spring.sum(Spring.constant(5), buttonCons.getConstraint(SpringLayout.EAST)));
-        textFieldCons.setY(Spring.constant(5));
+        SpringLayout.Constraints homeBtnCons = layout.getConstraints(homeBtn);
+        homeBtnCons.setX(Spring.sum(Spring.constant(5), backBtnCons.getConstraint(SpringLayout.EAST)));
+        homeBtnCons.setY(Spring.constant(5));
 
         SpringLayout.Constraints forwardBtnCons = layout.getConstraints(forwardBtn);
-        forwardBtnCons.setX(Spring.sum(Spring.constant(5), textFieldCons.getConstraint(SpringLayout.EAST)));
+        forwardBtnCons.setX(Spring.sum(Spring.constant(5), homeBtnCons.getConstraint(SpringLayout.EAST)));
         forwardBtnCons.setY(Spring.constant(5));
+
+        SpringLayout.Constraints textFieldCons = layout.getConstraints(currentPathTextField);
+        textFieldCons.setX(Spring.sum(Spring.constant(5), forwardBtnCons.getConstraint(SpringLayout.EAST)));
+        textFieldCons.setY(Spring.constant(5));
 
         // Adjust constraints for the content pane.
         setContainerSize(jPanel, 5);
 
         add(jPanel, BorderLayout.NORTH);
 
-        this.model = new FileTableModel(new File(newPath));
+        this.model = new FileTableModel(new File(HOME_PATH));
         this.filesTable = new JTable(model);
         add(new JScrollPane(filesTable), BorderLayout.CENTER);
 
@@ -118,6 +138,15 @@ public class FileExplorerPanel extends JPanel {
 
 
     private void initListener() {
+        homeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File dir = new File(HOME_PATH);
+                loadDirFiles(dir, true);
+            }
+        });
+
+
         currentPathTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -147,15 +176,10 @@ public class FileExplorerPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (historyIndex > 0) {
-                    backBtn.setEnabled(true);
-                } else {
-                    backBtn.setEnabled(false);
-                }
-
-                String path = history.get(historyIndex);
-                historyIndex--;
+                String path = history.get(--historyIndex);
                 loadDirFilesWithoutHistory(path);
+
+                backBtn.setEnabled(historyIndex > 0);
             }
         });
 
@@ -163,7 +187,10 @@ public class FileExplorerPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadUserInput();
+                String path = history.get(++historyIndex);
+                loadDirFilesWithoutHistory(path);
+
+                backBtn.setEnabled(historyIndex < history.size());
             }
         });
     }

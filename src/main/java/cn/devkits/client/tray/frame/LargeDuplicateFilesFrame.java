@@ -64,7 +64,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private JTree tree = null;
     private JPopupMenu jtreeMenu = null;
-    private JTable table = null;
+    private JTable table = new JTable();
     private JLabel statusLine = null;
     private JComboBox<String> fileTypeComboBox = null;
     private JTextField minFileSizeInput = null;
@@ -75,7 +75,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private DefaultMutableTreeNode treeNode = null;
     private DefaultTreeModel treeModel = null;
-    private HashMap<String, List<File>> fileMd5Map = null;
+    private HashMap<String, List<File>> fileMd5Map = new HashMap<String, List<File>>();
 
 
     public LargeDuplicateFilesFrame() {
@@ -106,7 +106,6 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         JScrollPane scrollPane = new JScrollPane(tree);
         jSplitPane.setLeftComponent(scrollPane);
 
-        table = new JTable();
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);// 列自适应
         jSplitPane.setRightComponent(new JScrollPane(table));
 
@@ -247,7 +246,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     }
 
     public void initDataModel() {
-        fileMd5Map = new HashMap<String, List<File>>();
+        fileMd5Map.clear();
 
         treeNode.removeAllChildren();
         treeModel.reload();
