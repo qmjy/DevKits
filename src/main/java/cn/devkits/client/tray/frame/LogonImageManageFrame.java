@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -28,6 +27,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.codehaus.plexus.util.FileUtils;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 import cn.devkits.client.util.DKDateTimeUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -57,7 +59,7 @@ public class LogonImageManageFrame extends DKAbstractFrame {
     private JTextField imgFilePathTextField;
 
     public LogonImageManageFrame() {
-        super("Logon Background Manager", 0.7f, 0.3f);
+        super("Logon Background Manager", 0.7f, 0.25f);
 
         initUI(getRootPane());
         initListener();
@@ -68,35 +70,58 @@ public class LogonImageManageFrame extends DKAbstractFrame {
         return false;
     }
 
+
     @Override
     protected void initUI(JRootPane jRootPane) {
         jRootPane.setLayout(new BorderLayout());
 
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(15, 5, 5, 5));
+        SpringLayout layout = new SpringLayout();
+        centerPanel.setLayout(layout);
 
-        centerPanel.add(new JLabel("Choose a picture:"));
+        JLabel comp = new JLabel("Choose a picture:");
         this.imgFilePathTextField = new JTextField(38);
         imgFilePathTextField.setEditable(false);
-        centerPanel.add(imgFilePathTextField);
 
         JButton browseBtn = new JButton("Browse...");
         browseBtn.addActionListener(new BrowserActionListener(this));
+
+        centerPanel.add(comp);
+        centerPanel.add(imgFilePathTextField);
         centerPanel.add(browseBtn);
-        JLabel note = new JLabel("Note: The feature is only valid for Windows 7!");
-        note.setForeground(Color.RED);
-        centerPanel.add(note);
+
+        SpringLayout.Constraints backBtnCons = layout.getConstraints(comp);
+        backBtnCons.setX(Spring.constant(15));
+        backBtnCons.setY(Spring.constant(15));
+
+        SpringLayout.Constraints homeBtnCons = layout.getConstraints(imgFilePathTextField);
+        homeBtnCons.setX(Spring.sum(Spring.constant(15), backBtnCons.getConstraint(SpringLayout.EAST)));
+        homeBtnCons.setY(Spring.constant(10));
+
+        SpringLayout.Constraints textFieldCons = layout.getConstraints(browseBtn);
+        textFieldCons.setX(Spring.sum(Spring.constant(15), homeBtnCons.getConstraint(SpringLayout.EAST)));
+        textFieldCons.setY(Spring.constant(10));
+
+        // 设置容器的 东边坐标 为 文本框的东边坐标 + 5
+        SpringLayout.Constraints centerPanelCons = layout.getConstraints(centerPanel);
+        centerPanelCons.setConstraint(SpringLayout.EAST, Spring.sum(textFieldCons.getConstraint(SpringLayout.EAST), Spring.constant(15)));
 
         jRootPane.add(centerPanel, BorderLayout.CENTER);
 
         jRootPane.add(createButtonPanel(jRootPane), BorderLayout.PAGE_END);
     }
 
+
+
     private Component createButtonPanel(JRootPane jRootPane) {
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+
+        JLabel note = new JLabel("Note: The feature is only valid for Windows 7!");
+        note.setForeground(Color.RED);
+        buttonPane.add(note);
+
         buttonPane.add(Box.createHorizontalGlue());
 
         JButton button = new JButton("Apply");

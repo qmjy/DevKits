@@ -1,7 +1,11 @@
 package cn.devkits.client.util;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.util.Enumeration;
 import javax.swing.JTable;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import jiconfont.icons.font_awesome.FontAwesome;
@@ -28,6 +32,27 @@ public final class DKSystemUIUtil {
             header.setResizingColumn(column); // 此行很重要
             column.setWidth(width + myTable.getIntercellSpacing().width);
         }
+    }
+    
+    public static void setContainerSize(Container parent, int pad) {
+        SpringLayout layout = (SpringLayout) parent.getLayout();
+        Component[] components = parent.getComponents();
+        Spring maxHeightSpring = Spring.constant(0);
+        SpringLayout.Constraints pCons = layout.getConstraints(parent);
+
+        // Set the container's right edge to the right edge
+        // of its rightmost component + padding.
+        Component rightmost = components[components.length - 1];
+        SpringLayout.Constraints rCons = layout.getConstraints(rightmost);
+        pCons.setConstraint(SpringLayout.EAST, Spring.sum(Spring.constant(pad), rCons.getConstraint(SpringLayout.EAST)));
+
+        // Set the container's bottom edge to the bottom edge
+        // of its tallest component + padding.
+        for (int i = 0; i < components.length; i++) {
+            SpringLayout.Constraints cons = layout.getConstraints(components[i]);
+            maxHeightSpring = Spring.max(maxHeightSpring, cons.getConstraint(SpringLayout.SOUTH));
+        }
+        pCons.setConstraint(SpringLayout.SOUTH, Spring.sum(Spring.constant(pad), maxHeightSpring));
     }
 
     /**

@@ -2,8 +2,6 @@ package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -26,12 +24,15 @@ import javax.swing.SpringLayout;
 import com.google.common.collect.Lists;
 import cn.devkits.client.tray.model.FileTableModel;
 import cn.devkits.client.util.DKFileUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
 /**
  * 
  * Mutil File Explorers
+ * <br>
+ * https://blog.csdn.net/xietansheng/article/details/72814492
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年12月1日 下午3:03:56
@@ -103,7 +104,7 @@ public class FileExplorerPanel extends JPanel {
         textFieldCons.setY(Spring.constant(5));
 
         // Adjust constraints for the content pane.
-        setContainerSize(jPanel, 5);
+        DKSystemUIUtil.setContainerSize(jPanel, 5);
 
         add(jPanel, BorderLayout.NORTH);
 
@@ -114,28 +115,6 @@ public class FileExplorerPanel extends JPanel {
         this.statusBar = new JLabel("Read to go...");
         add(statusBar, BorderLayout.SOUTH);
     }
-
-    private void setContainerSize(Container parent, int pad) {
-        SpringLayout layout = (SpringLayout) parent.getLayout();
-        Component[] components = parent.getComponents();
-        Spring maxHeightSpring = Spring.constant(0);
-        SpringLayout.Constraints pCons = layout.getConstraints(parent);
-
-        // Set the container's right edge to the right edge
-        // of its rightmost component + padding.
-        Component rightmost = components[components.length - 1];
-        SpringLayout.Constraints rCons = layout.getConstraints(rightmost);
-        pCons.setConstraint(SpringLayout.EAST, Spring.sum(Spring.constant(pad), rCons.getConstraint(SpringLayout.EAST)));
-
-        // Set the container's bottom edge to the bottom edge
-        // of its tallest component + padding.
-        for (int i = 0; i < components.length; i++) {
-            SpringLayout.Constraints cons = layout.getConstraints(components[i]);
-            maxHeightSpring = Spring.max(maxHeightSpring, cons.getConstraint(SpringLayout.SOUTH));
-        }
-        pCons.setConstraint(SpringLayout.SOUTH, Spring.sum(Spring.constant(pad), maxHeightSpring));
-    }
-
 
     private void initListener() {
         homeBtn.addActionListener(new ActionListener() {
