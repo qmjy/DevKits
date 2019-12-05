@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -16,14 +17,13 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelListener;
-import javax.swing.event.TreeModelListener;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import cn.devkits.client.util.DKSystemUIUtil;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -59,6 +59,7 @@ import oshi.util.Util;
 public class OsInfoDetailFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 6295111163819170866L;
+    private JTabbedPane jTabbedPane;
     private SystemInfo si = new SystemInfo();
 
     public OsInfoDetailFrame() {
@@ -73,22 +74,74 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         jRootPane.setLayout(new BorderLayout());
         jRootPane.setBorder(new EmptyBorder(5, 5, 0, 5));
 
-        JTabbedPane jTabbedPane = new JTabbedPane();
+        this.jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab("Dashboard", initDashboard(si.getHardware(), si.getOperatingSystem()));
-        jTabbedPane.addTab("CPU", initCpu(si.getHardware()));
-        jTabbedPane.addTab("Main Board", initMainboard());
-        jTabbedPane.addTab("Memory", initMemory(si.getHardware()));
-        jTabbedPane.addTab("Disk", initDisk(si.getHardware(), si.getOperatingSystem()));
-        jTabbedPane.addTab("Sensors", initSensors(si.getHardware()));
-        jTabbedPane.addTab("Displays", initDisplay(si.getHardware()));
-        jTabbedPane.addTab("Network", initNetwork(si.getHardware(), si.getOperatingSystem()));
-        jTabbedPane.addTab("Sound Cards", initSoundCards(si.getHardware()));
-        jTabbedPane.addTab("USB Devices", initUsb(si.getHardware()));
-        jTabbedPane.addTab("Power Sources", initPower(si.getHardware()));
+        jTabbedPane.addTab("CPU", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("Main Board", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("Memory", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("Disk", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("Sensors", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("Displays", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("Network", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("Sound Cards", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("USB Devices", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("Power Sources", new JPanel(new GridLayout()));
 
         jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
         jRootPane.add(jTabbedPane, BorderLayout.CENTER);
+    }
+
+
+    @Override
+    protected void initListener() {
+        jTabbedPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JTabbedPane pane = (JTabbedPane) e.getSource();
+                int tabIndex = pane.getSelectedIndex();
+                JPanel selectedPanel = (JPanel) pane.getSelectedComponent();
+                if (selectedPanel.getComponentCount() > 0) {
+                    return;
+                }
+                switch (tabIndex) {
+                    case 1:
+                        selectedPanel.add(initCpu(si.getHardware()));
+                        break;
+                    case 2:
+                        selectedPanel.add(initMainboard());
+                        break;
+                    case 3:
+                        selectedPanel.add(initMemory(si.getHardware()));
+                        break;
+                    case 4:
+                        selectedPanel.add(initDisk(si.getHardware(), si.getOperatingSystem()));
+                        break;
+                    case 5:
+                        selectedPanel.add(initSensors(si.getHardware()));
+                        break;
+                    case 6:
+                        selectedPanel.add(initDisplay(si.getHardware()));
+                        break;
+                    case 7:
+                        selectedPanel.add(initNetwork(si.getHardware(), si.getOperatingSystem()));
+                        break;
+                    case 8:
+                        selectedPanel.add(initSoundCards(si.getHardware()));
+                        break;
+                    case 9:
+                        selectedPanel.add(initUsb(si.getHardware()));
+                        break;
+                    case 10:
+                        selectedPanel.add(initPower(si.getHardware()));
+                        break;
+                    default:
+                        break;
+                }
+                selectedPanel.revalidate();
+                selectedPanel.repaint();
+            }
+        });
     }
 
     private Component initNetwork(HardwareAbstractionLayer hal, OperatingSystem os) {
@@ -108,6 +161,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         sb.append("<br>Network parameters:<br> " + networkParams.toString());
 
         sb.append("</body></html>");
+
         return new JLabel(sb.toString());
     }
 
@@ -172,12 +226,12 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         sb.append("<br><br>").append(processor.toString()).append("<br>");
 
         sb.append("</body></html>");
+
         return new JLabel(sb.toString());
     }
 
     private Component initMainboard() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPanel();
     }
 
     private Component initMemory(HardwareAbstractionLayer hal) {
@@ -197,6 +251,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         }
 
         sb.append("</body></html>");
+
         return new JLabel(sb.toString());
     }
 
@@ -208,6 +263,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         sb.append(sensors.toString()).append("<br>");
 
         sb.append("</body></html>");
+
         return new JLabel(sb.toString());
     }
 
@@ -224,18 +280,19 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         }
 
         sb.append("</body></html>");
+
         return new JLabel(sb.toString());
     }
 
     private Component initUsb(HardwareAbstractionLayer hal) {
 
         UsbDevice[] usbDevices = hal.getUsbDevices(true);
+        UsbTreeNode[] treeNodes = new UsbTreeNode[usbDevices.length];
+        for (int i = 0; i < usbDevices.length; i++) {
+            treeNodes[i] = new UsbTreeNode(usbDevices[i]);
+        }
 
-        UsbTreeNode treeNode = new UsbTreeNode(usbDevices);
-        UsbTreeModel treeModel = new UsbTreeModel(treeNode);
-        JTree jTree = new JTree();
-
-        return jTree;
+        return new JTree(treeNodes);
     }
 
     private Component initSoundCards(HardwareAbstractionLayer hal) {
@@ -247,6 +304,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
             sb.append(" " + String.valueOf(card)).append("<br>");
         }
         sb.append("</body></html>");
+
         return new JLabel(sb.toString());
     }
 
@@ -262,31 +320,32 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
             sb.append("<br>");
         }
         sb.append("</body></html>");
+
         return new JLabel(sb.toString());
     }
 
     private Component initDisk(HardwareAbstractionLayer hal, OperatingSystem os) {
-        JPanel diskRootPanel = new JPanel();
-        diskRootPanel.setLayout(new GridLayout(2, 1));
+        JPanel selectedPanel = new JPanel();
+        selectedPanel.setLayout(new GridLayout(2, 1));
 
         JTable partitionTable = new JTable(new DiskTableModel(hal.getDiskStores()));
         DKSystemUIUtil.fitTableColumns(partitionTable);
         JScrollPane diskScrollPanel = new JScrollPane(partitionTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         diskScrollPanel.setBorder(BorderFactory.createTitledBorder("Physical Disks"));
-        diskRootPanel.add(diskScrollPanel);
+        selectedPanel.add(diskScrollPanel);
 
         JTable fileSystemTable = new JTable(new FileSystemModel(os.getFileSystem().getFileStores()));
         DKSystemUIUtil.fitTableColumns(fileSystemTable);
         JScrollPane fileScrollPane = new JScrollPane(fileSystemTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         fileScrollPane.setBorder(BorderFactory.createTitledBorder("File System:"));
-        diskRootPanel.add(fileScrollPane);
+        selectedPanel.add(fileScrollPane);
 
-        return diskRootPanel;
+        return selectedPanel;
     }
 
 
 
-    private JLabel initDashboard(HardwareAbstractionLayer hal, OperatingSystem os) {
+    private JPanel initDashboard(HardwareAbstractionLayer hal, OperatingSystem os) {
         StringBuilder sb = new StringBuilder("<html><body>");
         sb.append(String.valueOf(os));
         sb.append("<br><br>");
@@ -322,12 +381,10 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         sb.append("Running with" + (os.isElevated() ? "" : "out") + " elevated permissions.");
         sb.append("</body></html>");
 
-        return new JLabel(sb.toString());
-    }
+        JPanel jPanel = new JPanel(new GridLayout());
+        jPanel.add(new JLabel(sb.toString()));
 
-    @Override
-    protected void initListener() {
-        // TODO Auto-generated method stub
+        return jPanel;
     }
 }
 
@@ -545,113 +602,68 @@ class DiskTableModel implements TableModel {
     @Override
     public void removeTableModelListener(TableModelListener l) {
         // TODO Auto-generated method stub
-
     }
 }
 
 
-class UsbTreeNode implements TreeNode {
+class UsbTreeNode extends DefaultMutableTreeNode {
 
-    /**
-     * 
-     */
+    /** serialVersionUID */
     private static final long serialVersionUID = 3155916586226628151L;
-    private UsbDevice[] usbDevices;
+    private UsbDevice usbDevice;
 
+    public UsbTreeNode() {}
 
-    public UsbTreeNode(UsbDevice[] usbDevices) {
-        this.usbDevices = usbDevices;
+    public UsbTreeNode(UsbDevice usbDevice) {
+        super(usbDevice, usbDevice.getConnectedDevices().length > 0);
+        this.usbDevice = usbDevice;
     }
-
 
     @Override
     public TreeNode getChildAt(int childIndex) {
-        if (this instanceof UsbTreeNode) {
-            UsbTreeNode treeNodes = (UsbTreeNode) this;
-            return new DefaultMutableTreeNode(treeNodes.getUsbDevices()[childIndex]);
+        if (usbDevice != null && usbDevice.getConnectedDevices().length > 0) {
+            return new UsbTreeNode(usbDevice.getConnectedDevices()[childIndex]);
         }
-        return null;
+        return new UsbTreeNode();
     }
-
 
     @Override
     public int getChildCount() {
-        if (this instanceof UsbTreeNode) {
-            UsbTreeNode treeNodes = (UsbTreeNode) this;
-            return treeNodes.getUsbDevices().length;
+        if (usbDevice == null) {
+            return 0;
         }
-        return 0;
+        return usbDevice.getConnectedDevices().length;
     }
-
-
-    @Override
-    public TreeNode getParent() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    @Override
-    public int getIndex(TreeNode node) {
-        if (node instanceof DefaultMutableTreeNode) {
-            DefaultMutableTreeNode treeNodel = (DefaultMutableTreeNode) node;
-            if (treeNodel.getUserObject() instanceof WindowsUsbDevice) {
-                WindowsUsbDevice usbDev = (WindowsUsbDevice) treeNodel.getUserObject();
-                for (int i = 0; i < usbDevices.length; i++) {
-                    if (usbDevices[i] == usbDev) {
-                        return i;
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
 
     @Override
     public boolean getAllowsChildren() {
-        // TODO Auto-generated method stub
-        return false;
+        if (usbDevice == null) {
+            return false;
+        }
+        return usbDevice.getConnectedDevices().length > 0;
     }
-
 
     @Override
     public boolean isLeaf() {
-        if (this instanceof UsbTreeNode) {
-            return false;
+        if (usbDevice == null) {
+            return true;
         }
-        return false;
+        return usbDevice.getConnectedDevices().length <= 0;
     }
-
 
     @Override
     public Enumeration children() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    public UsbDevice[] getUsbDevices() {
-        return usbDevices;
-    }
-}
-
-
-class UsbTreeModel extends DefaultTreeModel {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -3912353585028071999L;
-
-    public UsbTreeModel(TreeNode root) {
-        super(root);
+        return Collections.emptyEnumeration();
     }
 
     @Override
-    public Object getRoot() {
-        return "Root";
+    public String toString() {
+        if (usbDevice == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(usbDevice.getName()).append(" (").append(usbDevice.getVendor()).append(") ");
+        return sb.toString();
     }
-
-
-
 }
