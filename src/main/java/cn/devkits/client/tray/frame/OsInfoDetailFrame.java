@@ -24,6 +24,7 @@ import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import cn.devkits.client.util.DKSystemUIUtil;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -287,12 +288,28 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private Component initUsb(HardwareAbstractionLayer hal) {
 
         UsbDevice[] usbDevices = hal.getUsbDevices(true);
-        UsbTreeNode[] treeNodes = new UsbTreeNode[usbDevices.length];
-        for (int i = 0; i < usbDevices.length; i++) {
-            treeNodes[i] = new UsbTreeNode(usbDevices[i]);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Usb Root");
+        for (UsbDevice usbDevice : usbDevices) {
+            appendNodes(root, usbDevice);
         }
 
-        return new JTree(treeNodes);
+        JTree jTree = new JTree(root);
+
+        TreeNode rootNode = (TreeNode) jTree.getModel().getRoot();
+        DKSystemUIUtil.expandAll(jTree, new TreePath(rootNode), true);
+
+        return jTree;
+    }
+
+    private void appendNodes(DefaultMutableTreeNode root, UsbDevice usbDevice) {
+        DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(usbDevice.getName());
+        root.add(newChild);
+        UsbDevice[] connectedDevices = usbDevice.getConnectedDevices();
+        if (connectedDevices.length > 0) {
+            for (UsbDevice dev : connectedDevices) {
+                appendNodes(newChild, dev);
+            }
+        }
     }
 
     private Component initSoundCards(HardwareAbstractionLayer hal) {
@@ -606,64 +623,3 @@ class DiskTableModel implements TableModel {
 }
 
 
-class UsbTreeNode extends DefaultMutableTreeNode {
-
-    /** serialVersionUID */
-    private static final long serialVersionUID = 3155916586226628151L;
-    private UsbDevice usbDevice;
-
-    public UsbTreeNode() {}
-
-    public UsbTreeNode(UsbDevice usbDevice) {
-        super(usbDevice, usbDevice.getConnectedDevices().length > 0);
-        this.usbDevice = usbDevice;
-    }
-
-    @Override
-    public TreeNode getChildAt(int childIndex) {
-        if (usbDevice != null && usbDevice.getConnectedDevices().length > 0) {
-            return new UsbTreeNode(usbDevice.getConnectedDevices()[childIndex]);
-        }
-        return new UsbTreeNode();
-    }
-
-    @Override
-    public int getChildCount() {
-        if (usbDevice == null) {
-            return 0;
-        }
-        return usbDevice.getConnectedDevices().length;
-    }
-
-    @Override
-    public boolean getAllowsChildren() {
-        if (usbDevice == null) {
-            return false;
-        }
-        return usbDevice.getConnectedDevices().length > 0;
-    }
-
-    @Override
-    public boolean isLeaf() {
-        if (usbDevice == null) {
-            return true;
-        }
-        return usbDevice.getConnectedDevices().length <= 0;
-    }
-
-    @Override
-    public Enumeration children() {
-        return Collections.emptyEnumeration();
-    }
-
-    @Override
-    public String toString() {
-        if (usbDevice == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(usbDevice.getName()).append(" (").append(usbDevice.getVendor()).append(") ");
-        return sb.toString();
-    }
-}
