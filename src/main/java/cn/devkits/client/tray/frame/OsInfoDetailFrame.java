@@ -288,7 +288,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private Component initUsb(HardwareAbstractionLayer hal) {
 
         UsbDevice[] usbDevices = hal.getUsbDevices(true);
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Usb Root");
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("USB Devices");
         for (UsbDevice usbDevice : usbDevices) {
             appendNodes(root, usbDevice);
         }
@@ -301,9 +301,17 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         return jTree;
     }
 
+    private String appendVenderInfo(UsbDevice usbDevice) {
+        if (!usbDevice.getVendor().trim().isEmpty()) {
+            return " (" + usbDevice.getVendor() + ")";
+        }
+        return "";
+    }
+
     private void appendNodes(DefaultMutableTreeNode root, UsbDevice usbDevice) {
-        DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(usbDevice.getName());
+        DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(usbDevice.getName() + appendVenderInfo(usbDevice));
         root.add(newChild);
+
         UsbDevice[] connectedDevices = usbDevice.getConnectedDevices();
         if (connectedDevices.length > 0) {
             for (UsbDevice dev : connectedDevices) {
