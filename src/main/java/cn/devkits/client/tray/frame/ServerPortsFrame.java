@@ -86,7 +86,7 @@ public class ServerPortsFrame extends DKAbstractFrame {
     }
 
     private void createSearchBtn(final JPanel northPanel) {
-        this.searchBtn = new JButton("查询");
+        this.searchBtn = new JButton("Detect");
         searchBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {

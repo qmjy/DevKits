@@ -176,6 +176,7 @@ public class AppStarter implements Runnable {
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.TODOS);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.LOGONUI);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.FILEEXPLORER);
+        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.QR);
         computerItem.add(toolsItem);
 
         return computerItem;

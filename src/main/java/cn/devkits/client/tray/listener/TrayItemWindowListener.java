@@ -11,6 +11,7 @@ import cn.devkits.client.tray.frame.FileExplorersFrame;
 import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
 import cn.devkits.client.tray.frame.LogonImageManageFrame;
 import cn.devkits.client.tray.frame.OsInfoDetailFrame;
+import cn.devkits.client.tray.frame.QrCodeFrame;
 import cn.devkits.client.tray.frame.ServerPortsFrame;
 import cn.devkits.client.util.DKSystemUtil;
 
@@ -58,6 +59,9 @@ public class TrayItemWindowListener implements ActionListener {
                 break;
             case FILEEXPLORER:
                 frame = new FileExplorersFrame();
+                break;
+            case QR:
+                frame = new QrCodeFrame();
                 break;
             default:
                 break;

@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 import cn.devkits.client.util.DKDateTimeUtil;
+import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import net.coobird.thumbnailator.Thumbnails;
@@ -57,6 +58,7 @@ public class LogonImageManageFrame extends DKAbstractFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogonImageManageFrame.class);
     // file path text
     private JTextField imgFilePathTextField;
+    private JButton button;
 
     public LogonImageManageFrame() {
         super("Logon Background Manager", 0.7f, 0.25f);
@@ -124,10 +126,9 @@ public class LogonImageManageFrame extends DKAbstractFrame {
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        JButton button = new JButton("Apply");
+        this.button = new JButton("Apply");
         jRootPane.setDefaultButton(button);
 
-        button.addActionListener(new LogonImgManageListener(this));
         buttonPane.add(button);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
@@ -147,7 +148,7 @@ public class LogonImageManageFrame extends DKAbstractFrame {
 
     @Override
     protected void initListener() {
-
+        button.addActionListener(new LogonImgManageListener(this));
     }
 
     public void close() {
@@ -192,10 +193,20 @@ class LogonImgManageListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (copyFile()) {
+        if (isImg() && copyFile()) {
             updateRegistry();
             frame.close();
+        } else {
+            JOptionPane.showMessageDialog(frame, "The selected file is not a image or some other error, check please!", "File Error", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    private boolean isImg() {
+        Optional<File> choosedFile = loadUserChoosedFile();
+        if (choosedFile.isPresent()) {
+            return DKFileUtil.isImg(choosedFile.get());
+        }
+        return false;
     }
 
     private boolean copyFile() {

@@ -131,6 +131,10 @@ public class MenuItemFactory {
                 menuItem = new MenuItem("More Details...");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.OS_INFO_MORE));
                 break;
+            case QR:
+                menuItem = new MenuItem("QR Code...");
+                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.QR));
+                break;
             default:
                 break;
         }
