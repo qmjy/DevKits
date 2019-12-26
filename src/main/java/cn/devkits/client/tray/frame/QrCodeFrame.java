@@ -1,18 +1,17 @@
 package cn.devkits.client.tray.frame;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.GridLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
 
 /**
  * 
@@ -26,6 +25,8 @@ public class QrCodeFrame extends DKAbstractFrame {
     /** serialVersionUID */
     private static final long serialVersionUID = -4030282787993924346L;
 
+    private Webcam webcam = null;
+    private JTabbedPane decodePanel;
 
     public QrCodeFrame() {
         super("QR Code", 0.7f, 0.6f);
@@ -37,34 +38,80 @@ public class QrCodeFrame extends DKAbstractFrame {
 
     @Override
     protected void initUI(JRootPane jRootPane) {
-        jRootPane.setLayout(new BorderLayout());
+        CardLayout cardLayout = new CardLayout();
 
-        JToolBar toolBar = new JToolBar("QR Code Tool Bar");
-        toolBar.setFloatable(false);
+        jRootPane.setLayout(cardLayout);
 
-        JButton qrCode = new JButton(IconFontSwing.buildIcon(FontAwesome.QRCODE, 20, new Color(50, 50, 50)));
-        JButton deCode = new JButton(IconFontSwing.buildIcon(FontAwesome.EYE, 20, new Color(50, 50, 50)));
+        this.decodePanel = new JTabbedPane();
+        decodePanel.addTab("Upload", initUploadPane());
+        decodePanel.addTab("Camera", new JPanel());
 
-        toolBar.add(qrCode);
-        toolBar.add(deCode);
+        JTabbedPane codePanel = new JTabbedPane();
 
-        JTabbedPane jTabbedPane = new JTabbedPane();
+        codePanel.addTab("Text", new JLabel());
+        codePanel.addTab("URL", new JLabel());
+        codePanel.addTab("Profile", new JLabel());
 
-        jTabbedPane.addTab("Text", new JLabel());
-        jTabbedPane.addTab("URL", new JLabel());
-        jTabbedPane.addTab("Profile", new JLabel());
+        codePanel.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
-        jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
+        jRootPane.add(decodePanel);
+        jRootPane.add(codePanel);
+    }
 
 
-        jRootPane.add(toolBar, BorderLayout.PAGE_START);
-        jRootPane.add(jTabbedPane);
+    private Component initUploadPane() {
+        JPanel jPanel = new JPanel();
+
+        jPanel.setLayout(new GridLayout());
+
+
+        return jPanel;
+    }
+
+
+    private Component initCameraPane() {
+        webcam = Webcam.getWebcams().get(0);
+        webcam.setViewSize(WebcamResolution.VGA.getSize());
+
+        // get image from camera
+        // webcam.getImage();
+
+        WebcamPanel panel = new WebcamPanel(webcam);
+
+        panel.setFPSDisplayed(true);
+        panel.setDisplayDebugInfo(true);
+        panel.setImageSizeDisplayed(true);
+        panel.setMirrored(true);
+
+        return panel;
     }
 
 
     @Override
     protected void initListener() {
-        // TODO Auto-generated method stub
+        decodePanel.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int selectedIndex = decodePanel.getSelectedIndex();
+                JPanel selectedComponent = (JPanel) decodePanel.getSelectedComponent();
+                if (selectedIndex == 0) {
+                    if (webcam != null && webcam.isOpen()) {
+                        webcam.close();
+                    }
+                    selectedComponent.add(initUploadPane());
+                } else if (selectedIndex == 1) {
+                    selectedComponent.add(initCameraPane());
+                }
+            }
+        });
 
+    }
+
+    @Override
+    public void dispose() {
+        if (webcam != null && webcam.isOpen()) {
+            webcam.close();
+        }
+        super.dispose();
     }
 }

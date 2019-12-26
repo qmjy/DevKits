@@ -38,7 +38,6 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -193,11 +192,13 @@ class LogonImgManageListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (isImg() && copyFile()) {
-            updateRegistry();
-            frame.close();
+        if (isImg()) {
+            if (copyFile()) {
+                updateRegistry();
+                frame.close();
+            }
         } else {
-            JOptionPane.showMessageDialog(frame, "The selected file is not a image or some other error, check please!", "File Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "The selected file is not a image!", "File Type Error", JOptionPane.WARNING_MESSAGE);
         }
     }
 
