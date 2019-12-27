@@ -4,6 +4,9 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -48,7 +51,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public QrCodeFrame() {
-        super("QR Code", 0.7f, 0.6f);
+        super("QR Code", 0.7f, 0.7f);
 
         initUI(getRootPane());
         initListener();
@@ -73,6 +76,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         codePanel.addTab("URL", new JLabel());
         codePanel.addTab("Profile", new JLabel());
 
+        decodePanel.setFocusable(false);
         codePanel.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
         jRootPane.add(decodePanel);
@@ -93,9 +97,6 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
     private Component initCameraPane() {
         webcam = Webcam.getDefault();
         webcam.setViewSize(WebcamResolution.VGA.getSize());
-
-        // get image from camera
-        // webcam.getImage();
 
         WebcamPanel panel = new WebcamPanel(webcam);
 
@@ -136,7 +137,6 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         super.dispose();
     }
 
-
     @Override
     public void run() {
         do {
@@ -161,7 +161,13 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
                         Result result = new MultiFormatReader().decode(bitmap);
                         if (result != null) {
                             DKSystemUtil.playSound(DKSystemUtil.SOUND_TYPE_SCAN);
-                            JOptionPane.showMessageDialog(this, result.getText(), "QR Recognize Result", JOptionPane.INFORMATION_MESSAGE);
+                            String resultTxt = "<html>Recognized result as below has been set to the clipboard:<br/><span style='color:RED'>";
+
+                            Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+                            Transferable tText = new StringSelection(result.getText());
+                            clip.setContents(tText, null);
+
+                            JOptionPane.showMessageDialog(this, resultTxt + result.getText() + "</span></html>", "QR Recognize Result", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } catch (com.google.zxing.NotFoundException e) {
                         LOGGER.info("Recognize QR Code from camera...");
@@ -171,6 +177,10 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         } while (true);
     }
 
+    @Override
+    public boolean isResizable() {
+        return false;
+    }
 
     @Override
     public Thread newThread(Runnable r) {
