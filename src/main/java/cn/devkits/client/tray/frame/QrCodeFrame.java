@@ -3,15 +3,32 @@ package cn.devkits.client.tray.frame;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.apache.ibatis.javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+import cn.devkits.client.util.DKSystemUtil;
 
 /**
  * 
@@ -20,19 +37,23 @@ import com.github.sarxos.webcam.WebcamResolution;
  * @version 1.0.0
  * @time 2019年12月19日 下午10:18:50
  */
-public class QrCodeFrame extends DKAbstractFrame {
+public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFactory {
 
     /** serialVersionUID */
     private static final long serialVersionUID = -4030282787993924346L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeFrame.class);
 
     private Webcam webcam = null;
     private JTabbedPane decodePanel;
+    private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public QrCodeFrame() {
         super("QR Code", 0.7f, 0.6f);
 
         initUI(getRootPane());
         initListener();
+
+        executor.execute(this);
     }
 
 
@@ -70,7 +91,7 @@ public class QrCodeFrame extends DKAbstractFrame {
 
 
     private Component initCameraPane() {
-        webcam = Webcam.getWebcams().get(0);
+        webcam = Webcam.getDefault();
         webcam.setViewSize(WebcamResolution.VGA.getSize());
 
         // get image from camera
@@ -113,5 +134,48 @@ public class QrCodeFrame extends DKAbstractFrame {
             webcam.close();
         }
         super.dispose();
+    }
+
+
+    @Override
+    public void run() {
+        do {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                LOGGER.info("Sleep failed in recognize QR code...");
+            }
+
+            if (webcam != null) {
+                BufferedImage image = null;
+
+                if (webcam.isOpen()) {
+                    if ((image = webcam.getImage()) == null) {
+                        continue;
+                    }
+
+                    LuminanceSource source = new BufferedImageLuminanceSource(image);
+                    BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+                    try {
+                        Result result = new MultiFormatReader().decode(bitmap);
+                        if (result != null) {
+                            DKSystemUtil.playSound(DKSystemUtil.SOUND_TYPE_SCAN);
+                            JOptionPane.showMessageDialog(this, result.getText(), "QR Recognize Result", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } catch (com.google.zxing.NotFoundException e) {
+                        LOGGER.info("Recognize QR Code from camera...");
+                    }
+                }
+            }
+        } while (true);
+    }
+
+
+    @Override
+    public Thread newThread(Runnable r) {
+        Thread t = new Thread(r, "example-runner");
+        t.setDaemon(true);
+        return t;
     }
 }

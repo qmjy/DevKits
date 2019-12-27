@@ -6,7 +6,9 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import org.codehaus.plexus.util.FileUtils;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
@@ -18,13 +20,20 @@ import oshi.util.FormatUtil;
 
 /**
  * 
- * System Util
+ * System Util<br>
+ * http://webcam-capture.sarxos.pl/
  * 
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年10月20日 下午9:37:03
  */
 public final class DKSystemUtil {
+
+    /**
+     * 声音类型：扫描声音
+     */
+    public static final int SOUND_TYPE_SCAN = 1;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUtil.class);
     private static final SystemInfo SYSTEM_INFO = new SystemInfo();
 
@@ -88,6 +97,22 @@ public final class DKSystemUtil {
      */
     public static Dimension getScreenSize() {
         return Toolkit.getDefaultToolkit().getScreenSize();
+    }
+
+
+    /**
+     * 播放执行类型的声音
+     * @param soundType sound type
+     */
+    public static void playSound(int soundType) {
+        try {
+            Clip clip = AudioSystem.getClip();
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(DKSystemUtil.class.getClassLoader().getResourceAsStream("scan.wav"));
+            clip.open(inputStream);
+            clip.start();
+        } catch (Exception e) {
+            LOGGER.error("Can't play the sound file 'scan.wav'");
+        }
     }
 
     /**
