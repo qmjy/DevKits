@@ -57,13 +57,17 @@ public class LogonImageManageFrame extends DKAbstractFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogonImageManageFrame.class);
     // file path text
     private JTextField imgFilePathTextField;
-    private JButton button;
+    private JButton applyBtn;
+    private JButton browseBtn;
+    private JButton cancelBtn;
 
     public LogonImageManageFrame() {
         super("Logon Background Manager", 0.7f, 0.25f);
 
         initUI(getRootPane());
-        initListener();
+        if ("Windows 7".equals(DKSystemUtil.getOsName())) {
+            initListener();
+        }
     }
 
     @Override
@@ -84,8 +88,7 @@ public class LogonImageManageFrame extends DKAbstractFrame {
         this.imgFilePathTextField = new JTextField(38);
         imgFilePathTextField.setEditable(false);
 
-        JButton browseBtn = new JButton("Browse...");
-        browseBtn.addActionListener(new BrowserActionListener(this));
+        this.browseBtn = new JButton("Browse...");
 
         centerPanel.add(comp);
         centerPanel.add(imgFilePathTextField);
@@ -125,13 +128,22 @@ public class LogonImageManageFrame extends DKAbstractFrame {
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        this.button = new JButton("Apply");
-        jRootPane.setDefaultButton(button);
+        this.applyBtn = new JButton("Apply");
+        jRootPane.setDefaultButton(applyBtn);
 
-        buttonPane.add(button);
+        buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton cancelBtn = new JButton("Cancel");
+        this.cancelBtn = new JButton("Cancel");
+        buttonPane.add(cancelBtn);
+
+        return buttonPane;
+    }
+
+    @Override
+    protected void initListener() {
+        browseBtn.addActionListener(new BrowserActionListener(this));
+        applyBtn.addActionListener(new LogonImgManageListener(this));
         cancelBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();;
             Container parent = btn.getParent().getParent().getParent();
@@ -140,14 +152,6 @@ public class LogonImageManageFrame extends DKAbstractFrame {
                 root.dispose();
             }
         });
-        buttonPane.add(cancelBtn);
-
-        return buttonPane;
-    }
-
-    @Override
-    protected void initListener() {
-        button.addActionListener(new LogonImgManageListener(this));
     }
 
     public void close() {

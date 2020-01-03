@@ -90,6 +90,15 @@ public final class DKSystemUtil {
         return System.getProperty("java.io.tmpdir");
     }
 
+
+    /**
+     * 获取操作系统名称
+     * @return 操作系统名称
+     */
+    public static String getOsName() {
+        return System.getProperty("os.name");
+    }
+
     /**
      * 获取屏幕宽度和高度
      * 
