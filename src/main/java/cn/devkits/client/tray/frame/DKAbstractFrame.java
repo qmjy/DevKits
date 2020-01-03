@@ -38,6 +38,22 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
         this(title, loadFactor, loadFactor);
     }
 
+
+    /**
+     * frame constructor
+     * 
+     * @param title frame title
+     * @param width width
+     * @param height height
+     */
+    protected DKAbstractFrame(String title, int width, int height) {
+        super(title);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        this.setBounds((int) ((screenSize.width - width) / 2), (int) ((screenSize.height - height) / 2), (int) width, (int) height);
+    }
+
     /**
      * frame constructor
      * 

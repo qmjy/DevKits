@@ -1,7 +1,10 @@
 package cn.devkits.client.tray.frame;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -11,15 +14,15 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.apache.ibatis.javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.sarxos.webcam.Webcam;
@@ -32,6 +35,8 @@ import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import cn.devkits.client.util.DKSystemUtil;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 
 /**
  * 
@@ -45,18 +50,43 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
     /** serialVersionUID */
     private static final long serialVersionUID = -4030282787993924346L;
     private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeFrame.class);
+    private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
 
-    private Webcam webcam = null;
+    private Webcam webcam;
+    private JPanel panel;
     private JTabbedPane decodePanel;
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public QrCodeFrame() {
-        super("QR Code", 0.7f, 0.7f);
+        super("QR Code", (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
 
         initUI(getRootPane());
         initListener();
 
         executor.execute(this);
+    }
+
+
+    private void initCamePanel() {
+        // 检测是否有摄像头
+        // https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/DetectWebcamExample.java
+        webcam = Webcam.getDefault();
+        if (webcam != null) {
+            webcam.setViewSize(CAMERA_DIMENSION);
+
+            WebcamPanel camPanel = new WebcamPanel(webcam, false);
+
+            camPanel.setFPSDisplayed(true);
+            camPanel.setDisplayDebugInfo(true);
+            camPanel.setImageSizeDisplayed(true);
+            camPanel.setMirrored(true);
+
+            panel = camPanel;
+        } else {
+            panel = new JPanel(new BorderLayout());
+            Icon leftIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA, 16, new Color(50, 50, 50));
+            panel.add(new JLabel("No camera device be found！", leftIcon, SwingConstants.CENTER));
+        }
     }
 
 
@@ -66,9 +96,11 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
 
         jRootPane.setLayout(cardLayout);
 
+        initCamePanel();
+
         this.decodePanel = new JTabbedPane();
         decodePanel.addTab("Upload", initUploadPane());
-        decodePanel.addTab("Camera", new JPanel());
+        decodePanel.addTab("Camera", panel);
 
         JTabbedPane codePanel = new JTabbedPane();
 
@@ -80,7 +112,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         codePanel.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
         jRootPane.add(decodePanel);
-        jRootPane.add(codePanel);
+        // jRootPane.add(codePanel);
     }
 
 
@@ -94,39 +126,29 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
     }
 
 
-    private Component initCameraPane() {
-        webcam = Webcam.getDefault();
-        webcam.setViewSize(WebcamResolution.VGA.getSize());
-
-        WebcamPanel panel = new WebcamPanel(webcam);
-
-        panel.setFPSDisplayed(true);
-        panel.setDisplayDebugInfo(true);
-        panel.setImageSizeDisplayed(true);
-        panel.setMirrored(true);
-
-        return panel;
-    }
-
 
     @Override
     protected void initListener() {
         decodePanel.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                int selectedIndex = decodePanel.getSelectedIndex();
-                JPanel selectedComponent = (JPanel) decodePanel.getSelectedComponent();
-                if (selectedIndex == 0) {
-                    if (webcam != null && webcam.isOpen()) {
-                        webcam.close();
+                if (webcam != null) {
+                    int selectedIndex = decodePanel.getSelectedIndex();
+                    if (selectedIndex == 0) {
+                        WebcamPanel webcamP = (WebcamPanel) panel;
+                        if (webcamP.isStarted()) {
+                            webcamP.stop();
+                        }
+                    } else if (selectedIndex == 1) {
+                        WebcamPanel webcamP = (WebcamPanel) decodePanel.getSelectedComponent();
+                        if (!webcamP.isStarted()) {
+                            webcamP.start();
+                        }
+                        panel.repaint();
                     }
-                    selectedComponent.add(initUploadPane());
-                } else if (selectedIndex == 1) {
-                    selectedComponent.add(initCameraPane());
                 }
             }
         });
-
     }
 
     @Override
