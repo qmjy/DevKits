@@ -150,6 +150,15 @@ public final class DKSystemUtil {
         return String.valueOf(os);
     }
 
+
+    /**
+     * 判断当前操作系统是否是windows
+     * @return 当前系统是否是windows
+     */
+    public static boolean isWindows() {
+        return System.getProperties().getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1;
+    }
+
     /**
      * get CPU process info.
      * 

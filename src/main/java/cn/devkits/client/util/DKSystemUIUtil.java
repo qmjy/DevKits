@@ -7,6 +7,8 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.TreeNode;
@@ -86,5 +88,24 @@ public final class DKSystemUIUtil {
      */
     public static void regIcon() {
         IconFontSwing.register(FontAwesome.getIconFont());
+    }
+
+    public static FileFilter createFileFilter(String description, boolean showExtensionInDescription, String... extensions) {
+        if (showExtensionInDescription) {
+            description = createFileNameFilterDescriptionFromExtensions(description, extensions);
+        }
+        return new FileNameExtensionFilter(description, extensions);
+    }
+
+    private static String createFileNameFilterDescriptionFromExtensions(String description, String[] extensions) {
+        String fullDescription = (description == null) ? "(" : description + " (";
+        // build the description from the extension list
+        fullDescription += "." + extensions[0];
+        for (int i = 1; i < extensions.length; i++) {
+            fullDescription += ", .";
+            fullDescription += extensions[i];
+        }
+        fullDescription += ")";
+        return fullDescription;
     }
 }

@@ -1,26 +1,19 @@
 package cn.devkits.client.tray.frame;
 
-import static javax.swing.JFileChooser.SELECTED_FILE_CHANGED_PROPERTY;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,7 +23,6 @@ import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +30,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -315,7 +308,7 @@ class BrowserActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JFileChooser jfc = new JFileChooser();
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        jfc.setAccessory(new FilePreviewer(jfc));
+        jfc.setAccessory(new FileChoosePreviewerComponent(jfc));
         createFilter(jfc);// 添加文件支持的类型
 
         int retval = jfc.showDialog(frame, "OK");
@@ -334,89 +327,11 @@ class BrowserActionListener implements ActionListener {
     }
 
     private void createFilter(JFileChooser jfc) {
-        FileFilter jpgFilter = createFileFilter("JPEG Compge Files", true, "gif");
-        FileFilter bothFilter = createFileFilter("JPEressed Image Files", true, "jpg");
-        FileFilter gifFilter = createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif");
+        FileFilter jpgFilter = DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif");
+        FileFilter bothFilter = DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg");
+        FileFilter gifFilter = DKSystemUIUtil.createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif");
         jfc.addChoosableFileFilter(bothFilter);
         jfc.addChoosableFileFilter(jpgFilter);
         jfc.addChoosableFileFilter(gifFilter);
-    }
-
-    private FileFilter createFileFilter(String description, boolean showExtensionInDescription, String... extensions) {
-        if (showExtensionInDescription) {
-            description = createFileNameFilterDescriptionFromExtensions(description, extensions);
-        }
-        return new FileNameExtensionFilter(description, extensions);
-    }
-
-    private String createFileNameFilterDescriptionFromExtensions(String description, String[] extensions) {
-        String fullDescription = (description == null) ? "(" : description + " (";
-        // build the description from the extension list
-        fullDescription += "." + extensions[0];
-        for (int i = 1; i < extensions.length; i++) {
-            fullDescription += ", .";
-            fullDescription += extensions[i];
-        }
-        fullDescription += ")";
-        return fullDescription;
-    }
-}
-
-
-/**
- * 
- * 文件预览
- * @author shaofeng liu
- * @version 1.0.0
- * @time 2019年11月11日 下午11:09:31
- */
-class FilePreviewer extends JComponent implements PropertyChangeListener {
-
-    /** serialVersionUID */
-    private static final long serialVersionUID = 5051395170955469946L;
-    ImageIcon thumbnail = null;
-
-    public FilePreviewer(JFileChooser fc) {
-        setPreferredSize(new Dimension(100, 50));
-        fc.addPropertyChangeListener(this);
-    }
-
-    public void loadImage(File f) {
-        if (f == null) {
-            thumbnail = null;
-        } else {
-            ImageIcon tmpIcon = new ImageIcon(f.getPath());
-            if (tmpIcon.getIconWidth() > 90) {
-                thumbnail = new ImageIcon(tmpIcon.getImage().getScaledInstance(90, -1, Image.SCALE_DEFAULT));
-            } else {
-                thumbnail = tmpIcon;
-            }
-        }
-    }
-
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (SELECTED_FILE_CHANGED_PROPERTY.equals(prop)) {
-            if (isShowing()) {
-                loadImage((File) e.getNewValue());
-                repaint();
-            }
-        }
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        if (thumbnail != null) {
-            int x = getWidth() / 2 - thumbnail.getIconWidth() / 2;
-            int y = getHeight() / 2 - thumbnail.getIconHeight() / 2;
-            if (y < 0) {
-                y = 0;
-            }
-
-            if (x < 5) {
-                x = 5;
-            }
-            thumbnail.paintIcon(this, g, x, y);
-        }
     }
 }

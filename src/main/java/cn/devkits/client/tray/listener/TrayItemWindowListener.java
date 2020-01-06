@@ -2,7 +2,9 @@ package cn.devkits.client.tray.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.MenuItemEnum;
@@ -13,6 +15,7 @@ import cn.devkits.client.tray.frame.LogonImageManageFrame;
 import cn.devkits.client.tray.frame.OsInfoDetailFrame;
 import cn.devkits.client.tray.frame.QrCodeFrame;
 import cn.devkits.client.tray.frame.ServerPortsFrame;
+import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUtil;
 
 /**
@@ -63,11 +66,24 @@ public class TrayItemWindowListener implements ActionListener {
             case QR:
                 frame = new QrCodeFrame();
                 break;
+            case HOSTS:
+                openHostFile();
+                return;
             default:
                 break;
         }
 
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private void openHostFile() {
+        if (DKSystemUtil.isWindows()) {
+            StringBuilder sb = new StringBuilder(System.getenv("WINDIR"));
+            sb.append(File.separator).append("System32").append(File.separator).append("drivers").append(File.separator).append("etc").append(File.separator).append("hosts");
+            DKFileUtil.openFile(new File(sb.toString()));
+        } else {
+            JOptionPane.showMessageDialog(null, "This feature just support for windows, sorry!");
+        }
     }
 }

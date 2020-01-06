@@ -5,7 +5,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -15,11 +14,16 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -34,6 +38,7 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
@@ -101,6 +106,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         this.decodePanel = new JTabbedPane();
         decodePanel.addTab("Upload", initUploadPane());
         decodePanel.addTab("Camera", panel);
+        decodePanel.addTab("Site", new JLabel());
 
         JTabbedPane codePanel = new JTabbedPane();
 
@@ -118,13 +124,40 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
 
     private Component initUploadPane() {
         JPanel jPanel = new JPanel();
+        jPanel.setLayout(new BorderLayout());
 
-        jPanel.setLayout(new GridLayout());
+        JPanel topPanel = new JPanel();
+        SpringLayout springLayout = new SpringLayout();
+        topPanel.setLayout(springLayout);
 
+        JTextField jTextField = new JTextField(100);
+        Icon uploadIcon = IconFontSwing.buildIcon(FontAwesome.UPLOAD, 16, new Color(50, 50, 50));
+        JButton uploadBtn = new JButton("Upload", uploadIcon);
+
+        topPanel.add(jTextField);
+        topPanel.add(uploadBtn);
+
+        // Adjust constraints for the label so it's at (5,5).
+        SpringLayout.Constraints labelCons = springLayout.getConstraints(jTextField);
+        labelCons.setX(Spring.constant(5));
+        labelCons.setY(Spring.constant(5));
+
+        // Adjust constraints for the text field so it's at
+        // (<label's right edge> + 5, 5).
+        SpringLayout.Constraints textFieldCons = springLayout.getConstraints(uploadBtn);
+        textFieldCons.setX(Spring.sum(Spring.constant(5), labelCons.getConstraint(SpringLayout.EAST)));
+        textFieldCons.setY(Spring.constant(5));
+
+
+        // Adjust constraints for the content pane.
+        DKSystemUIUtil.setContainerSize(topPanel, 5);
+
+        jPanel.add(BorderLayout.PAGE_START, topPanel);
+        JTextArea comp = new JTextArea();
+        jPanel.add(BorderLayout.CENTER, comp);
 
         return jPanel;
     }
-
 
 
     @Override
