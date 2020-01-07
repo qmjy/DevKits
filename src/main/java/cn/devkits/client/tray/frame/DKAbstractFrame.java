@@ -97,4 +97,17 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      * 需要初始化的监听器
      */
     protected abstract void initListener();
+
+
+    /**
+     * update browse file path
+     * @param absolutePath the file path
+     */
+    public void updateSelectFilePath(String absolutePath) {}
+
+
+    /**
+     * browse action callback
+     */
+    public void callback() {}
 }

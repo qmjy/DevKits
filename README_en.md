@@ -19,6 +19,8 @@ This kits is mainly developed for software engineers, networker, and office work
 - QQ Screenshot
 - Custom logon background image of Windows 7
 - Multi File Explorer
+- QR Decode(Upload Image, Camera, WebSite)
+- Open Local Hosts File
 
 
 # Contact

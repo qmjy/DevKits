@@ -67,7 +67,7 @@ public class AppStarter implements Runnable {
                 TrayIcon trayIcon = new TrayIcon(ImageIO.read(App.class.getClassLoader().getResource("logo.png")));
                 trayIcon.setImageAutoSize(true);
                 // 添加工具提示文本
-                trayIcon.setToolTip("开发工具包\r\n官网：www.devkits.cn");
+                trayIcon.setToolTip("开发工具包" + System.lineSeparator() + "官网：www.devkits.cn");
 
                 initContextMenu(trayIcon);
                 initDbClick(trayIcon);

@@ -10,9 +10,14 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,17 +32,21 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 import com.google.zxing.BinaryBitmap;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import cn.devkits.client.tray.frame.assist.BrowserActionListener;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
@@ -58,8 +67,11 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
 
     private Webcam webcam;
-    private JPanel panel;
+    private JPanel topPanel;
     private JTabbedPane decodePanel;
+    private JButton uploadBtn;
+    private JTextField jTextField;
+    private JTextArea console;
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public QrCodeFrame() {
@@ -86,11 +98,11 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
             camPanel.setImageSizeDisplayed(true);
             camPanel.setMirrored(true);
 
-            panel = camPanel;
+            topPanel = camPanel;
         } else {
-            panel = new JPanel(new BorderLayout());
+            topPanel = new JPanel(new BorderLayout());
             Icon leftIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA, 16, new Color(50, 50, 50));
-            panel.add(new JLabel("No camera device be found！", leftIcon, SwingConstants.CENTER));
+            topPanel.add(new JLabel("No camera device be found！", leftIcon, SwingConstants.CENTER));
         }
     }
 
@@ -98,14 +110,13 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
     @Override
     protected void initUI(JRootPane jRootPane) {
         CardLayout cardLayout = new CardLayout();
-
         jRootPane.setLayout(cardLayout);
 
         initCamePanel();
 
         this.decodePanel = new JTabbedPane();
         decodePanel.addTab("Upload", initUploadPane());
-        decodePanel.addTab("Camera", panel);
+        decodePanel.addTab("Camera", topPanel);
         decodePanel.addTab("Site", new JLabel());
 
         JTabbedPane codePanel = new JTabbedPane();
@@ -130,13 +141,24 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         SpringLayout springLayout = new SpringLayout();
         topPanel.setLayout(springLayout);
 
-        JTextField jTextField = new JTextField(100);
+        this.jTextField = new JTextField(100);
         Icon uploadIcon = IconFontSwing.buildIcon(FontAwesome.UPLOAD, 16, new Color(50, 50, 50));
-        JButton uploadBtn = new JButton("Upload", uploadIcon);
+        this.uploadBtn = new JButton("Upload", uploadIcon);
 
         topPanel.add(jTextField);
         topPanel.add(uploadBtn);
 
+        layoutInputPanel(topPanel, springLayout, jTextField, uploadBtn);
+
+        jPanel.add(BorderLayout.PAGE_START, topPanel);
+        this.console = new JTextArea();
+        jPanel.add(BorderLayout.CENTER, console);
+
+        return jPanel;
+    }
+
+
+    private void layoutInputPanel(JPanel topPanel, SpringLayout springLayout, JTextField jTextField, JButton uploadBtn) {
         // Adjust constraints for the label so it's at (5,5).
         SpringLayout.Constraints labelCons = springLayout.getConstraints(jTextField);
         labelCons.setX(Spring.constant(5));
@@ -148,15 +170,8 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         textFieldCons.setX(Spring.sum(Spring.constant(5), labelCons.getConstraint(SpringLayout.EAST)));
         textFieldCons.setY(Spring.constant(5));
 
-
         // Adjust constraints for the content pane.
         DKSystemUIUtil.setContainerSize(topPanel, 5);
-
-        jPanel.add(BorderLayout.PAGE_START, topPanel);
-        JTextArea comp = new JTextArea();
-        jPanel.add(BorderLayout.CENTER, comp);
-
-        return jPanel;
     }
 
 
@@ -166,22 +181,65 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (webcam != null) {
-                    int selectedIndex = decodePanel.getSelectedIndex();
-                    if (selectedIndex == 0) {
-                        WebcamPanel webcamP = (WebcamPanel) panel;
-                        if (webcamP.isStarted()) {
-                            webcamP.stop();
-                        }
-                    } else if (selectedIndex == 1) {
+                    if (decodePanel.getSelectedIndex() == 1) {
                         WebcamPanel webcamP = (WebcamPanel) decodePanel.getSelectedComponent();
                         if (!webcamP.isStarted()) {
                             webcamP.start();
                         }
-                        panel.repaint();
+                    } else {
+                        WebcamPanel webcamP = (WebcamPanel) topPanel;
+                        if (webcamP.isStarted()) {
+                            webcamP.stop();
+                        }
                     }
                 }
             }
         });
+
+        FileFilter[] filters = new FileFilter[] {DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
+                DKSystemUIUtil.createFileFilter("Portable Network Graphics", true, "png")};
+
+        uploadBtn.addActionListener(new BrowserActionListener(this, filters, true));
+    }
+
+
+    /**
+     * 文件上传成功以后自动扫描二维码内容
+     */
+    @Override
+    public void callback() {
+        String text = jTextField.getText();
+        if (text != null && new File(text).isFile()) {
+            MultiFormatReader formatReader = new MultiFormatReader();
+            BufferedImage bufferedImage = null;
+            try {
+                // 读取指定的二维码文件
+                bufferedImage = ImageIO.read(new File(text));
+                BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufferedImage)));
+                // 定义二维码参数
+                Map hints = new HashMap();
+                hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+                com.google.zxing.Result result = formatReader.decode(binaryBitmap, hints);
+                // 输出相关的二维码信息
+                console.append("Decode With UTF-8. " + System.lineSeparator());
+                console.append("Result：" + result.toString() + System.lineSeparator());
+                console.append("QR Format Type：" + result.getBarcodeFormat() + System.lineSeparator());
+                console.append("QR Text Content：" + result.getText() + System.lineSeparator() + System.lineSeparator());
+
+            } catch (IOException e) {
+                LOGGER.error("Error occurs during reading file {}", text);
+            } catch (NotFoundException e) {
+                LOGGER.error("Any errors which occurred when decode code.");
+            } finally {
+                bufferedImage.flush();
+            }
+        }
+    }
+
+
+    @Override
+    public void updateSelectFilePath(String absolutePath) {
+        jTextField.setText(absolutePath);
     }
 
     @Override

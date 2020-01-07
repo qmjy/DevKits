@@ -1,4 +1,4 @@
-package cn.devkits.client.tray.frame;
+package cn.devkits.client.tray.frame.assist;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

@@ -14,7 +14,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
+import cn.devkits.client.tray.frame.assist.BrowserActionListener;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
@@ -135,7 +135,10 @@ public class LogonImageManageFrame extends DKAbstractFrame {
 
     @Override
     protected void initListener() {
-        browseBtn.addActionListener(new BrowserActionListener(this));
+        FileFilter[] filters = new FileFilter[] {DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
+                DKSystemUIUtil.createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif")};
+
+        browseBtn.addActionListener(new BrowserActionListener(this, filters, false));
         applyBtn.addActionListener(new LogonImgManageListener(this));
         cancelBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();;
@@ -284,54 +287,5 @@ class LogonImgManageListener implements ActionListener {
 
             System.out.println(Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, registryPath, registryKey));
         }
-    }
-}
-
-
-/**
- * 
- * 浏览文件选择事件监听器
- * 
- * @author shaofeng liu
- * @version 1.0.0
- * @time 2019年10月24日 下午10:09:27
- */
-class BrowserActionListener implements ActionListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BrowserActionListener.class);
-    private LogonImageManageFrame frame;
-
-    public BrowserActionListener(LogonImageManageFrame logonImageManageFrame) {
-        this.frame = logonImageManageFrame;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JFileChooser jfc = new JFileChooser();
-        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        jfc.setAccessory(new FileChoosePreviewerComponent(jfc));
-        createFilter(jfc);// 添加文件支持的类型
-
-        int retval = jfc.showDialog(frame, "OK");
-
-        if (retval == JFileChooser.APPROVE_OPTION) {
-            if (jfc.getSelectedFile() != null) {
-                frame.updateSelectFilePath(jfc.getSelectedFile().getAbsolutePath());
-            }
-        } else if (retval == JFileChooser.CANCEL_OPTION) {
-            LOGGER.info("User cancelled operation. No file was chosen.");
-        } else if (retval == JFileChooser.ERROR_OPTION) {
-            JOptionPane.showMessageDialog(frame, "An error occurred. No file was chosen.");
-        } else {
-            JOptionPane.showMessageDialog(frame, "Unknown operation occurred.");
-        }
-    }
-
-    private void createFilter(JFileChooser jfc) {
-        FileFilter jpgFilter = DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif");
-        FileFilter bothFilter = DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg");
-        FileFilter gifFilter = DKSystemUIUtil.createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif");
-        jfc.addChoosableFileFilter(bothFilter);
-        jfc.addChoosableFileFilter(jpgFilter);
-        jfc.addChoosableFileFilter(gifFilter);
     }
 }

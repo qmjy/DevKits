@@ -77,7 +77,7 @@ public final class DKFileUtil {
             Desktop.getDesktop().open(file);
             return true;
         } catch (IOException e1) {
-            LOGGER.error("Open file failed: " + file.getParentFile().getAbsolutePath());
+            LOGGER.error("Open file failed: " + file.getAbsolutePath());
         }
         return false;
     }
