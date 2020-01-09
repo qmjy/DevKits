@@ -268,7 +268,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
             for (Element element : imgs) {
                 urls.add(element.attr("abs:src"));
             }
-            siteConsole.append("There are " + urls.size() + " images in site: " + text);
+            siteConsole.append("There are " + urls.size() + " images in site: " + text + System.lineSeparator());
             decodeImgs(urls);
         } catch (MalformedURLException e) {
             LOGGER.error("Request URL is not a HTTP or HTTPS URL, or is otherwise malformed: {}", text);
