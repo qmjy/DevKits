@@ -99,6 +99,23 @@ public final class DKSystemUtil {
         return System.getProperty("os.name");
     }
 
+
+    /**
+     * 锁屏
+     */
+    public static void lockScreen() {
+        if (isWindows()) {
+            try {
+                Runtime.getRuntime().exec("RunDll32.exe user32.dll,LockWorkStation");
+            } catch (IOException e) {
+                LOGGER.error("Can't lock the system screen！");
+            }
+        } else {
+            // TODO
+            LOGGER.info("Can't implement the system screen lock yet！");
+        }
+    }
+
     /**
      * 获取屏幕宽度和高度
      * 

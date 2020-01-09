@@ -1,7 +1,14 @@
 #Organize Import Order
 #Sun Apr 24 10:15:51 PDT 2016
-4=javax
-3=java
-2=org
-1=io
-0=com
+9=javacard
+8=org
+7=net
+6=
+5=cn
+4=cn.devkits
+3=devkits
+11=javax
+2=android
+10=java
+1=android
+0=\#

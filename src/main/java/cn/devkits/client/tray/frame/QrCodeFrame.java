@@ -1,5 +1,31 @@
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.tray.frame.assist.BrowserActionListener;
+import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSystemUtil;
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
+import org.jsoup.Connection;
+import org.jsoup.HttpStatusException;
+import org.jsoup.Jsoup;
+import org.jsoup.UnsupportedMimeTypeException;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -9,11 +35,20 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -33,24 +68,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamPanel;
-import com.github.sarxos.webcam.WebcamResolution;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.Result;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
-import cn.devkits.client.tray.frame.assist.BrowserActionListener;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 
 /**
  * 
@@ -66,12 +83,19 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
     private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeFrame.class);
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
 
-    private Webcam webcam;
-    private JPanel topPanel;
     private JTabbedPane decodePanel;
+
+    private JTextField uploadTextField;
     private JButton uploadBtn;
-    private JTextField jTextField;
     private JTextArea console;
+
+    private JPanel cameraPanel;
+    private Webcam webcam;
+
+    private JTextField siteTextField;
+    private JButton siteBtn;
+    private JTextArea siteConsole;
+
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public QrCodeFrame() {
@@ -98,11 +122,11 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
             camPanel.setImageSizeDisplayed(true);
             camPanel.setMirrored(true);
 
-            topPanel = camPanel;
+            cameraPanel = camPanel;
         } else {
-            topPanel = new JPanel(new BorderLayout());
+            cameraPanel = new JPanel(new BorderLayout());
             Icon leftIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA, 16, new Color(50, 50, 50));
-            topPanel.add(new JLabel("No camera device be found！", leftIcon, SwingConstants.CENTER));
+            cameraPanel.add(new JLabel("No camera device be found！", leftIcon, SwingConstants.CENTER));
         }
     }
 
@@ -116,8 +140,8 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
 
         this.decodePanel = new JTabbedPane();
         decodePanel.addTab("Upload", initUploadPane());
-        decodePanel.addTab("Camera", topPanel);
-        decodePanel.addTab("Site", new JLabel());
+        decodePanel.addTab("Camera", cameraPanel);
+        decodePanel.addTab("Site", initSitePane());
 
         JTabbedPane codePanel = new JTabbedPane();
 
@@ -132,6 +156,28 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         // jRootPane.add(codePanel);
     }
 
+    private Component initSitePane() {
+        JPanel jPanel = new JPanel();
+        jPanel.setLayout(new BorderLayout());
+
+        JPanel topPanel = new JPanel();
+        SpringLayout springLayout = new SpringLayout();
+        topPanel.setLayout(springLayout);
+
+        this.siteTextField = new JTextField(100);
+        this.siteBtn = new JButton("Start Decode");
+
+        topPanel.add(siteTextField);
+        topPanel.add(siteBtn);
+
+        layoutInputPanel(topPanel, springLayout, siteTextField, siteBtn);
+
+        jPanel.add(BorderLayout.PAGE_START, topPanel);
+        this.siteConsole = new JTextArea();
+        jPanel.add(BorderLayout.CENTER, siteConsole);
+
+        return jPanel;
+    }
 
     private Component initUploadPane() {
         JPanel jPanel = new JPanel();
@@ -141,14 +187,14 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         SpringLayout springLayout = new SpringLayout();
         topPanel.setLayout(springLayout);
 
-        this.jTextField = new JTextField(100);
+        this.uploadTextField = new JTextField(100);
         Icon uploadIcon = IconFontSwing.buildIcon(FontAwesome.UPLOAD, 16, new Color(50, 50, 50));
         this.uploadBtn = new JButton("Upload", uploadIcon);
 
-        topPanel.add(jTextField);
+        topPanel.add(uploadTextField);
         topPanel.add(uploadBtn);
 
-        layoutInputPanel(topPanel, springLayout, jTextField, uploadBtn);
+        layoutInputPanel(topPanel, springLayout, uploadTextField, uploadBtn);
 
         jPanel.add(BorderLayout.PAGE_START, topPanel);
         this.console = new JTextArea();
@@ -187,7 +233,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
                             webcamP.start();
                         }
                     } else {
-                        WebcamPanel webcamP = (WebcamPanel) topPanel;
+                        WebcamPanel webcamP = (WebcamPanel) cameraPanel;
                         if (webcamP.isStarted()) {
                             webcamP.stop();
                         }
@@ -200,6 +246,64 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
                 DKSystemUIUtil.createFileFilter("Portable Network Graphics", true, "png")};
 
         uploadBtn.addActionListener(new BrowserActionListener(this, filters, true));
+
+        siteBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (siteTextField.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Decode URL can not be empty!", "URL Empty Error", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                decodeImgsFromOnline(siteTextField.getText());
+            }
+        });
+    }
+
+    private void decodeImgsFromOnline(String text) {
+        Connection connect = Jsoup.connect(text);
+        try {
+            Document document = connect.get();
+            Elements imgs = document.getElementsByTag("img");
+            Set<String> urls = new HashSet<String>();
+            for (Element element : imgs) {
+                urls.add(element.attr("abs:src"));
+            }
+            siteConsole.append("There are " + urls.size() + " images in site: " + text);
+            decodeImgs(urls);
+        } catch (MalformedURLException e) {
+            LOGGER.error("Request URL is not a HTTP or HTTPS URL, or is otherwise malformed: {}", text);
+            JOptionPane.showMessageDialog(null, "Request URL is not a HTTP or HTTPS URL, or is otherwise malformed!", "Connection Error", JOptionPane.ERROR_MESSAGE);
+        } catch (HttpStatusException e) {
+            LOGGER.error("The response is not OK and HTTP response errors are not ignored！");
+            JOptionPane.showMessageDialog(null, "The response is not OK and HTTP response errors are not ignored！", "Connection Error", JOptionPane.ERROR_MESSAGE);
+        } catch (UnsupportedMimeTypeException e) {
+            LOGGER.error("The response mime type is not supported and those errors are not ignored！");
+            JOptionPane.showMessageDialog(null, "The response mime type is not supported and those errors are not ignored！", "Connection Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SocketTimeoutException e) {
+            LOGGER.error("The connection times out！");
+            JOptionPane.showMessageDialog(null, "The connection times out！", "Connection Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            LOGGER.error("Request URL occurred an error: {}", e.getMessage());
+            JOptionPane.showMessageDialog(null, "Request URL occurred an error！", "Connection Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void decodeImgs(Set<String> urls) {
+        for (String imgUrl : urls) {
+            BufferedImage bufferedImage;
+            try {
+                bufferedImage = ImageIO.read(new URL(imgUrl));
+                Optional<Result> decodeBufferedImage = decodeBufferedImage(bufferedImage);
+                if (decodeBufferedImage.isPresent()) {
+                    Result result = decodeBufferedImage.get();
+                    String text = result.getText();
+                    siteConsole.append("Image URL：" + imgUrl + System.lineSeparator());
+                    siteConsole.append("Result：" + text + System.lineSeparator() + System.lineSeparator());
+                }
+            } catch (IOException e) {
+                LOGGER.error("Error occurs during reading online file {}", imgUrl);
+            }
+        }
     }
 
 
@@ -208,38 +312,56 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
      */
     @Override
     public void callback() {
-        String text = jTextField.getText();
+        String text = uploadTextField.getText();
         if (text != null && new File(text).isFile()) {
-            MultiFormatReader formatReader = new MultiFormatReader();
+
             BufferedImage bufferedImage = null;
             try {
-                // 读取指定的二维码文件
                 bufferedImage = ImageIO.read(new File(text));
-                BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufferedImage)));
-                // 定义二维码参数
-                Map hints = new HashMap();
-                hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-                com.google.zxing.Result result = formatReader.decode(binaryBitmap, hints);
-                // 输出相关的二维码信息
-                console.append("Decode With UTF-8. " + System.lineSeparator());
-                console.append("Result：" + result.toString() + System.lineSeparator());
-                console.append("QR Format Type：" + result.getBarcodeFormat() + System.lineSeparator());
-                console.append("QR Text Content：" + result.getText() + System.lineSeparator() + System.lineSeparator());
-
-            } catch (IOException e) {
+                Optional<Result> decodeBufferedImage = decodeBufferedImage(bufferedImage);
+                if (decodeBufferedImage.isPresent()) {
+                    Result result = decodeBufferedImage.get();
+                    console.append("Decode With UTF-8. " + System.lineSeparator());
+                    console.append("Result：" + result.toString() + System.lineSeparator());
+                    console.append("QR Format Type：" + result.getBarcodeFormat() + System.lineSeparator());
+                    console.append("QR Text Content：" + result.getText() + System.lineSeparator() + System.lineSeparator());
+                }
+            } catch (IllegalArgumentException e) {
+                LOGGER.error("Input stream is null!");
+            } catch (IOException e1) {
                 LOGGER.error("Error occurs during reading file {}", text);
-            } catch (NotFoundException e) {
-                LOGGER.error("Any errors which occurred when decode code.");
             } finally {
                 bufferedImage.flush();
             }
         }
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Optional<Result> decodeBufferedImage(BufferedImage bufferedImage) {
+        try {
+            /**
+             * com.google.zxing.client.j2se.BufferedImageLuminanceSource：缓冲图像亮度源 将 java.awt.image.BufferedImage
+             * 转为 zxing 的 缓冲图像亮度源 关键就是下面这几句：HybridBinarizer 用于读取二维码图像数据，BinaryBitmap 二进制位图
+             */
+            BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            Hashtable hints = new Hashtable();
+            hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
+            /**
+             * 如果图片不是二维码图片，则 decode 抛异常：com.google.zxing.NotFoundException MultiFormatWriter 的 encode 用于对内容进行编码成
+             * 2D 矩阵 MultiFormatReader 的 decode 用于读取二进制位图数据
+             */
+            return Optional.of(new MultiFormatReader().decode(bitmap, hints));
+        } catch (NotFoundException e) {
+            LOGGER.error(" Any errors which occurred...");
+        }
+        return Optional.empty();
+    }
+
 
     @Override
     public void updateSelectFilePath(String absolutePath) {
-        jTextField.setText(absolutePath);
+        uploadTextField.setText(absolutePath);
     }
 
     @Override
