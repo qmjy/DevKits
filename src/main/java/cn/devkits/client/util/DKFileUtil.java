@@ -1,5 +1,8 @@
 package cn.devkits.client.util;
 
+import cn.devkits.client.App;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -15,9 +18,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
 import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import cn.devkits.client.App;
 
 public final class DKFileUtil {
 
@@ -80,6 +80,24 @@ public final class DKFileUtil {
             LOGGER.error("Open file failed: " + file.getAbsolutePath());
         }
         return false;
+    }
+
+    /**
+     * open text file with system text editor
+     * @param f the file need to open with system editor
+     */
+    public static void openTextFile(File f) {
+        if (DKSystemUtil.isWindows()) {
+            try {
+                ProcessBuilder pb = new ProcessBuilder("notepad", f.getAbsolutePath());
+                pb.start();
+            } catch (IOException e) {
+                LOGGER.error("Open file with text editor failed: {}", f.getAbsolutePath());
+            }
+        } else {
+            // TODO
+            LOGGER.info("Can't implement open text file yet！");
+        }
     }
 
 

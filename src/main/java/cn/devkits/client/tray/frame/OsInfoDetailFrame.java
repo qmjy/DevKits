@@ -64,7 +64,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private SystemInfo si = new SystemInfo();
 
     public OsInfoDetailFrame() {
-        super("System Details", 1.2f);
+        super("System Details", 0.9f);
 
         initUI(getRootPane());
         initListener();

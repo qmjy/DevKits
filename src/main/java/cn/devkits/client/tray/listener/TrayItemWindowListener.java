@@ -1,12 +1,5 @@
 package cn.devkits.client.tray.listener;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.CodeFormatFrame;
 import cn.devkits.client.tray.frame.FileExplorersFrame;
@@ -17,6 +10,13 @@ import cn.devkits.client.tray.frame.QrCodeFrame;
 import cn.devkits.client.tray.frame.ServerPortsFrame;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * 
@@ -81,7 +81,7 @@ public class TrayItemWindowListener implements ActionListener {
         if (DKSystemUtil.isWindows()) {
             StringBuilder sb = new StringBuilder(System.getenv("WINDIR"));
             sb.append(File.separator).append("System32").append(File.separator).append("drivers").append(File.separator).append("etc").append(File.separator).append("hosts");
-            DKFileUtil.openFile(new File(sb.toString()));
+            DKFileUtil.openTextFile(new File(sb.toString()));
         } else {
             JOptionPane.showMessageDialog(null, "This feature just support for windows, sorry!");
         }

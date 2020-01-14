@@ -65,10 +65,6 @@ public final class DKSystemUtil {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(DKSystemUtil.getSystemTempDir());
-    }
-
 
     /**
      * 判断当前程序是否是以jar的方式运行
@@ -115,6 +111,8 @@ public final class DKSystemUtil {
             LOGGER.info("Can't implement the system screen lock yet！");
         }
     }
+
+
 
     /**
      * 获取屏幕宽度和高度
