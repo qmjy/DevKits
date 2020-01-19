@@ -12,7 +12,6 @@ This kits is mainly developed for software engineers, networker, and office work
 
 
 ## Feature
----
 
 - Server Port Detection
 - Large Duplicate Files Detection
@@ -21,6 +20,9 @@ This kits is mainly developed for software engineers, networker, and office work
 - Multi File Explorer
 - QR Decode(Upload Image, Camera, WebSite)
 - Open Local Hosts File
+- XML & JSON Format
+- Computer System Information Detection
+ 
 
 ## Build from Source
 

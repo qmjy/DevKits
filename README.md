@@ -12,7 +12,6 @@
 
 
 ## 特性
----
 
 - 服务器端口检测
 - 重复大文件检测
@@ -21,9 +20,12 @@
 - 多文件管理器
 - 二维码识别（本地图片，摄像头，网页）
 - 快速打开Hosts文件
+- XML & JSON 格式化
+- 计算机信息展示
+
 
 ## 源码构建
----
+
 ```
 git clone git@github.com:qmjy/DevKits.git
 cd DevKits
@@ -31,10 +33,10 @@ mvn clean package assembly:single
 ```
 
 ## 联系方式
----
+
 如果你有任何问题, [联系我]((mailto:admin@devkits.cn)) 或者到 [issues](https://github.com/qmjy/DevKits/issues)发帖。
 
 
 ## 开源协议
----
+
 Devkits 采用 [MIT](https://choosealicense.com/licenses/mit/) 和 [Anti-996 License](https://github.com/996icu/996.ICU/blob/master/LICENSE_CN)开源协议。
