@@ -1,6 +1,6 @@
 [中文](./README.md) | [English](./README_en.md)
 
-# DevKits
+## DevKits
 
 This kits is mainly developed for software engineers, networker, and office workers to improve work efficiency. Our goal is to do things more efficiently with the simplest tools.
 
@@ -11,7 +11,7 @@ This kits is mainly developed for software engineers, networker, and office work
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 
 
-# Feature
+## Feature
 ---
 
 - Server Port Detection
@@ -22,19 +22,19 @@ This kits is mainly developed for software engineers, networker, and office work
 - QR Decode(Upload Image, Camera, WebSite)
 - Open Local Hosts File
 
-# Build from Source
----
+## Build from Source
+
 ```
 git clone git@github.com:qmjy/DevKits.git
 cd DevKits
 mvn clean package assembly:single
 ```
 
-# Contact
----
+## Contact
+
 Any problem or suggesstion, [contact to me]((mailto:admin@devkits.cn)) or post to [issues](https://github.com/qmjy/DevKits/issues).
 
 
-# License
----
+## License
+
 Devkits is released under the [MIT](https://choosealicense.com/licenses/mit/) and [Anti-996 License](https://github.com/996icu/996.ICU/blob/master/LICENSE_CN)
