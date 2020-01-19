@@ -22,6 +22,13 @@ This kits is mainly developed for software engineers, networker, and office work
 - QR Decode(Upload Image, Camera, WebSite)
 - Open Local Hosts File
 
+# Build from Source
+---
+```
+git clone git@github.com:qmjy/DevKits.git
+cd DevKits
+mvn clean package assembly:single
+```
 
 # Contact
 ---

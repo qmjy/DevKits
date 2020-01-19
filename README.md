@@ -22,6 +22,13 @@
 - 二维码识别（本地图片，摄像头，网页）
 - 快速打开Hosts文件
 
+# 源码构建
+---
+```
+git clone git@github.com:qmjy/DevKits.git
+cd DevKits
+mvn clean package assembly:single
+```
 
 # 联系方式
 ---
