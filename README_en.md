@@ -22,7 +22,12 @@ This kits is mainly developed for software engineers, networker, and office work
 - Open Local Hosts File
 - XML & JSON Format
 - Computer System Information Detection
- 
+
+
+## Runtime Version
+
+The project rely on JDK1.8 and above.
+
 
 ## Build from Source
 
