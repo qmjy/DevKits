@@ -31,7 +31,7 @@ The project rely on JDK1.8 and above.
 
 ## Release Way
 1. [Download Release](https://github.com/qmjy/DevKits/releases/download/v1.0.0/devkits-1.0.0-bin.zip) to local disk or some folder you like;
-2. Ensure your java is installed, and your JDK version should be greater than Oracle JDK 1.8+, otherwise your program can not run;
+2. Ensure your java is installed and enviroment is configured, your JDK version should be greater than Oracle JDK 1.8+, otherwise your program can not run;
 3. Run `start.bat` in `bin` folder;
 4. Have fun!
 

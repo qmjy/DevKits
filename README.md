@@ -31,8 +31,9 @@
 
 ## Release版本
 1. [下载Release版本包](https://github.com/qmjy/DevKits/releases/download/v1.0.0/devkits-1.0.0-bin.zip)到本地并解压；
-2. 确认本地java环境安装OK，jdk需要依赖Oracle JDK 1.8+版本，否则无法运行程序；
+2. 确认本地JAVA环境安装完成，并设置了环境变量，JDK需要Oracle JDK 1.8及以上版本，否则无法运行程序；
 3. 进入到`bin`目录运行`start.bat`脚本即可；
+4. 从托盘菜单开始；
 
 
 ## 源码构建
