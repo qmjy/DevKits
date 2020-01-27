@@ -7,10 +7,33 @@
 
 	<groupId>cn.devkits.client</groupId>
 	<artifactId>devkits</artifactId>
-	<version>1.0.0</version>
-
+	<version>1.0.1</version>
 	<name>DevKits</name>
 	<url>https://www.devkits.cn</url>
+	
+	<developers>
+		<developer>
+			<name>Fengshao Liu</name>
+			<email>admin@devkits.cn</email>
+			<url>www.liushaofeng.com</url>
+		</developer>
+	</developers>
+
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/qmjy/DevKits/issues</url>
+	</issueManagement>
+
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>https://choosealicense.com/licenses/mit/</url>
+		</license>
+		<license>
+			<name>996.ICU</name>
+			<url>https://github.com/996icu/996.ICU/blob/master/LICENSE</url>
+		</license>
+	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
