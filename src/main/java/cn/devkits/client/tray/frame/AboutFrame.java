@@ -5,6 +5,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -22,12 +23,17 @@ import javax.swing.JTable;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSystemUtil;
+import com.sun.jna.platform.FileMonitor.FileListener;
 
 /**
  * 
@@ -46,6 +52,7 @@ public class AboutFrame extends DKAbstractFrame {
     public AboutFrame() {
         super("About Devkits", 0.7f, 0.6f);
 
+
         initUI(getRootPane());
         initListener();
     }
@@ -54,7 +61,7 @@ public class AboutFrame extends DKAbstractFrame {
     protected void initUI(JRootPane jRootPane) {
         name.setFont(getAFont());
 
-        version = new JLabel("Verison 1.0.0");
+        version = new JLabel("Verison " + DKConfigUtil.getInstance().getPomInfo().getVersion());
         version.setLabelFor(name);
 
         // Create the panel we'll return and set up the layout.
@@ -82,10 +89,37 @@ public class AboutFrame extends DKAbstractFrame {
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab("Verison Info.", loadVersionDetail());
         jTabbedPane.addTab("Open Sources", loadOpenSourceTable());
+        jTabbedPane.addTab("License", loadLicensePane());
 
         jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
         return jTabbedPane;
+    }
+
+    private Component loadLicensePane() {
+        JEditorPane jEditorPane = new JEditorPane();
+        jEditorPane.setContentType("text/html");
+        jEditorPane.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
+        jEditorPane.setEditable(false);
+        jEditorPane.setText(loadLicenseContent());
+        jEditorPane.setCaretPosition(0);
+
+        return new JScrollPane(jEditorPane);
+    }
+
+    private String loadLicenseContent() {
+        File licenseFile = DKSystemUtil.isRunWithJar() ? new File("../LICENSE") : new File("LICENSE");
+        StringBuilder sb = new StringBuilder();
+        try {
+            LineIterator lineIterator = FileUtils.lineIterator(licenseFile);
+            while (lineIterator.hasNext()) {
+                sb.append(lineIterator.nextLine()).append("<br>");
+            }
+        } catch (IOException e) {
+            LOGGER.error("Reading license file failed: {}", e.getMessage());
+        }
+
+        return sb.toString();
     }
 
     private Component loadVersionDetail() {
@@ -116,7 +150,7 @@ public class AboutFrame extends DKAbstractFrame {
 
         JTable jTable = new JTable(new OpenSourceTableModel(pomInfo));
         DKSystemUIUtil.fitTableColumns(jTable);
-        
+
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setViewportView(jTable);
 

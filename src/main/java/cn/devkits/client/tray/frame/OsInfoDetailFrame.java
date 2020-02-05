@@ -1,21 +1,30 @@
 package cn.devkits.client.tray.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
+import javax.swing.SpringLayout.Constraints;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -77,16 +86,16 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
         this.jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab("Dashboard", initDashboard(si.getHardware(), si.getOperatingSystem()));
-        jTabbedPane.addTab("CPU", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("Main Board", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("Memory", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("Disk", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("Sensors", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("Displays", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("Network", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("Sound Cards", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("USB Devices", new JPanel(new GridLayout()));
-        jTabbedPane.addTab("Power Sources", new JPanel(new GridLayout()));
+        jTabbedPane.addTab("CPU", new JScrollPane());
+        jTabbedPane.addTab("Main Board", new JScrollPane());
+        jTabbedPane.addTab("Memory", new JScrollPane());
+        jTabbedPane.addTab("Disk", new JScrollPane());
+        jTabbedPane.addTab("Sensors", new JScrollPane());
+        jTabbedPane.addTab("Displays", new JScrollPane());
+        jTabbedPane.addTab("Network", new JScrollPane());
+        jTabbedPane.addTab("Sound Cards", new JScrollPane());
+        jTabbedPane.addTab("USB Devices", new JScrollPane());
+        jTabbedPane.addTab("Power Sources", new JScrollPane());
 
         jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
@@ -101,46 +110,46 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
             public void stateChanged(ChangeEvent e) {
                 JTabbedPane pane = (JTabbedPane) e.getSource();
                 int tabIndex = pane.getSelectedIndex();
-                JPanel selectedPanel = (JPanel) pane.getSelectedComponent();
-                if (selectedPanel.getComponentCount() > 0) {
+                JScrollPane container = (JScrollPane) pane.getSelectedComponent();
+                if (container.getViewport().getView() != null) {// 面板上已经有组件承载内容显示，无需刷新
                     return;
                 }
                 switch (tabIndex) {
                     case 1:
-                        selectedPanel.add(initCpu(si.getHardware()));
+                        container.setViewportView(initCpu(si.getHardware()));
                         break;
                     case 2:
-                        selectedPanel.add(initMainboard());
+                        container.setViewportView(initMainboard());
                         break;
                     case 3:
-                        selectedPanel.add(initMemory(si.getHardware()));
+                        container.setViewportView(initMemory(si.getHardware()));
                         break;
                     case 4:
-                        selectedPanel.add(initDisk(si.getHardware(), si.getOperatingSystem()));
+                        container.setViewportView(initDisk(si.getHardware(), si.getOperatingSystem()));
                         break;
                     case 5:
-                        selectedPanel.add(initSensors(si.getHardware()));
+                        container.setViewportView(initSensors(si.getHardware()));
                         break;
                     case 6:
-                        selectedPanel.add(initDisplay(si.getHardware()));
+                        container.setViewportView(initDisplay(si.getHardware()));
                         break;
                     case 7:
-                        selectedPanel.add(initNetwork(si.getHardware(), si.getOperatingSystem()));
+                        container.setViewportView(initNetwork(si.getHardware(), si.getOperatingSystem()));
                         break;
                     case 8:
-                        selectedPanel.add(initSoundCards(si.getHardware()));
+                        container.setViewportView(initSoundCards(si.getHardware()));
                         break;
                     case 9:
-                        selectedPanel.add(initUsb(si.getHardware()));
+                        container.setViewportView(initUsb(si.getHardware()));
                         break;
                     case 10:
-                        selectedPanel.add(initPower(si.getHardware()));
+                        container.setViewportView(initPower(si.getHardware()));
                         break;
                     default:
                         break;
                 }
-                selectedPanel.revalidate();
-                selectedPanel.repaint();
+                // container.revalidate();
+                // container.repaint();
             }
         });
     }
@@ -286,7 +295,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     }
 
     private Component initUsb(HardwareAbstractionLayer hal) {
-
         UsbDevice[] usbDevices = hal.getUsbDevices(true);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("USB Devices");
         for (UsbDevice usbDevice : usbDevices) {
@@ -350,27 +358,45 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     }
 
     private Component initDisk(HardwareAbstractionLayer hal, OperatingSystem os) {
-        JPanel selectedPanel = new JPanel();
-        selectedPanel.setLayout(new GridLayout(2, 1));
+        Box vBox = Box.createVerticalBox();
 
-        JTable partitionTable = new JTable(new DiskTableModel(hal.getDiskStores()));
+        JTable partitionTable = new JTable(new DiskTableModel(hal.getDiskStores())) {
+            /** serialVersionUID */
+            private static final long serialVersionUID = -4006029161807662936L;
+
+            @Override
+            public Dimension getPreferredScrollableViewportSize() {
+                return DKSystemUIUtil.updatePreferredScrollableViewportSize(this);
+            }
+        };
         DKSystemUIUtil.fitTableColumns(partitionTable);
-        JScrollPane diskScrollPanel = new JScrollPane(partitionTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane diskScrollPanel = new JScrollPane();
+        diskScrollPanel.setViewportView(partitionTable);
         diskScrollPanel.setBorder(BorderFactory.createTitledBorder("Physical Disks"));
-        selectedPanel.add(diskScrollPanel);
+        vBox.add(diskScrollPanel);
 
-        JTable fileSystemTable = new JTable(new FileSystemModel(os.getFileSystem().getFileStores()));
+        JTable fileSystemTable = new JTable(new FileSystemModel(os.getFileSystem().getFileStores())) {
+
+            /** serialVersionUID */
+            private static final long serialVersionUID = 7830630683277320571L;
+
+            @Override
+            public Dimension getPreferredScrollableViewportSize() {
+                return DKSystemUIUtil.updatePreferredScrollableViewportSize(this);
+            }
+        };
         DKSystemUIUtil.fitTableColumns(fileSystemTable);
-        JScrollPane fileScrollPane = new JScrollPane(fileSystemTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane fileScrollPane = new JScrollPane();
+        fileScrollPane.setViewportView(fileSystemTable);
         fileScrollPane.setBorder(BorderFactory.createTitledBorder("File System:"));
-        selectedPanel.add(fileScrollPane);
+        vBox.add(fileScrollPane);
 
-        return selectedPanel;
+        return vBox;
     }
 
 
 
-    private JPanel initDashboard(HardwareAbstractionLayer hal, OperatingSystem os) {
+    private JComponent initDashboard(HardwareAbstractionLayer hal, OperatingSystem os) {
         StringBuilder sb = new StringBuilder("<html><body>");
         sb.append(String.valueOf(os));
         sb.append("<br><br>");
@@ -409,7 +435,9 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         JPanel jPanel = new JPanel(new GridLayout());
         jPanel.add(new JLabel(sb.toString()));
 
-        return jPanel;
+        JScrollPane jScrollPane = new JScrollPane();
+        jScrollPane.setViewportView(jPanel);
+        return jScrollPane;
     }
 }
 

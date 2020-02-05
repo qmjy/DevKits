@@ -2,6 +2,7 @@ package cn.devkits.client.util;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.util.Enumeration;
 import javax.swing.JTable;
 import javax.swing.JTree;
@@ -37,6 +38,20 @@ public final class DKSystemUIUtil {
             header.setResizingColumn(column); // 此行很重要
             column.setWidth(width + myTable.getIntercellSpacing().width);
         }
+    }
+
+    /**
+     * 更新jtable表格在JScrollPane占用高度过高的问题<br>
+     * https://coderanch.com/t/336316/java/JScrollPane-packed-content
+     * @param table 待更新表格
+     * @return 表格的实际宽高
+     */
+    public static Dimension updatePreferredScrollableViewportSize(JTable table) {
+        int rowCount = table.getRowCount();
+
+        int cols = table.getColumnModel().getTotalColumnWidth();
+        int rows = table.getRowHeight() * rowCount - 1;
+        return new Dimension(cols, rows);
     }
 
 
