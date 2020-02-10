@@ -3,6 +3,7 @@ package cn.devkits.client.tray.listener;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.CodeFormatFrame;
 import cn.devkits.client.tray.frame.FileExplorersFrame;
+import cn.devkits.client.tray.frame.FileSpliterFrame;
 import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
 import cn.devkits.client.tray.frame.LogonImageManageFrame;
 import cn.devkits.client.tray.frame.OsInfoDetailFrame;
@@ -65,6 +66,9 @@ public class TrayItemWindowListener implements ActionListener {
                 break;
             case QR:
                 frame = new QrCodeFrame();
+                break;
+            case FILESPLITER:
+                frame = new FileSpliterFrame();
                 break;
             case HOSTS:
                 openHostFile();

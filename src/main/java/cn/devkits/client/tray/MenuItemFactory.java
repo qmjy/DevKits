@@ -138,7 +138,11 @@ public class MenuItemFactory {
             case HOSTS:
                 menuItem = new MenuItem("Hosts");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.HOSTS));
-                break;     
+                break;  
+            case FILESPLITER:
+                menuItem = new MenuItem("File Spliter");
+                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILESPLITER));
+                break;  
             default:
                 break;
         }

@@ -39,7 +39,7 @@ import net.coobird.thumbnailator.Thumbnails;
  * 系统登录界面背景管理<br>
  * https://blogs.technet.microsoft.com/deploymentguys/2011/08/22/windows-7-background-customization/
  * 
- * @author shaofeng liu
+ * @author Shaofeng Liu
  * @version 1.0.0
  * @time 2019年10月24日 下午9:41:50
  */
