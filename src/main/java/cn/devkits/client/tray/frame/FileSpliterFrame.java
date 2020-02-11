@@ -80,7 +80,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         centerPanel.setLayout(layout);
 
         JLabel fileTypeLbl = new JLabel("File Type:");
-        JComboBox<String> jComboBox = new JComboBox<String>(new String[] {"Txt File", "Excel File"});
+        JComboBox<String> jComboBox = new JComboBox<String>(new String[] {"TXT File"});
         jComboBox.setLightWeightPopupEnabled(false);
 
         JLabel filePathLbl = new JLabel("File Path:");
@@ -90,9 +90,9 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         this.browseBtn = new JButton("Browse...");
 
         JPanel detailPane = createOrUpdateSettingsPane();
-        
+
         JTextArea consoleTextArea = new JTextArea();
-        
+
         JScrollPane console = new JScrollPane();
         console.setViewportView(consoleTextArea);
 
@@ -127,7 +127,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         SpringLayout.Constraints detailPaneCons = layout.getConstraints(detailPane);
         detailPaneCons.setX(Spring.constant(15));
         detailPaneCons.setY(Spring.sum(Spring.constant(15), fileTypeComboCons.getConstraint(SpringLayout.SOUTH)));
-        
+
         SpringLayout.Constraints consoleCons = layout.getConstraints(console);
         consoleCons.setX(Spring.sum(Spring.constant(15), detailPaneCons.getConstraint(SpringLayout.EAST)));
         consoleCons.setY(Spring.sum(Spring.constant(15), fileTypeComboCons.getConstraint(SpringLayout.SOUTH)));
@@ -163,12 +163,12 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         detailPane.add(initFieldWrapper());
         detailPane.add(Box.createRigidArea(vpad20));
         detailPane.add(Box.createGlue());
-        
+
         ButtonGroup group1 = new ButtonGroup();
         group1.add(fixedSize);
         group1.add(fixedLines);
         group1.add(averageSize);
-        
+
         return detailPane;
     }
 
@@ -207,9 +207,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
     @Override
     protected void initListener() {
-        FileFilter[] filters = new FileFilter[] {DKSystemUIUtil.createFileFilter("Plain text file format", true, "txt", "log", "csv")};
-
-        browseBtn.addActionListener(new BrowserActionListener(this, filters, false));
+        browseBtn.addActionListener(new BrowserActionListener(this, new FileFilter[0], false));
         applyBtn.addActionListener(new ApplyActionListener(this));
         cancelBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();;
