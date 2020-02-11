@@ -8,7 +8,6 @@ import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.EncodeHintType;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
@@ -43,10 +42,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -76,7 +73,7 @@ import javax.swing.filechooser.FileFilter;
  * @version 1.0.0
  * @time 2019年12月19日 下午10:18:50
  */
-public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFactory {
+public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameChosenable, ThreadFactory {
 
     /** serialVersionUID */
     private static final long serialVersionUID = -4030282787993924346L;
@@ -365,6 +362,11 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
     }
 
     @Override
+    public Component getObj() {
+        return this;
+    }
+
+    @Override
     public void dispose() {
         if (webcam != null && webcam.isOpen()) {
             webcam.close();
@@ -423,4 +425,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, ThreadFact
         t.setDaemon(true);
         return t;
     }
+
+
+
 }

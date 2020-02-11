@@ -43,11 +43,10 @@ import net.coobird.thumbnailator.Thumbnails;
  * @version 1.0.0
  * @time 2019年10月24日 下午9:41:50
  */
-public class LogonImageManageFrame extends DKAbstractFrame {
+public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameChosenable{
 
     /** serialVersionUID */
     private static final long serialVersionUID = 950625064408939379L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogonImageManageFrame.class);
     // file path text
     private JTextField imgFilePathTextField;
     private JButton applyBtn;
@@ -160,6 +159,16 @@ public class LogonImageManageFrame extends DKAbstractFrame {
 
     public JTextField getImgFilePathTextField() {
         return imgFilePathTextField;
+    }
+
+    @Override
+    public void callback() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public Component getObj() {
+        return this;
     }
 }
 
