@@ -6,6 +6,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry excluding="src/main/java/|src/main/resources/|src/test/java/|src/test/resources/" including="LICENSE|pom.xml" kind="src" path=""/>
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
 		<attributes>
