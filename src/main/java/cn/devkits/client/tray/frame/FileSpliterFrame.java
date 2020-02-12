@@ -2,10 +2,12 @@ package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.component.InsetPanel;
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
+import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -13,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,6 +25,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -52,13 +59,17 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     /** serialVersionUID */
     private static final long serialVersionUID = -6345009512566288941L;
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSpliterFrame.class);
+    private final String[] fileTypeItems = new String[] {"TXT File", "Excel File", "More Type..."};
     private final static Dimension hpad10 = new Dimension(10, 1);
     private final static Dimension vpad20 = new Dimension(1, 20);
     private final static Dimension vpad7 = new Dimension(1, 7);
     private final static Dimension vpad4 = new Dimension(1, 4);
     private final static Insets insets = new Insets(5, 10, 0, 10);
-    // file path text
+
+    private JComboBox<String> jComboBox;
     private JTextField chosenFilePath;
+    private JPanel sgmtParamPane;
+    private CardLayout sgmtParamPaneLayout;
     private JButton applyBtn;
     private JButton browseBtn;
     private JButton cancelBtn;
@@ -80,7 +91,8 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         centerPanel.setLayout(layout);
 
         JLabel fileTypeLbl = new JLabel("File Type:");
-        JComboBox<String> jComboBox = new JComboBox<String>(new String[] {"TXT File"});
+
+        jComboBox = new JComboBox<String>(fileTypeItems);
         jComboBox.setLightWeightPopupEnabled(false);
 
         JLabel filePathLbl = new JLabel("File Path:");
@@ -89,7 +101,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
         this.browseBtn = new JButton("Browse...");
 
-        JPanel detailPane = createOrUpdateSettingsPane();
+        JPanel detailPane = createOrUpdateSegmentPane();
 
         JTextArea consoleTextArea = new JTextArea();
 
@@ -143,22 +155,44 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         jRootPane.add(createButtonPanel(jRootPane), BorderLayout.PAGE_END);
     }
 
-    private JPanel createOrUpdateSettingsPane() {
+    private JPanel createOrUpdateSegmentPane() {
+        sgmtParamPane = new JPanel();
+        sgmtParamPaneLayout = new CardLayout();
+        sgmtParamPane.setLayout(sgmtParamPaneLayout);
+
+        JPanel detailSgmtPane = createTxtSplitSegmentPane();
+        JPanel excelSgmtPane = createExcelSplitSegmentPane();
+        sgmtParamPane.add(detailSgmtPane, fileTypeItems[0]);
+        sgmtParamPane.add(excelSgmtPane, fileTypeItems[1]);
+
+        return sgmtParamPane;
+    }
+
+    private JPanel createExcelSplitSegmentPane() {
+        JLabel jLabel = new JLabel("It will come soon...");
+        JPanel jPanel = new JPanel();
+        jPanel.setLayout(new BorderLayout());
+        jPanel.add(jLabel);
+        return jPanel;
+    }
+
+    private JPanel createTxtSplitSegmentPane() {
         JPanel detailPane = new InsetPanel(insets);
-        detailPane.setBorder(BorderFactory.createTitledBorder("Segment parameter"));
+        detailPane.setBorder(BorderFactory.createTitledBorder("Segment Parameter"));
 
         detailPane.setLayout(new BoxLayout(detailPane, BoxLayout.Y_AXIS));
         detailPane.add(Box.createRigidArea(vpad20));
-        JRadioButton fixedSize = new JRadioButton("Fixed Size (KB)");
-        detailPane.add(fixedSize);
+        JRadioButton averageSize = new JRadioButton("Segments(Recommend)");
+        averageSize.setSelected(true);
+        detailPane.add(averageSize);
         detailPane.add(Box.createRigidArea(vpad4));
         detailPane.add(initFieldWrapper());
         JRadioButton fixedLines = new JRadioButton("Fixed Lines");
         detailPane.add(fixedLines);
         detailPane.add(Box.createRigidArea(vpad4));
         detailPane.add(initFieldWrapper());
-        JRadioButton averageSize = new JRadioButton("Segments");
-        detailPane.add(averageSize);
+        JRadioButton fixedSize = new JRadioButton("Fixed Size (KB)");
+        detailPane.add(fixedSize);
         detailPane.add(Box.createRigidArea(vpad4));
         detailPane.add(initFieldWrapper());
         detailPane.add(Box.createRigidArea(vpad20));
@@ -168,7 +202,6 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         group1.add(fixedSize);
         group1.add(fixedLines);
         group1.add(averageSize);
-
         return detailPane;
     }
 
@@ -178,7 +211,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         fieldWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
         fieldWrapper.add(Box.createRigidArea(hpad10));
         fieldWrapper.add(Box.createRigidArea(hpad10));
-        fieldWrapper.add(new JTextField(9));
+        fieldWrapper.add(new JTextField(10));
         return fieldWrapper;
     }
 
@@ -205,8 +238,32 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         return buttonPane;
     }
 
+    private void updateSegmentPane(String paneName) {
+        sgmtParamPaneLayout.show(sgmtParamPane, paneName);
+    }
+
     @Override
     protected void initListener() {
+        jComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    String itemText = (String) e.getItem();
+                    int fileTypeIndex = Arrays.binarySearch(fileTypeItems, itemText);
+                    if (fileTypeIndex == fileTypeItems.length - 1) {
+                        String issueUri = DKConfigUtil.getInstance().getIssueUri();
+                        try {
+                            URI uri = new URI(issueUri);
+                            DKSystemUIUtil.browseURL(uri);
+                        } catch (URISyntaxException e1) {
+                            LOGGER.error("URI convert failed: {}", issueUri);
+                        }
+                    } else {
+                        updateSegmentPane(itemText);
+                    }
+                }
+            }
+        });
         browseBtn.addActionListener(new BrowserActionListener(this, new FileFilter[0], false));
         applyBtn.addActionListener(new ApplyActionListener(this));
         cancelBtn.addActionListener(e -> {

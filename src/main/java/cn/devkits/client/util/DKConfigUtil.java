@@ -1,6 +1,7 @@
 package cn.devkits.client.util;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Properties;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -71,9 +72,13 @@ public class DKConfigUtil {
         sb.append(model.getUrl());
         sb.append("</a>");
         sb.append("<br/>");
-        sb.append("Issue: <a href='https://github.com/qmjy/DevKits/issues'>https://github.com/qmjy/DevKits/issues</a>");
+        sb.append("Issue: <a href='" + getIssueUri() + "'>" + getIssueUri() + "</a>");
 
         return sb.toString();
+    }
+
+    public String getIssueUri() {
+        return model.getIssueManagement().getUrl();
     }
 
 }

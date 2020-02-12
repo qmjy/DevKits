@@ -2,7 +2,11 @@ package cn.devkits.client.util;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Enumeration;
 import javax.swing.JTable;
 import javax.swing.JTree;
@@ -14,10 +18,23 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import cn.devkits.client.tray.frame.AboutFrame;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * 系统UI工具类
+ * @author Shaofeng Liu
+ * @version 1.0.0
+ * @time 2020年1月12日 下午1:05:12
+ */
 public final class DKSystemUIUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUIUtil.class);
+
     /**
      * 表格头列自适应
      * 
@@ -75,6 +92,24 @@ public final class DKSystemUIUtil {
         } else {
             tree.collapsePath(parent);
         }
+    }
+
+
+    /**
+     * 使用系统浏览器打开指定网址
+     * @param uri 待打开的网址
+     * @return 打开是否成功
+     */
+    public static boolean browseURL(URI uri) {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(uri);
+                return true;
+            } catch (IOException e1) {
+                LOGGER.error("Open url '{}' failed: {}", uri, e1.getMessage());
+            }
+        }
+        return false;
     }
 
     public static void setContainerSize(Container parent, int pad) {

@@ -150,6 +150,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
         fileSizeUnitComboBox = new JComboBox<String>(FILE_UNITS);
         fileSizeUnitComboBox.setLightWeightPopupEnabled(false);
+        fileSizeUnitComboBox.setSelectedIndex(2);//默认选中MB单位
         northRootPane.add(fileSizeUnitComboBox);
 
         startCancelBtn = new JButton("Start");
@@ -242,7 +243,6 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
                 jtreeMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
-
     }
 
     public void initDataModel() {

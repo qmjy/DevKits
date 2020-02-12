@@ -98,5 +98,6 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      */
     protected abstract void initListener();
 
+  
 
 }

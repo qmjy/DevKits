@@ -1,5 +1,14 @@
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.util.DKConfigUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSystemUtil;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -7,6 +16,7 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -15,6 +25,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
@@ -23,17 +34,6 @@ import javax.swing.JTable;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import cn.devkits.client.tray.listener.TrayItemWindowListener;
-import cn.devkits.client.util.DKConfigUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
-import com.sun.jna.platform.FileMonitor.FileListener;
 
 /**
  * 
@@ -51,7 +51,6 @@ public class AboutFrame extends DKAbstractFrame {
 
     public AboutFrame() {
         super("About Devkits", 0.7f, 0.6f);
-
 
         initUI(getRootPane());
         initListener();
@@ -130,14 +129,14 @@ public class AboutFrame extends DKAbstractFrame {
         jEditorPane.setText(DKConfigUtil.getInstance().getAboutHtml());
         jEditorPane.addHyperlinkListener(e -> {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                if (Desktop.isDesktopSupported()) {
-                    try {
-                        Desktop.getDesktop().browse(e.getURL().toURI());
-                    } catch (IOException e1) {
-                        LOGGER.error("Open url failed: " + e1.getMessage());
-                    } catch (URISyntaxException e1) {
-                        LOGGER.error("URL exception: " + e1.getMessage());
+                try {
+                    URI uri = e.getURL().toURI();
+                    boolean browseURL = DKSystemUIUtil.browseURL(uri);
+                    if (!browseURL) {
+                        JOptionPane.showMessageDialog(this, "Open URL with system browser failed: " + uri, "Browse URL Failed", JOptionPane.ERROR_MESSAGE);
                     }
+                } catch (URISyntaxException e1) {
+                    LOGGER.error("URL exception: " + e1.getMessage());
                 }
             }
         });
@@ -217,6 +216,8 @@ public class AboutFrame extends DKAbstractFrame {
 
     @Override
     protected void initListener() {}
+
+
 }
 
 
