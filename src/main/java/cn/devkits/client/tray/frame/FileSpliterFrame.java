@@ -1,5 +1,6 @@
 package cn.devkits.client.tray.frame;
 
+import static javax.swing.JFileChooser.OPEN_DIALOG;
 import cn.devkits.client.component.InsetPanel;
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
 import cn.devkits.client.util.DKConfigUtil;
@@ -28,12 +29,15 @@ import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -41,6 +45,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.filechooser.FileFilter;
@@ -62,7 +67,6 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private final String[] fileTypeItems = new String[] {"TXT File", "Excel File", "More Type..."};
     private final static Dimension hpad10 = new Dimension(10, 1);
     private final static Dimension vpad20 = new Dimension(1, 20);
-    private final static Dimension vpad7 = new Dimension(1, 7);
     private final static Dimension vpad4 = new Dimension(1, 4);
     private final static Insets insets = new Insets(5, 10, 0, 10);
 
@@ -70,9 +74,20 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private JTextField chosenFilePath;
     private JPanel sgmtParamPane;
     private CardLayout sgmtParamPaneLayout;
+
+    private Map<JRadioButton, JTextField> mapping = new HashMap<JRadioButton, JTextField>();
+
+    /** text split start */
+    private JRadioButton averageSizeBtn;
+    private JRadioButton fixedLinesBtn;
+    private JRadioButton fixedSizeBtn;
+    /** text split end */
+
+    private JRadioButton current;
+
     private JButton applyBtn;
     private JButton browseBtn;
-    private JButton cancelBtn;
+    private JButton closeBtn;
 
     public FileSpliterFrame() {
         super("File Spliter", 0.7f, 0.55f);
@@ -169,7 +184,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     }
 
     private JPanel createExcelSplitSegmentPane() {
-        JLabel jLabel = new JLabel("It will come soon...");
+        JLabel jLabel = new JLabel("It will be come soon...");
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new BorderLayout());
         jPanel.add(jLabel);
@@ -178,40 +193,45 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
     private JPanel createTxtSplitSegmentPane() {
         JPanel detailPane = new InsetPanel(insets);
-        detailPane.setBorder(BorderFactory.createTitledBorder("Segment Parameter"));
 
+        detailPane.setBorder(BorderFactory.createTitledBorder("Segment Parameter"));
         detailPane.setLayout(new BoxLayout(detailPane, BoxLayout.Y_AXIS));
         detailPane.add(Box.createRigidArea(vpad20));
-        JRadioButton averageSize = new JRadioButton("Segments(Recommend)");
-        averageSize.setSelected(true);
-        detailPane.add(averageSize);
+        averageSizeBtn = new JRadioButton("Segments(Recommend)");
+        averageSizeBtn.setSelected(true);
+        detailPane.add(averageSizeBtn);
         detailPane.add(Box.createRigidArea(vpad4));
-        detailPane.add(initFieldWrapper());
-        JRadioButton fixedLines = new JRadioButton("Fixed Lines");
-        detailPane.add(fixedLines);
+        detailPane.add(initFieldWrapper(averageSizeBtn));
+        fixedLinesBtn = new JRadioButton("Fixed Lines");
+        detailPane.add(fixedLinesBtn);
         detailPane.add(Box.createRigidArea(vpad4));
-        detailPane.add(initFieldWrapper());
-        JRadioButton fixedSize = new JRadioButton("Fixed Size (KB)");
-        detailPane.add(fixedSize);
+        detailPane.add(initFieldWrapper(fixedLinesBtn));
+        fixedSizeBtn = new JRadioButton("Fixed Size (KB)");
+        detailPane.add(fixedSizeBtn);
         detailPane.add(Box.createRigidArea(vpad4));
-        detailPane.add(initFieldWrapper());
+        detailPane.add(initFieldWrapper(fixedSizeBtn));
         detailPane.add(Box.createRigidArea(vpad20));
         detailPane.add(Box.createGlue());
 
         ButtonGroup group1 = new ButtonGroup();
-        group1.add(fixedSize);
-        group1.add(fixedLines);
-        group1.add(averageSize);
+        group1.add(fixedSizeBtn);
+        group1.add(fixedLinesBtn);
+        group1.add(averageSizeBtn);
         return detailPane;
     }
 
-    private JPanel initFieldWrapper() {
+    private JPanel initFieldWrapper(JRadioButton jRadioButton) {
         JPanel fieldWrapper = new JPanel();
         fieldWrapper.setLayout(new BoxLayout(fieldWrapper, BoxLayout.X_AXIS));
         fieldWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
         fieldWrapper.add(Box.createRigidArea(hpad10));
         fieldWrapper.add(Box.createRigidArea(hpad10));
-        fieldWrapper.add(new JTextField(10));
+        JTextField comp = new JTextField(10);
+        comp.setEnabled(averageSizeBtn == jRadioButton);// 默认选中平均分配时，输入框可用，其他情况不可用
+        fieldWrapper.add(comp);
+
+        mapping.put(jRadioButton, comp);
+
         return fieldWrapper;
     }
 
@@ -232,8 +252,8 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        this.cancelBtn = new JButton("Cancel");
-        buttonPane.add(cancelBtn);
+        this.closeBtn = new JButton("Close");
+        buttonPane.add(closeBtn);
 
         return buttonPane;
     }
@@ -244,6 +264,11 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
     @Override
     protected void initListener() {
+        OptionListener optionListener = new OptionListener(this);
+        averageSizeBtn.addActionListener(optionListener);
+        fixedLinesBtn.addActionListener(optionListener);
+        fixedSizeBtn.addActionListener(optionListener);
+
         jComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -266,7 +291,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         });
         browseBtn.addActionListener(new BrowserActionListener(this, new FileFilter[0], false));
         applyBtn.addActionListener(new ApplyActionListener(this));
-        cancelBtn.addActionListener(e -> {
+        closeBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();;
             Container parent = btn.getParent().getParent().getParent();
             if (parent instanceof FileSpliterFrame) {
@@ -294,6 +319,14 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     public void callback() {
         // TODO Auto-generated method stub
     }
+
+    public Map<JRadioButton, JTextField> getMapping() {
+        return mapping;
+    }
+
+    public void updateCurrentJRadioBtn(JRadioButton c) {
+        this.current = c;
+    }
 }
 
 
@@ -316,26 +349,41 @@ class ApplyActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String filePath = frame.getChosenFilePath().getText();
 
-        File file = new File(filePath);
-        String name = file.getName();
 
-        BufferedReader reader = null;
-        BufferedWriter writer = null;
-        try {
-            reader = new BufferedReader(new FileReader(file));
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name), "UTF-8"));
+    }
+}
 
-            char[] charArray = new char[1024 * 1024 * 5];
-            int size = 0;
-            while ((size = reader.read(charArray, 0, charArray.length)) != -1) {
-                writer.write(charArray, 0, size);
-            }
 
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+/**
+ * 事件监听器
+ * @author Shaofeng Liu
+ * @version 1.0.1
+ * @time 2020年2月13日 下午11:27:57
+ */
+class OptionListener implements ActionListener {
+
+    private FileSpliterFrame fileSpliterFrame;
+
+    public OptionListener(FileSpliterFrame fileSpliterFrame) {
+        this.fileSpliterFrame = fileSpliterFrame;
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JComponent c = (JComponent) e.getSource();
+        boolean selected = false;
+        if (c instanceof JToggleButton) {
+            selected = ((JToggleButton) c).isSelected();
+        }
+
+        fileSpliterFrame.getMapping().values().stream().forEach(jTextField -> {
+            jTextField.setEnabled(false);
+        });
+
+        JTextField jTextField = fileSpliterFrame.getMapping().get(c);
+        jTextField.setEnabled(true);
+
+
+        fileSpliterFrame.updateCurrentJRadioBtn((JRadioButton) c);
+    }
 }
