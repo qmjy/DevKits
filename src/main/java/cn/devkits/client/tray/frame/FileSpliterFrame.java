@@ -3,6 +3,11 @@ package cn.devkits.client.tray.frame;
 import static javax.swing.JFileChooser.OPEN_DIALOG;
 import cn.devkits.client.component.InsetPanel;
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
+import cn.devkits.client.tray.listener.FileSplitSegmentsParamCheckListener;
+import cn.devkits.client.tray.model.FileSpliterModel;
+import cn.devkits.client.tray.pattern.ExcelFileSpliterStrategyImpl;
+import cn.devkits.client.tray.pattern.FileSpliterStrategy;
+import cn.devkits.client.tray.pattern.TextFileSpliterStrategyImpl;
 import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import org.slf4j.Logger;
@@ -65,6 +70,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private static final long serialVersionUID = -6345009512566288941L;
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSpliterFrame.class);
     private final String[] fileTypeItems = new String[] {"TXT File", "Excel File", "More Type..."};
+    private final String[] textFileSpliterParamTypes = new String[] {"Segments(Recommend)", "Fixed Lines", "Fixed Size (KB)"};
     private final static Dimension hpad10 = new Dimension(10, 1);
     private final static Dimension vpad20 = new Dimension(1, 20);
     private final static Dimension vpad4 = new Dimension(1, 4);
@@ -83,6 +89,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private JRadioButton fixedSizeBtn;
     /** text split end */
 
+    private String currentFileType;
     private JRadioButton current;
 
     private JButton applyBtn;
@@ -197,19 +204,19 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         detailPane.setBorder(BorderFactory.createTitledBorder("Segment Parameter"));
         detailPane.setLayout(new BoxLayout(detailPane, BoxLayout.Y_AXIS));
         detailPane.add(Box.createRigidArea(vpad20));
-        averageSizeBtn = new JRadioButton("Segments(Recommend)");
+        averageSizeBtn = new JRadioButton(textFileSpliterParamTypes[0]);
         averageSizeBtn.setSelected(true);
         detailPane.add(averageSizeBtn);
         detailPane.add(Box.createRigidArea(vpad4));
-        detailPane.add(initFieldWrapper(averageSizeBtn));
-        fixedLinesBtn = new JRadioButton("Fixed Lines");
+        detailPane.add(initFieldWrapper(averageSizeBtn, Integer.class));
+        fixedLinesBtn = new JRadioButton(textFileSpliterParamTypes[1]);
         detailPane.add(fixedLinesBtn);
         detailPane.add(Box.createRigidArea(vpad4));
-        detailPane.add(initFieldWrapper(fixedLinesBtn));
-        fixedSizeBtn = new JRadioButton("Fixed Size (KB)");
+        detailPane.add(initFieldWrapper(fixedLinesBtn, Integer.class));
+        fixedSizeBtn = new JRadioButton(textFileSpliterParamTypes[2]);
         detailPane.add(fixedSizeBtn);
         detailPane.add(Box.createRigidArea(vpad4));
-        detailPane.add(initFieldWrapper(fixedSizeBtn));
+        detailPane.add(initFieldWrapper(fixedSizeBtn, Float.class));
         detailPane.add(Box.createRigidArea(vpad20));
         detailPane.add(Box.createGlue());
 
@@ -220,7 +227,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         return detailPane;
     }
 
-    private JPanel initFieldWrapper(JRadioButton jRadioButton) {
+    private JPanel initFieldWrapper(JRadioButton jRadioButton, Class<?> clazz) {
         JPanel fieldWrapper = new JPanel();
         fieldWrapper.setLayout(new BoxLayout(fieldWrapper, BoxLayout.X_AXIS));
         fieldWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -228,6 +235,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         fieldWrapper.add(Box.createRigidArea(hpad10));
         JTextField comp = new JTextField(10);
         comp.setEnabled(averageSizeBtn == jRadioButton);// 默认选中平均分配时，输入框可用，其他情况不可用
+        comp.addKeyListener(new FileSplitSegmentsParamCheckListener(this,clazz));
         fieldWrapper.add(comp);
 
         mapping.put(jRadioButton, comp);
@@ -327,6 +335,22 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     public void updateCurrentJRadioBtn(JRadioButton c) {
         this.current = c;
     }
+
+    public String getCurrentFileType() {
+        return currentFileType;
+    }
+
+    public JRadioButton getCurrent() {
+        return current;
+    }
+
+    public String[] getFileTypeItems() {
+        return fileTypeItems;
+    }
+
+    public String[] getTextFileSpliterParamTypes() {
+        return textFileSpliterParamTypes;
+    }
 }
 
 
@@ -347,9 +371,21 @@ class ApplyActionListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String filePath = frame.getChosenFilePath().getText();
+        JRadioButton current = frame.getCurrent();
+        String param = frame.getMapping().get(current).getText();
 
-
+        FileSpliterStrategy strategy = null;
+        switch (Arrays.binarySearch(frame.getFileTypeItems(), frame.getCurrentFileType())) {
+            case 0:
+                strategy = new TextFileSpliterStrategyImpl(frame.getTextFileSpliterParamTypes(), current, param);
+                break;
+            case 1:
+                strategy = new ExcelFileSpliterStrategyImpl();
+                break;
+            default:
+                break;
+        }
+        strategy.execute(new FileSpliterModel(frame.getChosenFilePath().getText()));
     }
 }
 
@@ -382,7 +418,6 @@ class OptionListener implements ActionListener {
 
         JTextField jTextField = fileSpliterFrame.getMapping().get(c);
         jTextField.setEnabled(true);
-
 
         fileSpliterFrame.updateCurrentJRadioBtn((JRadioButton) c);
     }

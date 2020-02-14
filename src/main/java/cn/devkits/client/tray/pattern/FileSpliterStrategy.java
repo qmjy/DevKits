@@ -1,5 +1,7 @@
 package cn.devkits.client.tray.pattern;
 
+import cn.devkits.client.tray.model.FileSpliterModel;
+
 /**
  * 
  * 文件分割策略
@@ -18,5 +20,8 @@ public interface FileSpliterStrategy {
      * 分割为固定大小段的文件
      * @param size 指定大小的
      */
-    void segmentSplitBySize(int size);
+    void segmentSplitBySize(float size);
+
+
+    void execute(FileSpliterModel splitModel);
 }
