@@ -1,7 +1,6 @@
 package cn.devkits.client.tray.pattern;
 
 import cn.devkits.client.tray.model.FileSpliterModel;
-import java.io.File;
 import javax.swing.JRadioButton;
 
 /**
@@ -10,8 +9,8 @@ import javax.swing.JRadioButton;
  * @version 1.0.1
  * @time 2020年2月14日 下午12:08:29
  */
-public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy {
-    
+public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy implements Runnable {
+
     private FileSpliterModel splitModel;
     private String[] strategyNames;
     private JRadioButton current;
@@ -26,7 +25,34 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy {
     @Override
     public void execute(FileSpliterModel splitModel) {
         this.splitModel = splitModel;
+        new Thread(this, "text-file-spliter-thread").start();
+    }
 
+    @Override
+    public void segmentSplit(int n) {
+        splitModel.addMsg("Start to split file with segment: " + n);
+        long length = splitModel.getFile().length();
+        segmentSplitBySize(length / n);
+    }
+
+    @Override
+    public void segmentSplitByFixedSize(float size) {
+        splitModel.addMsg("Start to split file with fixed size: " + size + " KB");
+    }
+
+    @Override
+    void segmentSplitByLines(int line) {
+        splitModel.addMsg("Start to split file with fixed lines: " + line);
+        splitModel.updateStatus(true);
+    }
+
+    private void segmentSplitBySize(float size) {
+        splitModel.addMsg("Orignal file size: " + splitModel.getFile().length());
+        splitModel.updateStatus(true);
+    }
+
+    @Override
+    public void run() {
         if (strategyNames[0].equals(current.getText())) {
             segmentSplit(Integer.parseInt(param));
         } else if (strategyNames[1].equals(current.getText())) {
@@ -34,23 +60,5 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy {
         } else {
             segmentSplitByLines(Integer.parseInt(param));
         }
-    }
-
-    @Override
-    public void segmentSplit(int n) {
-        long length = splitModel.getFile().length();
-        segmentSplitBySize(length / n);
-    }
-
-    @Override
-    public void segmentSplitBySize(float size) {
-
-    }
-
-
-    @Override
-    void segmentSplitByLines(int line) {
-        // TODO Auto-generated method stub
-
     }
 }

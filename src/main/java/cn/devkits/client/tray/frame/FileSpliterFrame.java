@@ -1,6 +1,5 @@
 package cn.devkits.client.tray.frame;
 
-import static javax.swing.JFileChooser.OPEN_DIALOG;
 import cn.devkits.client.component.InsetPanel;
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
 import cn.devkits.client.tray.listener.FileSplitSegmentsParamCheckListener;
@@ -9,12 +8,12 @@ import cn.devkits.client.tray.pattern.ExcelFileSpliterStrategyImpl;
 import cn.devkits.client.tray.pattern.FileSpliterStrategy;
 import cn.devkits.client.tray.pattern.TextFileSpliterStrategyImpl;
 import cn.devkits.client.util.DKConfigUtil;
+import cn.devkits.client.util.DKStringUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -23,14 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -80,6 +71,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private JTextField chosenFilePath;
     private JPanel sgmtParamPane;
     private CardLayout sgmtParamPaneLayout;
+    private JTextArea consoleTextArea;
 
     private Map<JRadioButton, JTextField> mapping = new HashMap<JRadioButton, JTextField>();
 
@@ -89,7 +81,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private JRadioButton fixedSizeBtn;
     /** text split end */
 
-    private String currentFileType;
+    private String currentFileType = fileTypeItems[0];
     private JRadioButton current;
 
     private JButton applyBtn;
@@ -125,7 +117,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
         JPanel detailPane = createOrUpdateSegmentPane();
 
-        JTextArea consoleTextArea = new JTextArea();
+        this.consoleTextArea = new JTextArea();
 
         JScrollPane console = new JScrollPane();
         console.setViewportView(consoleTextArea);
@@ -206,6 +198,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         detailPane.add(Box.createRigidArea(vpad20));
         averageSizeBtn = new JRadioButton(textFileSpliterParamTypes[0]);
         averageSizeBtn.setSelected(true);
+        this.current = averageSizeBtn;
         detailPane.add(averageSizeBtn);
         detailPane.add(Box.createRigidArea(vpad4));
         detailPane.add(initFieldWrapper(averageSizeBtn, Integer.class));
@@ -235,7 +228,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         fieldWrapper.add(Box.createRigidArea(hpad10));
         JTextField comp = new JTextField(10);
         comp.setEnabled(averageSizeBtn == jRadioButton);// 默认选中平均分配时，输入框可用，其他情况不可用
-        comp.addKeyListener(new FileSplitSegmentsParamCheckListener(this,clazz));
+        comp.addKeyListener(new FileSplitSegmentsParamCheckListener(this, clazz));
         fieldWrapper.add(comp);
 
         mapping.put(jRadioButton, comp);
@@ -351,6 +344,14 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     public String[] getTextFileSpliterParamTypes() {
         return textFileSpliterParamTypes;
     }
+
+    public void updateApplyBtnState(boolean b) {
+        this.applyBtn.setEnabled(b);
+    }
+
+    public void updateConsole(String text) {
+        consoleTextArea.append(text);
+    }
 }
 
 
@@ -373,6 +374,7 @@ class ApplyActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JRadioButton current = frame.getCurrent();
         String param = frame.getMapping().get(current).getText();
+        FileSpliterModel splitModel = new FileSpliterModel(frame.getChosenFilePath().getText());
 
         FileSpliterStrategy strategy = null;
         switch (Arrays.binarySearch(frame.getFileTypeItems(), frame.getCurrentFileType())) {
@@ -385,7 +387,13 @@ class ApplyActionListener implements ActionListener {
             default:
                 break;
         }
-        strategy.execute(new FileSpliterModel(frame.getChosenFilePath().getText()));
+        strategy.execute(splitModel);
+
+        while (!(splitModel.isFinished() && splitModel.isMsgEmpty())) {
+            String text = splitModel.pollMsg();
+            frame.updateConsole(text);
+            DKStringUtil.sleep(50);
+        }
     }
 }
 

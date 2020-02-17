@@ -23,4 +23,16 @@ public class DKStringUtilTest {
         assertEquals(42, xmlFormat.split("\\n").length);
     }
 
+    @Test
+    public void testIsPositiveInt() {
+        assertTrue(DKStringUtil.isPositiveInt("999999999999999"));
+        assertTrue(DKStringUtil.isPositiveInt("1"));
+        assertFalse(DKStringUtil.isPositiveInt("0"));
+        assertFalse(DKStringUtil.isPositiveInt("-1"));
+        assertFalse(DKStringUtil.isPositiveInt("j"));
+        assertFalse(DKStringUtil.isPositiveInt("("));
+        assertFalse(DKStringUtil.isPositiveInt(null));
+        assertFalse(DKStringUtil.isPositiveInt(""));
+    }
+
 }

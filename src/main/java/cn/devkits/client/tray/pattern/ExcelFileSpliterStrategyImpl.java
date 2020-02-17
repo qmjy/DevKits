@@ -11,7 +11,7 @@ public class ExcelFileSpliterStrategyImpl extends ExcelFileSpliterStrategy {
     }
 
     @Override
-    public void segmentSplitBySize(float size) {
+    public void segmentSplitByFixedSize(float size) {
         // TODO Auto-generated method stub
 
     }

@@ -1,13 +1,14 @@
 package cn.devkits.client.tray.model;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class FileSpliterModel {
     // 待分割的文件
     private File file;
     // 分割过程中需要显示的控制台消息
-    private Vector<String> msg = new Vector<String>();
+    private Queue<String> msgs = new LinkedBlockingQueue<String>();
     // 是否分割结束
     private boolean finished;
 
@@ -15,14 +16,47 @@ public class FileSpliterModel {
         this.file = new File(filePath);
     }
 
+    /**
+     * 获取结果输出文件夹
+     * @return 结果输出文件夹
+     */
     public String getOutputFolder() {
-        return "";
+        File parentFile = file.getParentFile();
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+        return file.getParent();
+    }
+
+    /**
+     * 添加消息
+     * @param msg 待显示到控制台的消息
+     */
+    public void addMsg(String msg) {
+        msgs.add(msg);
+    }
+
+    /**
+     * 获取控制台消息
+     */
+    public String pollMsg() {
+        return msgs.poll();
+    }
+
+    public boolean isMsgEmpty() {
+        return msgs.isEmpty();
     }
 
     public File getFile() {
         return file;
     }
 
+    public boolean isFinished() {
+        return finished;
+    }
 
+    public void updateStatus(boolean b) {
+        this.finished = b;
+    }
 
 }

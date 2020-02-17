@@ -1,8 +1,11 @@
 package cn.devkits.client.util;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import com.google.common.net.InetAddresses;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -10,12 +13,10 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.net.InetAddresses;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -30,6 +31,10 @@ public class DKStringUtil {
     public static final String REG_EXP_MAC = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
     public static final String REG_EXP_IPV4 = "\"^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$\"";
     public static final String REG_EXP_DOMAIN = "^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$";
+    /** 正整数 */
+    public static final String REG_NUM_INT_POSITIVE = "^[1-9]\\d*";
+
+    private static Float valueOf;
 
     /**
      * Returns true if the supplied string is a valid IP string literal, false otherwise.
@@ -68,6 +73,36 @@ public class DKStringUtil {
      */
     public static boolean ipCheckWithRegExp(String str) {
         return str.matches(REG_EXP_IPV4);
+    }
+
+    /**
+     * 校验一个字符串是否为正整数
+     * @param input 待校验的字符串
+     * @return 是否是正整数
+     */
+    public static boolean isPositiveInt(String input) {
+        if (input == null) {
+            return false;
+        }
+        return input.matches(REG_NUM_INT_POSITIVE);
+    }
+
+    /**
+     * 判断输入字符串是否是正单浮点数
+     * @param input 待校验的输入
+     * @return 是否是正浮点数
+     */
+    public static boolean isPositiveFloat(String input) {
+        try {
+            Float valueOf2 = Float.valueOf(input);
+            if (valueOf2 > 0) {
+                return true;
+            }
+            return false;
+        } catch (NumberFormatException e) {
+            LOGGER.debug("Fomat float value failed: {}", input);
+        }
+        return false;
     }
 
     /**
@@ -130,6 +165,14 @@ public class DKStringUtil {
             IoUtils.closeQuietly(writer);
         }
         return out.toString();
+    }
+
+    public static void sleep(int i) {
+        try {
+            TimeUnit.MILLISECONDS.sleep(i);
+        } catch (InterruptedException e) {
+            LOGGER.error("System sleep Failed: {}", i);
+        }
     }
 
 
