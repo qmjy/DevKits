@@ -1,14 +1,13 @@
 package cn.devkits.client.tray.model;
 
+import cn.devkits.client.util.DKDateTimeUtil;
+import cn.devkits.client.util.DKFileUtil;
 import java.io.File;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.table.AbstractTableModel;
-import cn.devkits.client.util.DKDateTimeUtil;
-import cn.devkits.client.util.DKFileUtil;
-import oshi.util.FormatUtil;
 
 public class LargeDuplicateFilesTableModel extends AbstractTableModel {
 
@@ -50,7 +49,7 @@ public class LargeDuplicateFilesTableModel extends AbstractTableModel {
             case 1:
                 return file.getParent();
             case 2:
-                return FormatUtil.formatBytes(file.length());
+                return DKFileUtil.formatBytes(file.length());
             case 3:
                 Optional<BasicFileAttributes> fileAttr = DKFileUtil.getFileAttr(file);
                 if (fileAttr.isPresent()) {

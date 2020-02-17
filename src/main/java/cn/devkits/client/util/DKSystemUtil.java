@@ -9,6 +9,7 @@ import java.time.Instant;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import org.bridj.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
@@ -74,6 +75,21 @@ public final class DKSystemUtil {
     public static boolean isRunWithJar() {
         String protocol = DKSystemUtil.class.getResource("").getProtocol();
         return "jar".equals(protocol);
+    }
+
+    /**
+     * 搜索指定对象在数组的索引位置
+     * @param array 待搜索的数组
+     * @param key 待搜索的对象
+     * @return 索引
+     */
+    public static int arraysSearch(String[] array, String key) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(key)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -171,7 +187,13 @@ public final class DKSystemUtil {
      * @return 当前系统是否是windows
      */
     public static boolean isWindows() {
-        return System.getProperties().getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1;
+        // return System.getProperties().getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1;
+        return Platform.isWindows();
+    }
+
+
+    public static boolean isWindow7() {
+        return Platform.isWindows7();
     }
 
     /**

@@ -8,8 +8,10 @@ import cn.devkits.client.tray.pattern.ExcelFileSpliterStrategyImpl;
 import cn.devkits.client.tray.pattern.FileSpliterStrategy;
 import cn.devkits.client.tray.pattern.TextFileSpliterStrategyImpl;
 import cn.devkits.client.util.DKConfigUtil;
+import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKStringUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.awt.BorderLayout;
@@ -83,10 +85,13 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
     private String currentFileType = fileTypeItems[0];
     private JRadioButton current;
+    private FileSpliterModel splitModel;
 
+    private JButton openResultBtn;
     private JButton applyBtn;
     private JButton browseBtn;
     private JButton closeBtn;
+
 
     public FileSpliterFrame() {
         super("File Spliter", 0.7f, 0.55f);
@@ -241,9 +246,9 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
-        JButton note = new JButton("Open Result");
-        note.setEnabled(false);
-        buttonPane.add(note);
+        openResultBtn = new JButton("Open Result");
+        openResultBtn.setEnabled(false);
+        buttonPane.add(openResultBtn);
 
         buttonPane.add(Box.createHorizontalGlue());
 
@@ -291,6 +296,12 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
             }
         });
         browseBtn.addActionListener(new BrowserActionListener(this, new FileFilter[0], false));
+        openResultBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DKFileUtil.openFile(splitModel.getOutputFolder());
+            }
+        });
         applyBtn.addActionListener(new ApplyActionListener(this));
         closeBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();;
@@ -352,6 +363,11 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     public void updateConsole(String text) {
         consoleTextArea.append(text);
     }
+
+    public void enableOpenResult(FileSpliterModel splitModel) {
+        this.splitModel = splitModel;
+        openResultBtn.setEnabled(true);
+    }
 }
 
 
@@ -377,7 +393,7 @@ class ApplyActionListener implements ActionListener {
         FileSpliterModel splitModel = new FileSpliterModel(frame.getChosenFilePath().getText());
 
         FileSpliterStrategy strategy = null;
-        switch (Arrays.binarySearch(frame.getFileTypeItems(), frame.getCurrentFileType())) {
+        switch (DKSystemUtil.arraysSearch(frame.getFileTypeItems(), frame.getCurrentFileType())) {
             case 0:
                 strategy = new TextFileSpliterStrategyImpl(frame.getTextFileSpliterParamTypes(), current, param);
                 break;
@@ -394,6 +410,8 @@ class ApplyActionListener implements ActionListener {
             frame.updateConsole(text);
             DKStringUtil.sleep(50);
         }
+
+        frame.enableOpenResult(splitModel);
     }
 }
 

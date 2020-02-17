@@ -5,9 +5,15 @@ import cn.devkits.client.util.DKStringUtil;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * 错误校验监听器
+ * @author Shaofeng Liu
+ * @version 1.0.1
+ * @time 2020年2月17日 下午10:51:29
+ */
 public class FileSplitSegmentsParamCheckListener extends KeyAdapter {
 
     private FileSpliterFrame frame;
@@ -19,28 +25,26 @@ public class FileSplitSegmentsParamCheckListener extends KeyAdapter {
         this.inputTextType = clazz;
     }
 
-
     @Override
     public void keyReleased(KeyEvent e) {
         JTextField sourceInput = (JTextField) e.getSource();
         String userInputText = sourceInput.getText();
         if (inputTextType.equals(Integer.class)) {
             if (userInputText.trim().length() == 0 || DKStringUtil.isPositiveInt(userInputText)) {
-                sourceInput.setBorder(null);
+                sourceInput.setBackground(Color.WHITE);
                 frame.updateApplyBtnState(true);
             } else {
-                sourceInput.setBorder(BorderFactory.createLineBorder(Color.RED));
+                sourceInput.setBackground(Color.RED);
                 frame.updateApplyBtnState(false);
             }
         } else if (inputTextType.equals(Float.class)) {
             if (userInputText.trim().length() == 0 || DKStringUtil.isPositiveInt(userInputText) || DKStringUtil.isPositiveFloat(userInputText)) {
-                sourceInput.setBorder(null);
+                sourceInput.setBackground(Color.WHITE);
                 frame.updateApplyBtnState(true);
             } else {
-                sourceInput.setBorder(BorderFactory.createLineBorder(Color.RED));
+                sourceInput.setBackground(Color.RED);
                 frame.updateApplyBtnState(false);
             }
         }
     }
-
 }

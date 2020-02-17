@@ -1,6 +1,7 @@
 package cn.devkits.client.util;
 
 import cn.devkits.client.App;
+import oshi.util.FormatUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.awt.Desktop;
@@ -18,7 +19,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
 import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
-
+/**
+ * 
+ * 文件类工具类
+ * @author Shaofeng Liu
+ * @version 1.0.1
+ * @time 2020年2月17日 下午10:44:09
+ */
 public final class DKFileUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
@@ -100,6 +107,43 @@ public final class DKFileUtil {
         }
     }
 
+    /**
+     * 格式化容量格式
+     * @param bytes 原始long格式
+     * @return 可读的格式
+     */
+    public static String formatBytes(long bytes) {
+        String formatBytes = FormatUtil.formatBytes(bytes);
+        if (DKSystemUtil.isWindows()) {
+            return formatBytes.replace("i", "");
+        }
+        return formatBytes;
+    }
+
+
+    /**
+     * convert file unit to long byte
+     * @param fileUnit file unit of string format
+     * @return long size of the input unit
+     */
+    public static long convertUnti2Val(String fileUnit) {
+        switch (fileUnit) {
+            case "Byte":
+                return 1L;
+            case "KB":
+                return 1L * 1024;
+            case "MB":
+                return 1L * 1024 * 1024;
+            case "GB":
+                return 1L * 1024 * 1024 * 1024;
+            case "TB":
+                return 1L * 1024 * 1024 * 1024 * 1024;
+            case "PB":
+                return 1L * 1024 * 1024 * 1024 * 1024 * 1024;
+            default:
+                return 1L;
+        }
+    }
 
     /**
      * 获取操作系统文件ICON

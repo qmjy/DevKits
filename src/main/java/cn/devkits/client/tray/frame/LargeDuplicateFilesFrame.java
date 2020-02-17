@@ -1,5 +1,10 @@
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.tray.frame.asyn.SearchFileThread;
+import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
+import cn.devkits.client.util.DKFileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -36,11 +41,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import cn.devkits.client.tray.frame.asyn.SearchFileThread;
-import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
-import cn.devkits.client.util.DKFileUtil;
 
 /**
  * 重复大文件检查<br>
@@ -150,7 +150,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
         fileSizeUnitComboBox = new JComboBox<String>(FILE_UNITS);
         fileSizeUnitComboBox.setLightWeightPopupEnabled(false);
-        fileSizeUnitComboBox.setSelectedIndex(2);//默认选中MB单位
+        fileSizeUnitComboBox.setSelectedIndex(2);// 默认选中MB单位
         northRootPane.add(fileSizeUnitComboBox);
 
         startCancelBtn = new JButton("Start");
@@ -398,21 +398,6 @@ class StartEndListener implements ActionListener {
 
     private long convertUnti2Val(LargeDuplicateFilesFrame frame) {
         String fileUnit = (String) frame.getFileSizeUnitComboBox().getSelectedItem();
-        switch (fileUnit) {
-            case "Byte":
-                return 1L;
-            case "KB":
-                return 1L * 1024;
-            case "MB":
-                return 1L * 1024 * 1024;
-            case "GB":
-                return 1L * 1024 * 1024 * 1024;
-            case "TB":
-                return 1L * 1024 * 1024 * 1024 * 1024;
-            case "PB":
-                return 1L * 1024 * 1024 * 1024 * 1024 * 1024;
-            default:
-                return 1L;
-        }
+        return DKFileUtil.convertUnti2Val(fileUnit);
     }
 }

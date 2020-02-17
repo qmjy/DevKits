@@ -14,18 +14,21 @@ public class FileSpliterModel {
 
     public FileSpliterModel(String filePath) {
         this.file = new File(filePath);
+        // TODO 结果文件生成策略
     }
+
 
     /**
      * 获取结果输出文件夹
      * @return 结果输出文件夹
      */
-    public String getOutputFolder() {
+    public File getOutputFolder() {
+        // TODO 结果输出文件夹
         File parentFile = file.getParentFile();
         if (!parentFile.exists()) {
             parentFile.mkdirs();
         }
-        return file.getParent();
+        return parentFile;
     }
 
     /**

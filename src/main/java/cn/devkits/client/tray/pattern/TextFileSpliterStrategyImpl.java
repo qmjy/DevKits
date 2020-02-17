@@ -1,6 +1,8 @@
 package cn.devkits.client.tray.pattern;
 
 import cn.devkits.client.tray.model.FileSpliterModel;
+import cn.devkits.client.util.DKDateTimeUtil;
+import cn.devkits.client.util.DKFileUtil;
 import javax.swing.JRadioButton;
 
 /**
@@ -30,24 +32,26 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
 
     @Override
     public void segmentSplit(int n) {
-        splitModel.addMsg("Start to split file with segment: " + n);
+        splitModel.addMsg("Start to split file with segment: " + n + System.lineSeparator());
         long length = splitModel.getFile().length();
         segmentSplitBySize(length / n);
     }
 
     @Override
     public void segmentSplitByFixedSize(float size) {
-        splitModel.addMsg("Start to split file with fixed size: " + size + " KB");
+        splitModel.addMsg("Start to split file with fixed size: " + size + " KB" + System.lineSeparator());
     }
 
     @Override
     void segmentSplitByLines(int line) {
-        splitModel.addMsg("Start to split file with fixed lines: " + line);
+        splitModel.addMsg("Start to split file with fixed lines: " + line + System.lineSeparator());
         splitModel.updateStatus(true);
     }
 
     private void segmentSplitBySize(float size) {
-        splitModel.addMsg("Orignal file size: " + splitModel.getFile().length());
+        splitModel.addMsg("Orignal file size: " + DKFileUtil.formatBytes(splitModel.getFile().length()) + System.lineSeparator());
+        splitModel.addMsg("Orignal file path: " + splitModel.getFile().getAbsolutePath() + System.lineSeparator());
+        splitModel.addMsg("Start Time: " + DKDateTimeUtil.currentTimeStrWithPattern(DKDateTimeUtil.DATE_TIME_PATTERN_DEFAULT)+ System.lineSeparator());
         splitModel.updateStatus(true);
     }
 
