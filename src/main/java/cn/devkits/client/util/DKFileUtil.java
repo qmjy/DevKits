@@ -19,6 +19,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
 import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
+
 /**
  * 
  * 文件类工具类
@@ -87,6 +88,24 @@ public final class DKFileUtil {
             LOGGER.error("Open file failed: " + file.getAbsolutePath());
         }
         return false;
+    }
+
+    /**
+     * empty folder
+     * @param ouputFolder the folder need to empty
+     */
+    public static void clearFolder(File ouputFolder) {
+        File[] listFiles = ouputFolder.listFiles();
+        for (File file : listFiles) {
+            if (file.isDirectory()) {
+                clearFolder(file);
+            } else {
+                boolean delete = file.delete();
+                if (!delete) {
+                    LOGGER.error("Clear file '{}' from folder '{}' failed!", file.getAbsoluteFile(), ouputFolder.getAbsoluteFile());
+                }
+            }
+        }
     }
 
     /**
@@ -160,4 +179,7 @@ public final class DKFileUtil {
 
         return FileSystemView.getFileSystemView().getSystemIcon(f);
     }
+
+
+
 }

@@ -1,12 +1,21 @@
 package cn.devkits.client.tray.model;
 
+import cn.devkits.client.util.DKFileUtil;
 import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * 
+ * 文件分割模型
+ * @author Shaofeng Liu
+ * @version 1.0.1
+ * @time 2020年2月18日 下午12:04:23
+ */
 public class FileSpliterModel {
     // 待分割的文件
     private File file;
+    private File ouputFolder;
     // 分割过程中需要显示的控制台消息
     private Queue<String> msgs = new LinkedBlockingQueue<String>();
     // 是否分割结束
@@ -14,7 +23,17 @@ public class FileSpliterModel {
 
     public FileSpliterModel(String filePath) {
         this.file = new File(filePath);
-        // TODO 结果文件生成策略
+        this.ouputFolder = new File(file.getPath() + File.separator + file.getName() + "_Result");
+        handlerResultFolder();
+    }
+
+
+    private void handlerResultFolder() {
+        if (ouputFolder.exists()) {
+            DKFileUtil.clearFolder(ouputFolder);
+        } else {
+            ouputFolder.mkdirs();
+        }
     }
 
 
@@ -23,12 +42,7 @@ public class FileSpliterModel {
      * @return 结果输出文件夹
      */
     public File getOutputFolder() {
-        // TODO 结果输出文件夹
-        File parentFile = file.getParentFile();
-        if (!parentFile.exists()) {
-            parentFile.mkdirs();
-        }
-        return parentFile;
+        return ouputFolder;
     }
 
     /**

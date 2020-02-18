@@ -3,6 +3,10 @@ package cn.devkits.client.tray.pattern;
 import cn.devkits.client.tray.model.FileSpliterModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import javax.swing.JRadioButton;
 
 /**
@@ -42,6 +46,7 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
         splitModel.addMsg("Start to split file with fixed size: " + size + " KB" + System.lineSeparator());
     }
 
+    
     @Override
     void segmentSplitByLines(int line) {
         splitModel.addMsg("Start to split file with fixed lines: " + line + System.lineSeparator());
@@ -49,9 +54,20 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
     }
 
     private void segmentSplitBySize(float size) {
-        splitModel.addMsg("Orignal file size: " + DKFileUtil.formatBytes(splitModel.getFile().length()) + System.lineSeparator());
-        splitModel.addMsg("Orignal file path: " + splitModel.getFile().getAbsolutePath() + System.lineSeparator());
+        File originFile = splitModel.getFile();
+        splitModel.addMsg("Orignal file size: " + DKFileUtil.formatBytes(originFile.length()) + System.lineSeparator());
+        splitModel.addMsg("Orignal file path: " + originFile.getAbsolutePath() + System.lineSeparator());
         splitModel.addMsg("Start Time: " + DKDateTimeUtil.currentTimeStrWithPattern(DKDateTimeUtil.DATE_TIME_PATTERN_DEFAULT)+ System.lineSeparator());
+        
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(originFile));
+//            bufferedReader.read(cbuf, off, len);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        splitModel.addMsg("End Time: " + DKDateTimeUtil.currentTimeStrWithPattern(DKDateTimeUtil.DATE_TIME_PATTERN_DEFAULT)+ System.lineSeparator());
         splitModel.updateStatus(true);
     }
 
