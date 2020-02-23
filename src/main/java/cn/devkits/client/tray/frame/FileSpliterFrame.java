@@ -364,10 +364,16 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         consoleTextArea.append(text);
     }
 
+    public void clearConsole() {
+        consoleTextArea.setText("");
+    }
+
     public void enableOpenResult(FileSpliterModel splitModel) {
         this.splitModel = splitModel;
         openResultBtn.setEnabled(true);
     }
+
+
 }
 
 
@@ -404,11 +410,12 @@ class ApplyActionListener implements ActionListener {
                 break;
         }
         strategy.execute(splitModel);
+        frame.clearConsole();
 
         while (!(splitModel.isFinished() && splitModel.isMsgEmpty())) {
             String text = splitModel.pollMsg();
             frame.updateConsole(text);
-            DKStringUtil.sleep(50);
+            DKSystemUtil.sleep(50);
         }
 
         frame.enableOpenResult(splitModel);

@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -209,4 +210,13 @@ public final class DKSystemUtil {
         }
         return processor.toString();
     }
+
+    public static void sleep(int i) {
+        try {
+            TimeUnit.MILLISECONDS.sleep(i);
+        } catch (InterruptedException e) {
+            LOGGER.error("System sleep Failed: {}", i);
+        }
+    }
+
 }

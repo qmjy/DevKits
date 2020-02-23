@@ -167,14 +167,7 @@ public class DKStringUtil {
         return out.toString();
     }
 
-    public static void sleep(int i) {
-        try {
-            TimeUnit.MILLISECONDS.sleep(i);
-        } catch (InterruptedException e) {
-            LOGGER.error("System sleep Failed: {}", i);
-        }
-    }
-
+   
 
 
 }

@@ -1,6 +1,8 @@
 package cn.devkits.client.tray.model;
 
+import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
+import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -23,7 +25,7 @@ public class FileSpliterModel {
 
     public FileSpliterModel(String filePath) {
         this.file = new File(filePath);
-        this.ouputFolder = new File(file.getPath() + File.separator + file.getName() + "_Result");
+        this.ouputFolder = new File(file.getParent() + File.separator + FilenameUtils.getBaseName(file.getName()) + "_Result");
         handlerResultFolder();
     }
 
@@ -45,12 +47,16 @@ public class FileSpliterModel {
         return ouputFolder;
     }
 
+    public String getOutputFolderPath() {
+        return ouputFolder.getAbsolutePath();
+    }
+
     /**
      * 添加消息
      * @param msg 待显示到控制台的消息
      */
     public void addMsg(String msg) {
-        msgs.add(msg);
+        msgs.add(msg + System.lineSeparator());
     }
 
     /**
@@ -72,8 +78,10 @@ public class FileSpliterModel {
         return finished;
     }
 
-    public void updateStatus(boolean b) {
-        this.finished = b;
+
+    public void finishSplit() {
+        this.finished = true;
+        addMsg("Split completed at: " + DKDateTimeUtil.currentTimeStrWithPattern(DKDateTimeUtil.DATE_TIME_PATTERN_DEFAULT));
     }
 
 }
