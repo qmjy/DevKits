@@ -20,6 +20,7 @@ public class FileSpliterModel {
     private File ouputFolder;
     // 分割过程中需要显示的控制台消息
     private Queue<String> msgs = new LinkedBlockingQueue<String>();
+    private String lastMsg;
     // 是否分割结束
     private boolean finished;
 
@@ -56,7 +57,16 @@ public class FileSpliterModel {
      * @param msg 待显示到控制台的消息
      */
     public void addMsg(String msg) {
-        msgs.add(msg + System.lineSeparator());
+        if (lastMsg == null) {
+            msgs.add(msg + System.lineSeparator());
+            lastMsg = msg;
+        } else {
+            // 重复消息就不显示
+            if (!lastMsg.equals(msg)) {
+                msgs.add(msg + System.lineSeparator());
+                lastMsg = msg;
+            }
+        }
     }
 
     /**

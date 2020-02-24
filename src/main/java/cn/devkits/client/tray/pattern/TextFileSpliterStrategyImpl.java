@@ -32,18 +32,14 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
     private JRadioButton current;
     private String param;
 
-    public TextFileSpliterStrategyImpl(String[] strings, JRadioButton current, String param) {
+    public TextFileSpliterStrategyImpl(String[] strings, JRadioButton current, String param, FileSpliterModel splitModel) {
         this.strategyNames = strings;
         this.current = current;
         this.param = param;
-    }
-
-
-    @Override
-    public void execute(FileSpliterModel splitModel) {
         this.splitModel = splitModel;
-        new Thread(this, "text-file-spliter-thread").start();
     }
+
+
 
     @Override
     public void segmentSplit(int n) {
@@ -65,6 +61,8 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
         printStartInfo();
 
         String splitFileName = splitModel.getFile().getName();
+
+        long start = System.currentTimeMillis();
 
         try {
             LineIterator lineIterator = FileUtils.lineIterator(splitModel.getFile());
@@ -99,6 +97,7 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
             splitModel.addMsg("Split file with " + line + " lines occured an error!");
         }
 
+        splitModel.addMsg("Total time:" + (System.currentTimeMillis() - start));
         splitModel.finishSplit();
     }
 

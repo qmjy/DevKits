@@ -23,5 +23,4 @@ public interface FileSpliterStrategy {
     void segmentSplitByFixedSize(float size);
 
 
-    void execute(FileSpliterModel splitModel);
 }

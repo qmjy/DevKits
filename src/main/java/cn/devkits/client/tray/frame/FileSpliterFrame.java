@@ -29,6 +29,9 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -92,6 +95,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private JButton browseBtn;
     private JButton closeBtn;
 
+    private ThreadPoolExecutor executor;
 
     public FileSpliterFrame() {
         super("File Spliter", 0.7f, 0.55f);
@@ -99,6 +103,8 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         initUI(getRootPane());
 
         initListener();
+
+        executor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
@@ -304,6 +310,8 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         });
         applyBtn.addActionListener(new ApplyActionListener(this));
         closeBtn.addActionListener(e -> {
+            executor.shutdownNow();
+
             JButton btn = (JButton) e.getSource();;
             Container parent = btn.getParent().getParent().getParent();
             if (parent instanceof FileSpliterFrame) {
@@ -362,6 +370,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
     public void updateConsole(String text) {
         consoleTextArea.append(text);
+        consoleTextArea.setCaretPosition(consoleTextArea.getText().length());
     }
 
     public void clearConsole() {
@@ -373,7 +382,10 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         openResultBtn.setEnabled(true);
     }
 
-
+    public void startExecute(Runnable strategy, UiUpdateThread uiUpdateThread) {
+        executor.execute(strategy);
+        executor.execute(uiUpdateThread);
+    }
 }
 
 
@@ -401,7 +413,7 @@ class ApplyActionListener implements ActionListener {
         FileSpliterStrategy strategy = null;
         switch (DKSystemUtil.arraysSearch(frame.getFileTypeItems(), frame.getCurrentFileType())) {
             case 0:
-                strategy = new TextFileSpliterStrategyImpl(frame.getTextFileSpliterParamTypes(), current, param);
+                strategy = new TextFileSpliterStrategyImpl(frame.getTextFileSpliterParamTypes(), current, param, splitModel);
                 break;
             case 1:
                 strategy = new ExcelFileSpliterStrategyImpl();
@@ -409,16 +421,9 @@ class ApplyActionListener implements ActionListener {
             default:
                 break;
         }
-        strategy.execute(splitModel);
         frame.clearConsole();
 
-        while (!(splitModel.isFinished() && splitModel.isMsgEmpty())) {
-            String text = splitModel.pollMsg();
-            frame.updateConsole(text);
-            DKSystemUtil.sleep(50);
-        }
-
-        frame.enableOpenResult(splitModel);
+        frame.startExecute((Runnable) strategy, new UiUpdateThread(frame, splitModel));
     }
 }
 
@@ -453,5 +458,26 @@ class OptionListener implements ActionListener {
         jTextField.setEnabled(true);
 
         fileSpliterFrame.updateCurrentJRadioBtn((JRadioButton) c);
+    }
+}
+
+
+class UiUpdateThread implements Runnable {
+    private FileSpliterFrame frame;
+    private FileSpliterModel splitModel;
+
+    public UiUpdateThread(FileSpliterFrame frame, FileSpliterModel splitModel) {
+        this.frame = frame;
+        this.splitModel = splitModel;
+    }
+
+    @Override
+    public void run() {
+        while (!(splitModel.isFinished() && splitModel.isMsgEmpty())) {
+            String text = splitModel.pollMsg();
+            frame.updateConsole(text);
+            DKSystemUtil.sleep(50);
+        }
+        frame.enableOpenResult(splitModel);
     }
 }
