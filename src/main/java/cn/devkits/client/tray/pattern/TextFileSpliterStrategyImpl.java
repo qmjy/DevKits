@@ -26,7 +26,7 @@ import javax.swing.JRadioButton;
 public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TextFileSpliterStrategyImpl.class);
-    private static final int BUFFER_LINE_NUM = 10;
+    private static final int BUFFER_LINE_NUM = 1000;
     private FileSpliterModel splitModel;
     private String[] strategyNames;
     private JRadioButton current;
@@ -38,8 +38,6 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
         this.param = param;
         this.splitModel = splitModel;
     }
-
-
 
     @Override
     public void segmentSplit(int n) {
@@ -63,7 +61,6 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
         String splitFileName = splitModel.getFile().getName();
 
         long start = System.currentTimeMillis();
-
         try {
             LineIterator lineIterator = FileUtils.lineIterator(splitModel.getFile());
 
@@ -77,14 +74,12 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
                 buffer.add(nextLine);
                 lineIndex++;
 
-                // 避免用户设置行数过大导致内存溢出
-                if (buffer.size() == BUFFER_LINE_NUM) {
+                if (buffer.size() == BUFFER_LINE_NUM) {// 避免用户设置行数过大导致内存溢出
                     flushFileData(segmentFile, buffer);
                 }
 
                 if (lineIndex % line == 0) {
                     flushFileData(segmentFile, buffer);
-
                     fileIndex++;
                     segmentFile = wrapSegmentFileName(outputFolderPath, splitFileName, fileIndex);
                 }
@@ -103,7 +98,7 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
 
 
     private void flushFileData(File segmentFile, List<String> buffer) throws IOException {
-        FileUtils.writeLines(segmentFile, buffer, true);// 最后一个文件数据flush
+        FileUtils.writeLines(segmentFile, buffer, true);
         buffer.clear();
         splitModel.addMsg("Generating file: " + segmentFile.getAbsolutePath());
     }

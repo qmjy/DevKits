@@ -312,11 +312,13 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         closeBtn.addActionListener(e -> {
             executor.shutdownNow();
 
-            JButton btn = (JButton) e.getSource();;
-            Container parent = btn.getParent().getParent().getParent();
-            if (parent instanceof FileSpliterFrame) {
-                FileSpliterFrame root = (FileSpliterFrame) parent;
-                root.dispose();
+            if (executor.isTerminated()) {
+                JButton btn = (JButton) e.getSource();;
+                Container parent = btn.getParent().getParent().getParent();
+                if (parent instanceof FileSpliterFrame) {
+                    FileSpliterFrame root = (FileSpliterFrame) parent;
+                    root.dispose();
+                }
             }
         });
     }
@@ -422,7 +424,6 @@ class ApplyActionListener implements ActionListener {
                 break;
         }
         frame.clearConsole();
-
         frame.startExecute((Runnable) strategy, new UiUpdateThread(frame, splitModel));
     }
 }
