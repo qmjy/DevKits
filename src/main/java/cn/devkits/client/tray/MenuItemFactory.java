@@ -73,12 +73,17 @@ public class MenuItemFactory {
                 menuItem.addActionListener(new TrayItemClipboardListener(screenLabel));
                 break;
             case IP:
-                String internetIp = DKNetworkUtil.getInternetIp();
+                String internetIp = DKNetworkUtil.getIp().get();
 
                 menuItem = new MenuItem(itemType.toString() + ": " + internetIp);
                 menuItem.addActionListener(new TrayItemClipboardListener(internetIp));
                 break;
+            case MAC:
+                String mac = DKNetworkUtil.getMacAddress().get();
 
+                menuItem = new MenuItem(itemType.toString() + ": " + mac);
+                menuItem.addActionListener(new TrayItemClipboardListener(mac));
+                break;
             default:
                 break;
         }
@@ -138,11 +143,11 @@ public class MenuItemFactory {
             case HOSTS:
                 menuItem = new MenuItem("Hosts");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.HOSTS));
-                break;  
+                break;
             case FILESPLITER:
                 menuItem = new MenuItem("File Spliter");
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILESPLITER));
-                break;  
+                break;
             default:
                 break;
         }

@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,76 +47,92 @@ public class DKNetworkUtil {
         return false;
     }
 
+
     /**
-     * 获得内网IP
-     * 
-     * @return 内网IP
+     * 获取本地IP地址
+     * @return 本地IP
      */
-    public static String getIntranetIp() {
-        try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (Exception e) {
-            LOGGER.error("get local host address error!");
-            throw new RuntimeException(e);
+    public static Optional<String> getIp() {
+        Optional<InetAddress> inetAddress = getInetAddress();
+        if (inetAddress.isPresent()) {
+            InetAddress lanIp = inetAddress.get();
+            return Optional.of(lanIp.toString().replaceAll("^/+", ""));
+        } else {
+            return Optional.empty();
         }
     }
 
     /**
-     * 获得外网IP
-     * 
-     * @return 外网IP
+     * 获取当前活动网络设备的MAC地址
+     * @return MAC
      */
-    public static String getInternetIp() {
+    public static Optional<String> getMacAddress() {
+        Optional<InetAddress> inetAddress = getInetAddress();
+        if (inetAddress.isPresent()) {
+            InetAddress inetAddress2 = inetAddress.get();
+            try {
+                NetworkInterface network = NetworkInterface.getByInetAddress(inetAddress2);
+                byte[] mac = network.getHardwareAddress();
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < mac.length; i++) {
+                    sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+                }
+                return Optional.of(sb.toString());
+            } catch (SocketException e) {
+                LOGGER.error("SocketException: " + e.getMessage());
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<InetAddress> getInetAddress() {
+        String ipAddress = null;
+        Enumeration<NetworkInterface> net;
         try {
-            Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
-            InetAddress ip = null;
-            Enumeration<InetAddress> addrs;
-            while (networks.hasMoreElements()) {
-                addrs = networks.nextElement().getInetAddresses();
-                while (addrs.hasMoreElements()) {
-                    ip = addrs.nextElement();
-                    if (ip != null && ip instanceof Inet4Address && ip.isSiteLocalAddress() && !ip.getHostAddress().equals(getIntranetIp())) {
-                        return ip.getHostAddress();
+            net = NetworkInterface.getNetworkInterfaces();
+            while (net.hasMoreElements()) {
+                NetworkInterface element = net.nextElement();
+                Enumeration<InetAddress> addresses = element.getInetAddresses();
+
+                byte[] hardwareAddress = element.getHardwareAddress();
+                while (addresses.hasMoreElements() && hardwareAddress != null && hardwareAddress.length > 0 && !isVMMac(hardwareAddress)) {
+                    InetAddress ip = addresses.nextElement();
+                    if (ip instanceof Inet4Address) {
+                        if (ip.isSiteLocalAddress()) {
+                            ipAddress = ip.getHostAddress();
+                            return Optional.of(InetAddress.getByName(ipAddress));
+                        }
                     }
                 }
             }
-
-            // 如果没有外网IP，就返回内网IP
-            return getIntranetIp();
-        } catch (Exception e) {
-            LOGGER.error("get internet ip address error!");
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 获取本机MAC地址
-     * 
-     * @return 本机MAC
-     */
-    public static String getMac() {
-        try {
-
-            InetAddress ip = InetAddress.getLocalHost();
-            NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-
-            byte[] mac = network.getHardwareAddress();
-            // TODO 断网情况下，获取为空
-            if (mac == null) {
-                return null;
-            }
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < mac.length; i++) {
-                sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-            }
-            return sb.toString();
-        } catch (UnknownHostException e) {
-            LOGGER.error("UnknownHostException: " + e.getMessage());
         } catch (SocketException e) {
             LOGGER.error("SocketException: " + e.getMessage());
+        } catch (UnknownHostException e) {
+            LOGGER.error("UnknownHostException: " + e.getMessage());
+        }
+        return Optional.empty();
+
+    }
+
+    private static boolean isVMMac(byte[] mac) {
+        if (null == mac)
+            return false;
+        byte invalidMacs[][] = {{0x00, 0x05, 0x69}, // VMWare
+                {0x00, 0x1C, 0x14}, // VMWare
+                {0x00, 0x0C, 0x29}, // VMWare
+                {0x00, 0x50, 0x56}, // VMWare
+                {0x08, 0x00, 0x27}, // Virtualbox
+                {0x0A, 0x00, 0x27}, // Virtualbox
+                {0x00, 0x03, (byte) 0xFF}, // Virtual-PC
+                {0x00, 0x15, 0x5D} // Hyper-V
+        };
+
+        for (byte[] invalid : invalidMacs) {
+            if (invalid[0] == mac[0] && invalid[1] == mac[1] && invalid[2] == mac[2])
+                return true;
         }
 
-        return null;
+        return false;
     }
 }

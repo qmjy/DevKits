@@ -165,6 +165,7 @@ public class AppStarter implements Runnable {
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.CPU_ENDIAN);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.SCREEN_SIZE);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.IP);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.MAC);
         MenuItemFactory.createComputeItem(sysInfoItem, MenuItemEnum.OS_INFO_MORE);
 
         computerItem.add(sysInfoItem);

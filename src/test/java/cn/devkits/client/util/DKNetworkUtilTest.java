@@ -5,6 +5,7 @@ package cn.devkits.client.util;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import java.util.Optional;
 
 /**
  * @author Administrator
@@ -17,10 +18,11 @@ public class DKNetworkUtilTest {
      */
     @Test
     public void testGetMac() {
-        String mac = DKNetworkUtil.getMac();
-
-        assertNotNull(mac);
-        assertTrue(mac.matches(DKStringUtil.REG_EXP_MAC));
+        Optional<String> macAddress = DKNetworkUtil.getMacAddress();
+        String object = macAddress.get();
+        
+        assertNotNull(object);
+        assertTrue(object.matches(DKStringUtil.REG_EXP_MAC));
     }
 
     @Test

@@ -16,11 +16,6 @@ public class ExcelFileSpliterStrategyImpl extends ExcelFileSpliterStrategy {
 
     }
 
-    @Override
-    public void execute(FileSpliterModel splitModel) {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     void segmentSplitBySheet() {
