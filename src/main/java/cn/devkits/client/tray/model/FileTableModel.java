@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Locale;
 import javax.swing.table.AbstractTableModel;
 import cn.devkits.client.util.DKDateTimeUtil;
+import cn.devkits.client.util.DKFileUtil;
 import oshi.util.FormatUtil;
 
 public class FileTableModel extends AbstractTableModel {
@@ -12,7 +13,7 @@ public class FileTableModel extends AbstractTableModel {
     protected File dir;
     protected String[] filenames;
 
-    protected String[] columnNames = new String[] {"Name", "Last modified", "Type", "Size"};
+    protected String[] columnNames = new String[] {"Name", "Last modified", "Type", "Size", "Path"};
 
 
     public FileTableModel(File dir) {
@@ -59,8 +60,13 @@ public class FileTableModel extends AbstractTableModel {
             case 2:
                 return getFileType(f);
             case 3:
+                if (f.isDirectory()) {
+                    return "";
+                    // return FormatUtil.formatBytes(DKFileUtil.getFolderSize(f));
+                }
                 return FormatUtil.formatBytes(f.length());
             case 4:
+                return f.getParent();
             default:
                 return null;
         }

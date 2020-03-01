@@ -2,6 +2,7 @@ package cn.devkits.client.util;
 
 import cn.devkits.client.App;
 import oshi.util.FormatUtil;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.awt.Desktop;
@@ -45,6 +46,18 @@ public final class DKFileUtil {
             LOGGER.error("Get File Attributes Failed: " + e1.getMessage());
             return Optional.empty();
         }
+    }
+
+    /**
+     * 获取文件夹下的所有文件大小和
+     * @param file 待检查的文件夹
+     * @return folder total size
+     */
+    public static long getFolderSize(File file) {
+        if (file == null) {
+            return 0;
+        }
+        return FileUtils.sizeOfDirectory(file);
     }
 
 

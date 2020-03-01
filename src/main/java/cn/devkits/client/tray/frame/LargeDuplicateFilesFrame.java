@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -34,6 +33,9 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
+import javax.swing.SpringLayout.Constraints;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -53,11 +55,17 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
+    public static final String[] BUTTONS_TEXT = {"Start Detect", "Stop Detect"};
+
     private static final long serialVersionUID = 6081895254576694963L;
     private static final Logger LOGGER = LoggerFactory.getLogger(LargeDuplicateFilesFrame.class);
 
     private static final String[] FILE_TYPE_UNITS = {"All", "Document", "Image", "Audio", "Video"};
     private static final String[] FILE_UNITS = {"Byte", "KB", "MB", "GB", "TB", "PB"};
+
+    private static final int COMPONENT_MARGIN_TOP_BASE = 5;
+    private static final int COMPONENT_MARGIN_TOP_LABLE = 10;
+    private static final int COMPONENT_MARGIN_RIGHT = 25;
 
     /** 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值 */
     public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 100;
@@ -129,33 +137,77 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private JPanel initNorthPane() {
         JPanel northRootPane = new JPanel();
-        northRootPane.setLayout(new GridLayout(1, 9));
+        SpringLayout mgr = new SpringLayout();
+        northRootPane.setLayout(mgr);
 
-        northRootPane.add(new JLabel("File Type Filter: ", JLabel.RIGHT));
+        JLabel fileTypeLabel = new JLabel("File Type Filter: ", JLabel.RIGHT);
         fileTypeComboBox = new JComboBox<String>(FILE_TYPE_UNITS);
         fileTypeComboBox.setLightWeightPopupEnabled(false);
-        northRootPane.add(fileTypeComboBox);
 
-        northRootPane.add(new JLabel("Minimum Size: ", JLabel.RIGHT));
+        JLabel minSizeLabel = new JLabel("Minimum Size: ", JLabel.RIGHT);
         minFileSizeInput = new JTextField(6);
         minFileSizeInput.setText("0");
-        northRootPane.add(minFileSizeInput);
 
-        northRootPane.add(new JLabel("Maximum Size: ", JLabel.RIGHT));
-
+        JLabel maxSizeLabel = new JLabel("Maximum Size: ", JLabel.RIGHT);
         maxFileSizeInput = new JTextField(6);
-        northRootPane.add(maxFileSizeInput);
 
-        northRootPane.add(new JLabel("File Size Unit: ", JLabel.RIGHT));
-
+        JLabel fileSizeUnit = new JLabel("File Size Unit: ", JLabel.RIGHT);
         fileSizeUnitComboBox = new JComboBox<String>(FILE_UNITS);
         fileSizeUnitComboBox.setLightWeightPopupEnabled(false);
         fileSizeUnitComboBox.setSelectedIndex(2);// 默认选中MB单位
-        northRootPane.add(fileSizeUnitComboBox);
 
-        startCancelBtn = new JButton("Start");
+        startCancelBtn = new JButton(BUTTONS_TEXT[0]);
         startCancelBtn.setFocusPainted(false);// 不显示焦点虚线边框
+
+        northRootPane.add(fileTypeLabel);
+        northRootPane.add(fileTypeComboBox);
+        northRootPane.add(minSizeLabel);
+        northRootPane.add(minFileSizeInput);
+        northRootPane.add(maxSizeLabel);
+        northRootPane.add(maxFileSizeInput);
+        northRootPane.add(fileSizeUnit);
+        northRootPane.add(fileSizeUnitComboBox);
         northRootPane.add(startCancelBtn);
+
+        Constraints fileTypeCons = mgr.getConstraints(fileTypeLabel);
+        fileTypeCons.setX(Spring.constant(COMPONENT_MARGIN_RIGHT));
+        fileTypeCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
+
+        Constraints fileTypeComboCons = mgr.getConstraints(fileTypeComboBox);
+        fileTypeComboCons.setConstraint(SpringLayout.WEST, Spring.sum(fileTypeCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        fileTypeComboCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
+
+        Constraints minSizeLabelCons = mgr.getConstraints(minSizeLabel);
+        minSizeLabelCons.setConstraint(SpringLayout.WEST, Spring.sum(fileTypeComboCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT * 2)));
+        minSizeLabelCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
+
+        Constraints minFileSizeInputCons = mgr.getConstraints(minFileSizeInput);
+        minFileSizeInputCons.setConstraint(SpringLayout.WEST, Spring.sum(minSizeLabelCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        minFileSizeInputCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
+
+        Constraints maxSizeLabelCons = mgr.getConstraints(maxSizeLabel);
+        maxSizeLabelCons.setConstraint(SpringLayout.WEST, Spring.sum(minFileSizeInputCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT * 2)));
+        maxSizeLabelCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
+
+        Constraints maxFileSizeInputCons = mgr.getConstraints(maxFileSizeInput);
+        maxFileSizeInputCons.setConstraint(SpringLayout.WEST, Spring.sum(maxSizeLabelCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        maxFileSizeInputCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
+
+        Constraints fileSizeUnitCons = mgr.getConstraints(fileSizeUnit);
+        fileSizeUnitCons.setConstraint(SpringLayout.WEST, Spring.sum(maxFileSizeInputCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT * 2)));
+        fileSizeUnitCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
+
+        Constraints fileSizeUnitComboBoxCons = mgr.getConstraints(fileSizeUnitComboBox);
+        fileSizeUnitComboBoxCons.setConstraint(SpringLayout.WEST, Spring.sum(fileSizeUnitCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        fileSizeUnitComboBoxCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
+
+        Constraints startCancelBtnCons = mgr.getConstraints(startCancelBtn);
+        startCancelBtnCons.setConstraint(SpringLayout.WEST, Spring.sum(fileSizeUnitComboBoxCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT * 2)));
+        startCancelBtnCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
+
+        SpringLayout.Constraints panelCons = mgr.getConstraints(northRootPane);
+        panelCons.setConstraint(SpringLayout.SOUTH, Spring.sum(startCancelBtnCons.getConstraint(SpringLayout.SOUTH), Spring.constant(COMPONENT_MARGIN_TOP_BASE)));
+        panelCons.setConstraint(SpringLayout.WEST, Spring.sum(startCancelBtnCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
 
         return northRootPane;
     }
@@ -258,7 +310,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     public void searchComplete() {
         updateStatusLineText("Files Search Completed!");
-        startCancelBtn.setText("Start");
+        startCancelBtn.setText(BUTTONS_TEXT[0]);
     }
 
     public void updateStatusLineText(final String text) {
@@ -360,16 +412,16 @@ class StartEndListener implements ActionListener {
         JButton btn = (JButton) e.getSource();
         ExecutorService threadPool = frame.getTheadPool();
 
-        if ("Start".equals(e.getActionCommand())) {
+        if (LargeDuplicateFilesFrame.BUTTONS_TEXT[0].equals(e.getActionCommand())) {
             if (threadPool.isShutdown()) {
                 frame.initDataModel();
             }
             new Thread(new SearchFileThread(frame, getFileSizeThreshold(frame, true), getFileSizeThreshold(frame, false))).start();
-            btn.setText("Cancel");
+            btn.setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[1]);
             frame.updateStatusLineText("Start to scanner File...");
         } else {
             threadPool.shutdownNow();
-            btn.setText("Start");
+            btn.setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[0]);
             frame.updateStatusLineText("Scanner file canceled by user!");
         }
     }
