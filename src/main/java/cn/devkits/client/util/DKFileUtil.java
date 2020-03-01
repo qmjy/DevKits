@@ -2,6 +2,7 @@ package cn.devkits.client.util;
 
 import cn.devkits.client.App;
 import oshi.util.FormatUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,19 @@ import javax.swing.filechooser.FileSystemView;
 public final class DKFileUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+
+    /**
+     * 计算文件的MD5
+     * @param file 待计算的文件
+     * @return 文件的MD5
+     */
+    public static Optional<String> getFileMd5(File file) {
+        try {
+            return Optional.of(DigestUtils.md5Hex(new FileInputStream(file)));
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
 
     /**
      * 获取文件属性

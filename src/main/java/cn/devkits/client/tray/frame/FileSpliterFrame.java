@@ -9,7 +9,6 @@ import cn.devkits.client.tray.pattern.FileSpliterStrategy;
 import cn.devkits.client.tray.pattern.TextFileSpliterStrategyImpl;
 import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKStringUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import org.slf4j.Logger;

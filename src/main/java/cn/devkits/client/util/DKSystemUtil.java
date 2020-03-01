@@ -93,24 +93,6 @@ public final class DKSystemUtil {
         return -1;
     }
 
-    /**
-     * 获取系统临时文件目录<br>
-     * Windows: "C:\Users\ADMINI~1\AppData\Local\Temp\"
-     * 
-     * @return 临时文件目录
-     */
-    public static String getSystemTempDir() {
-        return System.getProperty("java.io.tmpdir");
-    }
-
-
-    /**
-     * 获取操作系统名称
-     * @return 操作系统名称
-     */
-    public static String getOsName() {
-        return System.getProperty("os.name");
-    }
 
 
     /**
@@ -180,6 +162,25 @@ public final class DKSystemUtil {
     public static String getOsInfo() {
         OperatingSystem os = SYSTEM_INFO.getOperatingSystem();
         return String.valueOf(os);
+    }
+
+    /**
+     * 获取系统临时文件目录<br>
+     * Windows: "C:\Users\ADMINI~1\AppData\Local\Temp\"
+     * 
+     * @return 临时文件目录
+     */
+    public static String getSystemTempDir() {
+        return System.getProperty("java.io.tmpdir");
+    }
+
+
+    /**
+     * 获取操作系统名称
+     * @return 操作系统名称
+     */
+    public static String getOsName() {
+        return System.getProperty("os.name");
     }
 
 
