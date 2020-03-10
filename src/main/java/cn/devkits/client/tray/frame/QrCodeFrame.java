@@ -56,6 +56,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -195,7 +196,8 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         jPanel.add(BorderLayout.PAGE_START, topPanel);
         this.console = new JTextArea();
-        jPanel.add(BorderLayout.CENTER, console);
+        JScrollPane jScrollPane = new JScrollPane(console);
+        jPanel.add(BorderLayout.CENTER, jScrollPane);
 
         return jPanel;
     }

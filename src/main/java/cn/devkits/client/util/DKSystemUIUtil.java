@@ -1,13 +1,19 @@
 package cn.devkits.client.util;
 
+import cn.devkits.client.App;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Enumeration;
+import java.util.Locale;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.Spring;
@@ -18,11 +24,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import cn.devkits.client.tray.frame.AboutFrame;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -34,6 +35,38 @@ import org.slf4j.LoggerFactory;
 public final class DKSystemUIUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUIUtil.class);
+
+
+
+    /**
+     * 获取系统默认语言字符
+     * @param code 字典查询的code
+     * @return 字典查询结果
+     */
+    public static String getLocaleString(String code) {
+        return getLocaleString(code, "'" + code + "'");
+    }
+
+    /**
+     * 获取系统默认语言字符（带省略号），用于打开对话框的情况
+     * @param code 字典查询的code
+     * @return 字典查询结果，并且会追加一个省略号
+     */
+    public static String getLocaleStringWithEllipsis(String code) {
+        return getLocaleString(code) + "...";
+    }
+
+    /**
+     * 获取系统默认语言字符
+     * @param code 字典查询的code
+     * @param defualt 语言字典不存在时的，则会显示此默认值
+     * @return 字典查询结果
+     */
+    public static String getLocaleString(String code, String defualt) {
+        Locale default1 = Locale.getDefault();
+        return App.getContext().getMessage(code, null, defualt, default1);
+    }
+
 
     /**
      * 表格头列自适应

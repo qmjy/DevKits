@@ -23,7 +23,6 @@ public class ClipboardServiceImpl implements ClipboardService {
     public int insert(ClipboardModel model) {
         if (!model.equals(lastClipboardModel)) {
             lastClipboardModel = model;
-            LOGGER.info("Insert clipboard data...");
             return dao.insert(model);
         }
         return 1;

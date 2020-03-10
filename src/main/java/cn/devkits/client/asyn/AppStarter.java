@@ -112,9 +112,9 @@ public class AppStarter implements Runnable {
         popupMenu.add(initComputerMenu());// 系统
 
         popupMenu.addSeparator();
-        popupMenu.add("Settings...");
+        popupMenu.add(DKSystemUIUtil.getLocaleStringWithEllipsis("SETTINGS"));
 
-        MenuItem mi = new MenuItem("About...");
+        MenuItem mi = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("ABOUT"));
         mi.addActionListener(new ActionListener() {
 
             @Override
@@ -124,7 +124,7 @@ public class AppStarter implements Runnable {
         });
         popupMenu.add(mi);
         popupMenu.addSeparator();
-        MenuItem quit = new MenuItem("Exit");
+        MenuItem quit = new MenuItem(DKSystemUIUtil.getLocaleString("EXIT"));
         quit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -138,13 +138,13 @@ public class AppStarter implements Runnable {
     }
 
     private static MenuItem initNetworkMenu() {
-        Menu networkMenu = new Menu("Network Tools");
+        Menu networkMenu = new Menu(DKSystemUIUtil.getLocaleString("NETWORK_TOOLS"));
         MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.SERVER_PORT);
         return networkMenu;
     }
 
     private static Menu initDevMenu() {
-        Menu devMenu = new Menu("Development Tools");
+        Menu devMenu = new Menu(DKSystemUIUtil.getLocaleString("DEV_TOOLS"));
 
         MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODEC);
         MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODE_FORMAT);
@@ -154,7 +154,7 @@ public class AppStarter implements Runnable {
     }
 
     private static Menu initComputerMenu() {
-        Menu computerItem = new Menu("Computer", true);
+        Menu computerItem = new Menu(DKSystemUIUtil.getLocaleString("COMPUTER"), true);
 
         Menu sysInfoItem = new Menu("System Information", true);
 
