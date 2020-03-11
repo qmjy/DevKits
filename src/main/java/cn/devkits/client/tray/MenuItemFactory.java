@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.Toolkit;
+
+import cn.devkits.client.util.DKSystemUIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.devkits.client.tray.listener.TrayItemClipboardListener;
@@ -19,7 +21,7 @@ public class MenuItemFactory {
         MenuItem menuItem = null;
         switch (itemType) {
             case SERVER_PORT:
-                menuItem = new MenuItem("Server Ports Detect...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("SERVER_PORT_DETECT"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SERVER_PORT));
                 break;
 
@@ -94,25 +96,25 @@ public class MenuItemFactory {
         MenuItem menuItem = null;
         switch (itemType) {
             case CODEC:
-                menuItem = new MenuItem("Codec...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODEC"));
                 menuItem.setEnabled(false);
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODEC));
                 break;
             case CODE_FORMAT:
-                menuItem = new MenuItem("Code Format...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODE_FORMAT"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
                 break;
             case ENV:
-                menuItem = new MenuItem("Environment Variable...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("ENV_VAR"));
                 menuItem.setEnabled(false);
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
                 break;
             case SCRCAPTURE:
-                menuItem = new MenuItem("Screenshots");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleString("SCREENSHOTS"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SCRCAPTURE));
                 break;
             case CLEAN:
-                menuItem = new MenuItem("Waste Cleaning...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("WASTE_CLEAN"));
                 menuItem.setEnabled(false);
                 break;
             case LDF:

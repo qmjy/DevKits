@@ -75,14 +75,14 @@ public class AppStarter implements Runnable {
 
                 SystemTray.getSystemTray().add(trayIcon);
                 trayIcon.displayMessage("感谢您的使用", "简单高效是我的责任...", MessageType.INFO);
-                LOGGER.info("初始化托盘功能成功！");
+                LOGGER.info("Init system tray success!");
             } catch (AWTException e) {
-                LOGGER.error("初始化托盘功能失败！");
+                LOGGER.error("Init System tray function failed!");
             } catch (IOException e) {
-                LOGGER.error("托盘图标加载失败！");
+                LOGGER.error("Load system tray icon failed!");
             }
         } else {
-            LOGGER.error("系统不支持托盘菜单！");
+            LOGGER.error("This system can not support tray function！");
         }
     }
 
@@ -156,7 +156,7 @@ public class AppStarter implements Runnable {
     private static Menu initComputerMenu() {
         Menu computerItem = new Menu(DKSystemUIUtil.getLocaleString("COMPUTER"), true);
 
-        Menu sysInfoItem = new Menu("System Information", true);
+        Menu sysInfoItem = new Menu(DKSystemUIUtil.getLocaleString("SYS_INFO"), true);
 
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.USER_NAME);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.OS_NAME);
@@ -170,7 +170,7 @@ public class AppStarter implements Runnable {
 
         computerItem.add(sysInfoItem);
 
-        Menu toolsItem = new Menu("Tools", true);
+        Menu toolsItem = new Menu(DKSystemUIUtil.getLocaleString("TOOLS"), true);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.CLEAN);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.SCRCAPTURE);
         MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.LDF);

@@ -9,6 +9,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -36,8 +37,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 /**
- * 
  * About Dialog
+ *
  * @author shaofeng
  * @version 1.0.0
  * @datetime 2019年9月6日 下午11:39:56
@@ -46,11 +47,11 @@ public class AboutFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 3737746590178589617L;
     private static final Logger LOGGER = LoggerFactory.getLogger(AboutFrame.class);
-    private JLabel name = new JLabel("Devkits");
+    private JLabel name = new JLabel(DKSystemUIUtil.getLocaleString("APP_NAME"));
     private JLabel version = null;
 
     public AboutFrame() {
-        super("About Devkits", 0.7f, 0.6f);
+        super(DKSystemUIUtil.getLocaleString("ABOUT_APP"), 0.7f, 0.6f);
 
         initUI(getRootPane());
         initListener();
@@ -83,7 +84,6 @@ public class AboutFrame extends DKAbstractFrame {
     }
 
 
-
     private Component initTabContent() {
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab("Verison Info.", loadVersionDetail());
@@ -107,7 +107,7 @@ public class AboutFrame extends DKAbstractFrame {
     }
 
     private String loadLicenseContent() {
-        File licenseFile = DKSystemUtil.isRunWithJar() ? new File("../LICENSE") : new File("LICENSE");
+        File licenseFile = DKSystemUtil.isDevelopMode() ? new File("LICENSE") : new File("../LICENSE");
         StringBuilder sb = new StringBuilder();
         try {
             LineIterator lineIterator = FileUtils.lineIterator(licenseFile);
@@ -215,16 +215,16 @@ public class AboutFrame extends DKAbstractFrame {
     }
 
     @Override
-    protected void initListener() {}
+    protected void initListener() {
+    }
 
 
 }
 
 
 /**
- * 
  * 开源软件数据模型
- * 
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年10月30日 下午10:33:33

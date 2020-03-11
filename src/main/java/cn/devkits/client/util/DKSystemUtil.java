@@ -53,7 +53,7 @@ public final class DKSystemUtil {
 
         if (Desktop.isDesktopSupported()) {
             try {
-                if (DKSystemUtil.isRunWithJar()) {
+                if (!DKSystemUtil.isDevelopMode()) {
                     Desktop.getDesktop().open(new File("./" + appName));
                 } else {
                     String filePath = TrayItemWindowListener.class.getClassLoader().getResource("").getPath() + appName;
@@ -73,9 +73,9 @@ public final class DKSystemUtil {
      * 
      * @return 是否是以jar运行
      */
-    public static boolean isRunWithJar() {
+    public static boolean isDevelopMode() {
         String protocol = DKSystemUtil.class.getResource("").getProtocol();
-        return "jar".equals(protocol);
+        return !"jar".equals(protocol);
     }
 
     /**

@@ -1,8 +1,12 @@
 package cn.devkits.client.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Properties;
+
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -10,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
  * Configuration util
+ *
  * @author fengshao liu
  * @version 1.0.0
  * @time 2019年9月6日 下午10:29:28
@@ -23,17 +27,30 @@ public class DKConfigUtil {
     private Model model;
 
     private DKConfigUtil() {
-        loadVersionProperties(DKSystemUtil.isRunWithJar());
+        loadVersionProperties(DKSystemUtil.isDevelopMode());
     }
 
-    private void loadVersionProperties(boolean isRunWithJar) {
-        String pom = isRunWithJar ? "/META-INF/maven/cn.devkits.client/devkits/pom.xml" : "/pom.xml";
+    private void loadVersionProperties(boolean isDevelopMode) {
         MavenXpp3Reader reader = new MavenXpp3Reader();
         try {
-            model = reader.read(DKConfigUtil.class.getResourceAsStream(pom));
+            InputStream input = isDevelopMode ? new FileInputStream(getDevelopModelFilePath()) : DKConfigUtil.class.getResourceAsStream("/META-INF/maven/cn.devkits.client/devkits/pom.xml");
+            model = reader.read(input);
         } catch (IOException | XmlPullParserException e) {
             LOGGER.error("Load pom.xml file failed: " + e.getMessage());
         }
+    }
+
+    private String getDevelopModelFilePath() {
+        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+
+        int startIndex = path.indexOf("/target");
+        if (startIndex != -1) {
+            path = path.substring(0, startIndex);
+        }
+        return path + File.separator + "pom.xml";
     }
 
     public static DKConfigUtil getInstance() {
