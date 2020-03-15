@@ -43,18 +43,18 @@ public class MenuItemFactory {
             case USER_NAME:
                 String userName = System.getProperty("user.name");
 
-                menuItem = new MenuItem("User Name: " + userName);
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("USER_NAME") + userName);
                 menuItem.addActionListener(new TrayItemClipboardListener(userName));
                 break;
             case OS_NAME:
 
-                menuItem = new MenuItem("OS: " + DKSystemUtil.getOsInfo());
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("OS") + DKSystemUtil.getOsInfo());
                 menuItem.addActionListener(new TrayItemClipboardListener(DKSystemUtil.getOsInfo()));
                 break;
             case OS_ARCH:
                 String osArch = System.getProperty("os.arch");
 
-                menuItem = new MenuItem("OS ARCH: " + osArch);
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("OS_ARCH")  + osArch);
                 menuItem.addActionListener(new TrayItemClipboardListener(osArch));
                 break;
             case CPU_INF:
@@ -64,14 +64,14 @@ public class MenuItemFactory {
             case CPU_ENDIAN:
                 String endian = System.getProperty("sun.cpu.endian");
 
-                menuItem = new MenuItem("CPU Endian: " + endian);
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("CPU_ENDIAN") + endian);
                 menuItem.addActionListener(new TrayItemClipboardListener(endian));
                 break;
             case SCREEN_SIZE:
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                 String screenLabel = (int) screenSize.getWidth() + "*" + (int) screenSize.getHeight() + "(" + Toolkit.getDefaultToolkit().getScreenResolution() + "dpi)";
 
-                menuItem = new MenuItem("Screen Size: " + screenLabel);
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("SCREEN_SIZE") + screenLabel);
                 menuItem.addActionListener(new TrayItemClipboardListener(screenLabel));
                 break;
             case IP:
@@ -118,36 +118,36 @@ public class MenuItemFactory {
                 menuItem.setEnabled(false);
                 break;
             case LDF:
-                menuItem = new MenuItem("Large Duplicate Files...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("LARGE_DUPLICATE_FILES"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LDF));
                 break;
             case TODOS:
-                menuItem = new MenuItem("To-do List...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("TODO_LIST"));
                 menuItem.setEnabled(false);
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.TODOS));
                 break;
             case LOGONUI:
-                menuItem = new MenuItem("Logon Image...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("LOGON_IMAGE"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LOGONUI));
                 break;
             case FILEEXPLORER:
-                menuItem = new MenuItem("File Explorers...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_EXPLORERS"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILEEXPLORER));
                 break;
             case OS_INFO_MORE:
-                menuItem = new MenuItem("More Details...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("MORE_DETAILS"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.OS_INFO_MORE));
                 break;
             case QR:
-                menuItem = new MenuItem("QR Code...");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("QR_CODE"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.QR));
                 break;
             case HOSTS:
-                menuItem = new MenuItem("Hosts");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleString("HOSTS"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.HOSTS));
                 break;
             case FILESPLITER:
-                menuItem = new MenuItem("File Spliter");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_SPLITER"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILESPLITER));
                 break;
             default:

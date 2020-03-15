@@ -57,6 +57,15 @@ public final class DKSystemUIUtil {
     }
 
     /**
+     * 获取系统默认语言字符（带冒号）
+     * @param code 字典查询的code
+     * @return 字典查询结果，并且会追加一个冒号
+     */
+    public static String getLocaleStringWithColon(String code){
+        return getLocaleString(code) + ":";
+    }
+
+    /**
      * 获取系统默认语言字符
      * @param code 字典查询的code
      * @param defualt 语言字典不存在时的，则会显示此默认值
