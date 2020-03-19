@@ -23,23 +23,27 @@ public class BrowserActionListener implements ActionListener {
     private DKFrameChosenable frame;
     private FileFilter[] filters;
     private boolean callback;
+    private String title;
 
     /**
      * constructor
      * @param frame frame
      * @param filters browse filter
+     * @param title dialog title
      * @param callback callback or not
      */
-    public BrowserActionListener(DKFrameChosenable frame, FileFilter[] filters, boolean callback) {
+    public BrowserActionListener(DKFrameChosenable frame, FileFilter[] filters,String title, boolean callback) {
         this.frame = frame;
         this.filters = filters;
         this.callback = callback;
+        this.title=title;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         JFileChooser jfc = new JFileChooser();
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jfc.setDialogTitle(title);
         jfc.setAccessory(new FileChoosePreviewerComponent(jfc));
         createFilter(jfc);// 添加文件支持的类型
 

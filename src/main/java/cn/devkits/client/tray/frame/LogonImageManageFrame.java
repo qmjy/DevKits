@@ -137,7 +137,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         FileFilter[] filters = new FileFilter[] {DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
                 DKSystemUIUtil.createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif")};
 
-        browseBtn.addActionListener(new BrowserActionListener(this, filters, false));
+        browseBtn.addActionListener(new BrowserActionListener(this, filters, "Background Image",false));
         applyBtn.addActionListener(new LogonImgManageListener(this));
         cancelBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();;

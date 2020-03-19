@@ -244,7 +244,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         FileFilter[] filters = new FileFilter[] {DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
                 DKSystemUIUtil.createFileFilter("Portable Network Graphics", true, "png")};
 
-        uploadBtn.addActionListener(new BrowserActionListener(this, filters, true));
+        uploadBtn.addActionListener(new BrowserActionListener(this, filters, "QR file",true));
 
         siteBtn.addActionListener(new ActionListener() {
             @Override

@@ -300,7 +300,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
                 }
             }
         });
-        browseBtn.addActionListener(new BrowserActionListener(this, new FileFilter[0], false));
+        browseBtn.addActionListener(new BrowserActionListener(this, new FileFilter[0], "Split File",false));
         openResultBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
