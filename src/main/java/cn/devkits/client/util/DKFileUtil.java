@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,6 +75,21 @@ public final class DKFileUtil {
         return FileUtils.sizeOfDirectory(file);
     }
 
+    /**
+     * 判断一个文件是否是文本文件【方法待测验】
+     * @param f 待判断的文件
+     * @return 是否是文本文件
+     */
+    @Deprecated
+    public static boolean isTextFile(File f){
+        Path path = FileSystems.getDefault().getPath(f.getParent(), f.getName());
+        try {
+            String mimeType = Files.probeContentType(path);
+        } catch (IOException e) {
+            LOGGER.error("File type detected exception [{}]", f.getAbsoluteFile());
+        }
+        return true;
+    }
 
     /**
      * judge a file is image or not

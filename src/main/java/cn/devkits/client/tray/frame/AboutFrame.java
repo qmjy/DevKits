@@ -61,7 +61,7 @@ public class AboutFrame extends DKAbstractFrame {
     protected void initUI(JRootPane jRootPane) {
         name.setFont(getAFont());
 
-        version = new JLabel("Verison " + DKConfigUtil.getInstance().getPomInfo().getVersion());
+        version = new JLabel(DKSystemUIUtil.getLocaleString("VERSION") + DKConfigUtil.getInstance().getPomInfo().getVersion());
         version.setLabelFor(name);
 
         // Create the panel we'll return and set up the layout.
@@ -86,9 +86,9 @@ public class AboutFrame extends DKAbstractFrame {
 
     private Component initTabContent() {
         JTabbedPane jTabbedPane = new JTabbedPane();
-        jTabbedPane.addTab("Verison Info.", loadVersionDetail());
-        jTabbedPane.addTab("Open Sources", loadOpenSourceTable());
-        jTabbedPane.addTab("License", loadLicensePane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("VERSION_INFO"), loadVersionDetail());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE"), loadOpenSourceTable());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("LICENSE"), loadLicensePane());
 
         jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
