@@ -5,6 +5,7 @@ import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
@@ -12,6 +13,7 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.Locale;
 import javax.swing.JTable;
@@ -26,8 +28,8 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 /**
- * 
  * 系统UI工具类
+ *
  * @author Shaofeng Liu
  * @version 1.0.0
  * @time 2020年1月12日 下午1:05:12
@@ -37,9 +39,9 @@ public final class DKSystemUIUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUIUtil.class);
 
 
-
     /**
      * 获取系统默认语言字符
+     *
      * @param code 字典查询的code
      * @return 字典查询结果
      */
@@ -48,7 +50,19 @@ public final class DKSystemUIUtil {
     }
 
     /**
+     * 获取待占位符的语言
+     *
+     * @param key       字典查询的code
+     * @param arguments 占位符数据
+     * @return 填充数据后的i18n字符串
+     */
+    public static String getLocaleStringWithParam(String key, Object... arguments) {
+        return MessageFormat.format(getLocaleString(key), arguments);
+    }
+
+    /**
      * 获取系统默认语言字符（带省略号），用于打开对话框的情况
+     *
      * @param code 字典查询的code
      * @return 字典查询结果，并且会追加一个省略号
      */
@@ -58,16 +72,18 @@ public final class DKSystemUIUtil {
 
     /**
      * 获取系统默认语言字符（带冒号）
+     *
      * @param code 字典查询的code
      * @return 字典查询结果，并且会追加一个冒号
      */
-    public static String getLocaleStringWithColon(String code){
+    public static String getLocaleStringWithColon(String code) {
         return getLocaleString(code) + ":";
     }
 
     /**
      * 获取系统默认语言字符
-     * @param code 字典查询的code
+     *
+     * @param code    字典查询的code
      * @param defualt 语言字典不存在时的，则会显示此默认值
      * @return 字典查询结果
      */
@@ -79,7 +95,7 @@ public final class DKSystemUIUtil {
 
     /**
      * 表格头列自适应
-     * 
+     *
      * @param myTable 待处理的表格
      */
     public static void fitTableColumns(JTable myTable) {
@@ -102,6 +118,7 @@ public final class DKSystemUIUtil {
     /**
      * 更新jtable表格在JScrollPane占用高度过高的问题<br>
      * https://coderanch.com/t/336316/java/JScrollPane-packed-content
+     *
      * @param table 待更新表格
      * @return 表格的实际宽高
      */
@@ -116,14 +133,15 @@ public final class DKSystemUIUtil {
 
     /**
      * 展开指定节点的所有子节点
-     * @param tree 待操作的树
+     *
+     * @param tree   待操作的树
      * @param parent 待展开的节点
      * @param expand 是否展开
      */
     public static void expandAll(JTree tree, TreePath parent, boolean expand) {
         TreeNode node = (TreeNode) parent.getLastPathComponent();
         if (node.getChildCount() >= 0) {
-            for (Enumeration e = node.children(); e.hasMoreElements();) {
+            for (Enumeration e = node.children(); e.hasMoreElements(); ) {
                 TreeNode n = (TreeNode) e.nextElement();
                 TreePath path = parent.pathByAddingChild(n);
                 expandAll(tree, path, expand);
@@ -139,6 +157,7 @@ public final class DKSystemUIUtil {
 
     /**
      * 使用系统浏览器打开指定网址
+     *
      * @param uri 待打开的网址
      * @return 打开是否成功
      */
