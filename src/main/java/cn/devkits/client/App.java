@@ -1,9 +1,9 @@
 package cn.devkits.client;
 
-import javax.swing.SwingUtilities;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import java.util.Locale;
 import cn.devkits.client.asyn.AppStarter;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import javax.swing.*;
 
 
 /**

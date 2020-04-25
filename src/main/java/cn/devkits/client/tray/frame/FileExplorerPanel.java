@@ -110,6 +110,8 @@ public class FileExplorerPanel extends JPanel {
 
         this.model = new FileTableModel(new File(HOME_PATH));
         this.filesTable = new JTable(model);
+        // arbitrary size adjustment to better account for icons
+        filesTable.setRowHeight((int) (filesTable.getRowHeight() * 1.3));
         add(new JScrollPane(filesTable), BorderLayout.CENTER);
 
         this.statusBar = new JLabel("Read to go...");
@@ -141,11 +143,11 @@ public class FileExplorerPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) {
                     int rowNum = filesTable.getSelectedRow();
-                    String fileName = (String) filesTable.getValueAt(rowNum, 0);
+                    String fileName = (String) filesTable.getValueAt(rowNum, 1);
                     updateStatusBar(fileName);
                 } else if (e.getClickCount() == 2) {
                     int rowNum = filesTable.getSelectedRow();
-                    String fileName = (String) filesTable.getValueAt(rowNum, 0);
+                    String fileName = (String) filesTable.getValueAt(rowNum, 1);
                     openFileOrDir(fileName);
                 }
             }

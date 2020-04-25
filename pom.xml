@@ -199,7 +199,7 @@
 							<!-- 是否要把第三方jar放到manifest的classpath中 -->
 							<addClasspath>true</addClasspath>
 							<!-- 生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/ -->
-							<classpathPrefix>../lib/</classpathPrefix>
+							<classpathPrefix>../libs/</classpathPrefix>
 							<!-- 应用的main class -->
 							<mainClass>cn.devkits.client.App</mainClass>
 						</manifest>

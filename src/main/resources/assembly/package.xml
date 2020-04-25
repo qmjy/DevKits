@@ -14,7 +14,7 @@
 		<dependencySet>
 			<!-- 不使用项目的artifact，第三方jar不要解压，打包进zip文件的lib目录 -->
 			<useProjectArtifact>false</useProjectArtifact>
-			<outputDirectory>lib</outputDirectory>
+			<outputDirectory>libs</outputDirectory>
 			<unpack>false</unpack>
 		</dependencySet>
 	</dependencySets>

@@ -1,19 +1,26 @@
 package cn.devkits.client.tray.model;
 
+import java.awt.*;
 import java.io.File;
 import java.util.Locale;
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.AbstractTableModel;
+
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import oshi.util.FormatUtil;
 
 public class FileTableModel extends AbstractTableModel {
-    /** serialVersionUID */
+    /**
+     * serialVersionUID
+     */
     private static final long serialVersionUID = 1654386662658602678L;
+    private FileSystemView fileSystemView = FileSystemView.getFileSystemView();
     protected File dir;
     protected String[] filenames;
 
-    protected String[] columnNames = new String[] {"Name", "Last modified", "Type", "Size", "Path"};
+    protected String[] columnNames = new String[]{"", "Name", "Last modified", "Type", "Size", "Path"};
 
 
     public FileTableModel(File dir) {
@@ -23,6 +30,7 @@ public class FileTableModel extends AbstractTableModel {
 
     /**
      * 更新文件根路径
+     *
      * @param dir 文件根路径
      */
     public void updateRoot(File dir) {
@@ -54,18 +62,20 @@ public class FileTableModel extends AbstractTableModel {
         File f = new File(dir, filenames[row]);
         switch (col) {
             case 0:
-                return filenames[row];
+                return fileSystemView.getSystemIcon(f);
             case 1:
-                return DKDateTimeUtil.long2Str(f.lastModified());
+                return filenames[row];
             case 2:
-                return getFileType(f);
+                return DKDateTimeUtil.long2Str(f.lastModified());
             case 3:
+                return getFileType(f);
+            case 4:
                 if (f.isDirectory()) {
                     return "";
                     // return FormatUtil.formatBytes(DKFileUtil.getFolderSize(f));
                 }
                 return FormatUtil.formatBytes(f.length());
-            case 4:
+            case 5:
                 return f.getParent();
             default:
                 return null;
