@@ -38,7 +38,7 @@ public class DKAsyncService {
      * 每一秒执行一次<br>
      * https://blog.csdn.net/qq_25652213/article/details/93635540
      */
-    // @Scheduled(cron = "0/1 * * * * ? ")
+     @Scheduled(cron = "0/1 * * * * ? ")
     public void hello() {
         Optional<Transferable> transferable = getTransferable();
         if (transferable.isPresent()) {

@@ -1,6 +1,7 @@
 package cn.devkits.client.service.impl;
 
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ClipboardServiceImpl implements ClipboardService {
     public int insert(ClipboardModel model) {
         if (!model.equals(lastClipboardModel)) {
             lastClipboardModel = model;
+            if (dao.tableExists("devkits_clipboard_history") != 1) {
+                dao.createClipboardTable();
+            }
             return dao.insert(model);
         }
         return 1;

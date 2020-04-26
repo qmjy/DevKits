@@ -1,6 +1,7 @@
 package cn.devkits.client;
 
 import javax.sql.DataSource;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -12,9 +13,11 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import com.alibaba.druid.pool.DruidDataSource;
 
+import java.io.File;
+
 /**
- * 
  * Beans register
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年11月19日 下午9:50:59
@@ -28,29 +31,28 @@ public class AppSpringContext {
     @Value("${jdbcDriver}")
     private String driver;
 
-    @Value("${jdbcUrl}")
-    private String url;
+    @Value("${jdbcUrlPrefix}")
+    private String jdbcUrlPrefix;
 
-    @Value("${jdbcUsername}")
-    private String user;
-
-    @Value("${jdbcPassword}")
-    private String password;
+    @Value("${jdbcFileName}")
+    private String jdbcFileName;
 
     private DruidDataSource ds;
 
+
     /**
      * https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE
-     * @param driver
-     * @param url
-     * @param user
-     * @param password
-     * @return
+     *
+     * @return datasource
      */
     @Bean("dataSource")
     @Lazy(false)
     public DataSource dataSource() {
         if (ds == null) {
+            File f = new File(DKConstant.DEVKIT_WORKSPACE);
+            if (!f.exists()) {
+                f.mkdirs();
+            }
             return createDataSource();
         } else {
             return ds;
@@ -67,9 +69,7 @@ public class AppSpringContext {
     private DataSource createDataSource() {
         this.ds = new DruidDataSource();
         ds.setDriverClassName(driver);
-        ds.setUrl(url);
-        ds.setUsername(user);
-        ds.setPassword(password);
+        ds.setUrl(jdbcUrlPrefix + DKConstant.DEVKIT_WORKSPACE + jdbcFileName);
 
         ds.setDefaultAutoCommit(true);// 自动提交事务
 

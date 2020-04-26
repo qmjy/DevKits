@@ -5,6 +5,7 @@ public class ClipboardModel {
     public static final int CLIPBOARD_CONTENT_TYPE_STR = 1;
     public static final int CLIPBOARD_CONTENT_TYPE_FILES = 2;
 
+    private int id;
     private String content;
     private int type;
     private String createTime;
@@ -13,6 +14,14 @@ public class ClipboardModel {
         this.content = ret;
         this.type = i;
         this.createTime = string;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getContent() {
