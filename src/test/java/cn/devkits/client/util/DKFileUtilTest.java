@@ -32,6 +32,4 @@ public class DKFileUtilTest {
             assertEquals("1 KiB", DKFileUtil.formatBytes(1024));
         }
     }
-
-
 }

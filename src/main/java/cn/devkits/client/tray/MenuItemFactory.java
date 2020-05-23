@@ -95,60 +95,10 @@ public class MenuItemFactory {
     public static void createComputeItem(Menu parentItem, MenuItemEnum itemType) {
         MenuItem menuItem = null;
         switch (itemType) {
-            case CODEC:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODEC"));
-                menuItem.setEnabled(false);
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODEC));
-                break;
-            case CODE_FORMAT:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODE_FORMAT"));
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
-                break;
-            case ENV:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("ENV_VAR"));
-                menuItem.setEnabled(false);
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
-                break;
-            case SCRCAPTURE:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleString("SCREENSHOTS"));
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SCRCAPTURE));
-                break;
-            case CLEAN:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("WASTE_CLEAN"));
-                menuItem.setEnabled(false);
-                break;
-            case LDF:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("LARGE_DUPLICATE_FILES"));
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LDF));
-                break;
-            case TODOS:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("TODO_LIST"));
-                menuItem.setEnabled(false);
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.TODOS));
-                break;
-            case LOGONUI:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("LOGON_IMAGE"));
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LOGONUI));
-                break;
-            case FILEEXPLORER:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_EXPLORERS"));
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILEEXPLORER));
-                break;
+
             case OS_INFO_MORE:
                 menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("MORE_DETAILS"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.OS_INFO_MORE));
-                break;
-            case QR:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("QR_CODE"));
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.QR));
-                break;
-            case HOSTS:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleString("HOSTS"));
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.HOSTS));
-                break;
-            case FILESPLITER:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_SPLITER"));
-                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILESPLITER));
                 break;
             default:
                 break;

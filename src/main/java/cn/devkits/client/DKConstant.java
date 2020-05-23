@@ -6,7 +6,6 @@ import java.util.HashSet;
 import com.google.common.collect.Sets;
 
 public interface DKConstant {
-
     String DEVKIT_WORKSPACE = System.getenv("USERPROFILE") + File.separator + ".devkits" + File.separator;
 
     // 截屏

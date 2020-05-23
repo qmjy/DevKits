@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.melloware.jintellitype.HotkeyListener;
@@ -36,9 +38,9 @@ public class AppStarter implements Runnable {
     @Override
     public void run() {
         initLookAndFeel();
-        initSystemHotKey();
         initSystemTrayIcon();
 
+        initSystemHotKey();
         DKSystemUIUtil.regIcon();
     }
 
@@ -46,7 +48,6 @@ public class AppStarter implements Runnable {
         JIntellitype.getInstance().registerHotKey(DKConstant.DK_HOTKEY_SCR_CAP, JIntellitype.MOD_ALT + JIntellitype.MOD_CONTROL, (int) 'A');
 
         JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
-
             @Override
             public void onHotKey(int identifier) {
                 switch (identifier) {
@@ -68,8 +69,8 @@ public class AppStarter implements Runnable {
                 trayIcon.setImageAutoSize(true);
                 // 添加工具提示文本
                 trayIcon.setToolTip("开发工具包" + System.lineSeparator() + "官网：www.devkits.cn");
+                trayIcon.setPopupMenu(createTrayMenu(trayIcon));
 
-                initContextMenu(trayIcon);
                 initDbClick(trayIcon);
                 initNotice(trayIcon);
 
@@ -104,7 +105,7 @@ public class AppStarter implements Runnable {
         }
     }
 
-    private static void initContextMenu(TrayIcon trayIcon) {
+    private static PopupMenu createTrayMenu(TrayIcon trayIcon) {
         PopupMenu popupMenu = new PopupMenu();
 
         popupMenu.add(initNetworkMenu());// 网络工具
@@ -119,7 +120,7 @@ public class AppStarter implements Runnable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AboutFrame().setVisible(true);;
+                new AboutFrame().setVisible(true);
             }
         });
         popupMenu.add(mi);
@@ -133,8 +134,7 @@ public class AppStarter implements Runnable {
         });
         popupMenu.add(quit);
 
-        // 为托盘图标加弹出菜弹
-        trayIcon.setPopupMenu(popupMenu);
+        return popupMenu;
     }
 
     private static MenuItem initNetworkMenu() {
@@ -146,17 +146,27 @@ public class AppStarter implements Runnable {
     private static Menu initDevMenu() {
         Menu devMenu = new Menu(DKSystemUIUtil.getLocaleString("DEV_TOOLS"));
 
-        MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODEC);
-        MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.CODE_FORMAT);
-        MenuItemFactory.createComputeItem(devMenu, MenuItemEnum.ENV);
+        MenuItem menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODEC"));
+        menuItem.setEnabled(false);
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODEC));
+        devMenu.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODE_FORMAT"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
+        devMenu.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("ENV_VAR"));
+        menuItem.setEnabled(false);
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
+        devMenu.add(menuItem);
 
         return devMenu;
     }
 
     private static Menu initComputerMenu() {
-        Menu computerItem = new Menu(DKSystemUIUtil.getLocaleString("COMPUTER"), true);
+        Menu computerItem = new Menu(DKSystemUIUtil.getLocaleString("COMPUTER"), false);
 
-        Menu sysInfoItem = new Menu(DKSystemUIUtil.getLocaleString("SYS_INFO"), true);
+        Menu sysInfoItem = new Menu(DKSystemUIUtil.getLocaleString("SYS_INFO"), false);
 
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.USER_NAME);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.OS_NAME);
@@ -170,18 +180,46 @@ public class AppStarter implements Runnable {
 
         computerItem.add(sysInfoItem);
 
-        Menu toolsItem = new Menu(DKSystemUIUtil.getLocaleString("TOOLS"), true);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.CLEAN);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.SCRCAPTURE);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.LDF);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.TODOS);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.LOGONUI);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.FILEEXPLORER);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.QR);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.HOSTS);
-        MenuItemFactory.createComputeItem(toolsItem, MenuItemEnum.FILESPLITER);
-        computerItem.add(toolsItem);
+        Menu toolsItem = new Menu(DKSystemUIUtil.getLocaleString("TOOLS"), false);
 
+        MenuItem menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("WASTE_CLEAN"));
+        menuItem.setEnabled(false);
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleString("SCREENSHOTS"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SCRCAPTURE));
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("LARGE_DUPLICATE_FILES"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LDF));
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("TODO_LIST"));
+        menuItem.setEnabled(false);
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.TODOS));
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("LOGON_IMAGE"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LOGONUI));
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_EXPLORERS"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILEEXPLORER));
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("QR_CODE"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.QR));
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleString("HOSTS"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.HOSTS));
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_SPLITER"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILESPLITER));
+        toolsItem.add(menuItem);
+
+        computerItem.add(toolsItem);
         return computerItem;
     }
 
@@ -190,7 +228,7 @@ public class AppStarter implements Runnable {
             public void mouseClicked(MouseEvent e) {
                 // 判断是否双击了鼠标
                 if (e.getClickCount() == 2) {
-                    JOptionPane.showMessageDialog(null, "待开放");
+                    JOptionPane.showMessageDialog(null, "您发现了新大陆...");
                 }
             }
         });
