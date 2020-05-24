@@ -1,24 +1,20 @@
 package cn.devkits.client.asyn;
 
-import java.awt.AWTException;
-import java.awt.Menu;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
+import java.awt.*;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Timer;
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXMonthView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.melloware.jintellitype.HotkeyListener;
@@ -228,10 +224,29 @@ public class AppStarter implements Runnable {
             public void mouseClicked(MouseEvent e) {
                 // 判断是否双击了鼠标
                 if (e.getClickCount() == 2) {
-                    JOptionPane.showMessageDialog(null, "您发现了新大陆...");
+                    showCalendarDialog();
                 }
             }
         });
+    }
+
+    private static void showCalendarDialog() {
+        JDialog jDialog = new JDialog();
+        jDialog.setTitle(DKSystemUIUtil.getLocaleStringWithEllipsis("CALENDAR_DIALOG_TITLE"));
+        jDialog.setResizable(false);
+        jDialog.setLocationRelativeTo(null);
+
+        jDialog.setContentPane(createCalendarPane());
+        jDialog.pack();
+        jDialog.setVisible(true);
+    }
+
+    private static Container createCalendarPane() {
+        JPanel jPanel = new JPanel();
+        JXMonthView monthView = new JXMonthView();
+        jPanel.add(monthView);
+
+        return jPanel;
     }
 
     private static void initNotice(TrayIcon trayIcon) {

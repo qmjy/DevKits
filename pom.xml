@@ -147,6 +147,13 @@
 			<version>1.12.1</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.swinglabs.swingx/swingx-core -->
+		<dependency>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-core</artifactId>
+			<version>1.6.5</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.github.sarxos</groupId>
 			<artifactId>webcam-capture</artifactId>
