@@ -1,5 +1,22 @@
 package cn.devkits.client.asyn;
 
+import cn.devkits.client.App;
+import cn.devkits.client.DKConstant;
+import cn.devkits.client.task.WinNoticeTask;
+import cn.devkits.client.tray.MenuItemEnum;
+import cn.devkits.client.tray.MenuItemFactory;
+import cn.devkits.client.tray.frame.AboutFrame;
+import cn.devkits.client.tray.listener.TrayItemWindowListener;
+import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSystemUtil;
+import com.melloware.jintellitype.HotkeyListener;
+import com.melloware.jintellitype.JIntellitype;
+import org.jdesktop.swingx.JXMonthView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
@@ -7,26 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Timer;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import cn.devkits.client.tray.listener.TrayItemWindowListener;
-import org.jdesktop.swingx.JXDatePicker;
-import org.jdesktop.swingx.JXMonthView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.melloware.jintellitype.HotkeyListener;
-import com.melloware.jintellitype.JIntellitype;
-import cn.devkits.client.App;
-import cn.devkits.client.DKConstant;
-import cn.devkits.client.task.WinNoticeTask;
-import cn.devkits.client.tray.MenuItemEnum;
-import cn.devkits.client.tray.MenuItemFactory;
-import cn.devkits.client.tray.frame.AboutFrame;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
 
 public class AppStarter implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
