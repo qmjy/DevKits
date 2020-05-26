@@ -9,6 +9,9 @@ import cn.devkits.client.tray.frame.AboutFrame;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
+import com.github.lgooddatepicker.components.CalendarPanel;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.demo.FullDemo;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import org.jdesktop.swingx.JXMonthView;
@@ -17,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
@@ -24,6 +28,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Timer;
 
 public class AppStarter implements Runnable {
@@ -229,22 +235,31 @@ public class AppStarter implements Runnable {
     }
 
     private static void showCalendarDialog() {
-        JDialog jDialog = new JDialog();
-        jDialog.setTitle(DKSystemUIUtil.getLocaleStringWithEllipsis("CALENDAR_DIALOG_TITLE"));
-        jDialog.setResizable(false);
-        jDialog.setLocationRelativeTo(null);
+        Container calendarPane = createCalendarPane();
 
-        jDialog.setContentPane(createCalendarPane());
+        JDialog jDialog = new JDialog();
+        jDialog.setTitle(DKSystemUIUtil.getLocaleString("CALENDAR_DIALOG_TITLE"));
+        jDialog.setResizable(false);
+        jDialog.setContentPane(calendarPane);
         jDialog.pack();
         jDialog.setVisible(true);
     }
 
     private static Container createCalendarPane() {
-        JPanel jPanel = new JPanel();
-        JXMonthView monthView = new JXMonthView();
-        jPanel.add(monthView);
+        DatePickerSettings datePickerSettings = new DatePickerSettings();
+        datePickerSettings.setWeekNumbersDisplayed(true, true);
+//        datePickerSettings.setFirstDayOfWeek(DayOfWeek.MONDAY);
 
-        return jPanel;
+        int newHeight = (int) (datePickerSettings.getSizeDatePanelMinimumHeight() * 1.6);
+        int newWidth = (int) (datePickerSettings.getSizeDatePanelMinimumWidth() * 1.6);
+        datePickerSettings.setSizeDatePanelMinimumHeight(newHeight);
+        datePickerSettings.setSizeDatePanelMinimumWidth(newWidth);
+
+        CalendarPanel calendarPanel = new CalendarPanel(datePickerSettings);
+        calendarPanel.setSelectedDate(LocalDate.now());
+        calendarPanel.setBorder(new LineBorder(Color.lightGray));
+
+        return calendarPanel;
     }
 
     private static void initNotice(TrayIcon trayIcon) {
