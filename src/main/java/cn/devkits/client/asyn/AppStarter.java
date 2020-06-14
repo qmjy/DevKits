@@ -11,10 +11,8 @@ import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import com.github.lgooddatepicker.components.CalendarPanel;
 import com.github.lgooddatepicker.components.DatePickerSettings;
-import com.github.lgooddatepicker.demo.FullDemo;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
-import org.jdesktop.swingx.JXMonthView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -242,18 +240,18 @@ public class AppStarter implements Runnable {
         jDialog.setResizable(false);
         jDialog.setContentPane(calendarPane);
         jDialog.pack();
+        jDialog.setLocationRelativeTo(null);
         jDialog.setVisible(true);
     }
 
     private static Container createCalendarPane() {
         DatePickerSettings datePickerSettings = new DatePickerSettings();
         datePickerSettings.setWeekNumbersDisplayed(true, true);
-//        datePickerSettings.setFirstDayOfWeek(DayOfWeek.MONDAY);
 
-        int newHeight = (int) (datePickerSettings.getSizeDatePanelMinimumHeight() * 1.6);
-        int newWidth = (int) (datePickerSettings.getSizeDatePanelMinimumWidth() * 1.6);
-        datePickerSettings.setSizeDatePanelMinimumHeight(newHeight);
-        datePickerSettings.setSizeDatePanelMinimumWidth(newWidth);
+//        int newHeight = (int) (datePickerSettings.getSizeDatePanelMinimumHeight() * 1.6);
+//        int newWidth = (int) (datePickerSettings.getSizeDatePanelMinimumWidth() * 1.6);
+//        datePickerSettings.setSizeDatePanelMinimumHeight(newHeight);
+//        datePickerSettings.setSizeDatePanelMinimumWidth(newWidth);
 
         CalendarPanel calendarPanel = new CalendarPanel(datePickerSettings);
         calendarPanel.setSelectedDate(LocalDate.now());
