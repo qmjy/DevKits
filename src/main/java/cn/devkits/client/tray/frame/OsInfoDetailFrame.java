@@ -10,20 +10,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTree;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 import javax.swing.SpringLayout.Constraints;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -34,7 +21,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+
 import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSystemUtil;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.CentralProcessor.TickType;
@@ -59,9 +48,8 @@ import oshi.util.FormatUtil;
 import oshi.util.Util;
 
 /**
- * 
  * 当前计算机软硬件信息展示
- * 
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年10月21日 下午8:23:09
@@ -73,7 +61,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private SystemInfo si = new SystemInfo();
 
     public OsInfoDetailFrame() {
-        super("System Details", 0.9f);
+        super(DKSystemUIUtil.getLocaleString("SYS_INFO_TITLE"), 0.9f);
 
         initUI(getContentPane());
         initListener();
@@ -81,6 +69,13 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
     @Override
     protected void initUI(Container rootContainer) {
+        JToolBar toolBar = new JToolBar("System Information Toolbar");
+        toolBar.setFloatable(false);
+        createToolbarBtns(toolBar);
+
+        setPreferredSize(new Dimension(450, 130));
+        add(toolBar, BorderLayout.PAGE_START);
+
         this.jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab("Dashboard", initDashboard(si.getHardware(), si.getOperatingSystem()));
         jTabbedPane.addTab("CPU", new JScrollPane());
@@ -97,6 +92,22 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
         rootContainer.add(jTabbedPane, BorderLayout.CENTER);
+    }
+
+    private void createToolbarBtns(JToolBar toolBar) {
+        JButton systemBtn = new JButton(DKSystemUIUtil.getLocaleString("SYS_INFO_TOOL_BAR_SYS"));
+        systemBtn.setFocusable(false);
+        systemBtn.addActionListener(e -> {
+            DKSystemUtil.openSystemInfoClient("msinfo32");
+        });
+        toolBar.add(systemBtn);
+
+        JButton dxBtn = new JButton(DKSystemUIUtil.getLocaleString("SYS_INFO_TOOL_BAR_DX"));
+        dxBtn.setFocusable(false);
+        dxBtn.addActionListener(e -> {
+            DKSystemUtil.openSystemInfoClient("dxdiag");
+        });
+        toolBar.add(dxBtn);
     }
 
 
@@ -390,7 +401,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
         return vBox;
     }
-
 
 
     private JComponent initDashboard(HardwareAbstractionLayer hal, OperatingSystem os) {

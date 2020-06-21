@@ -6,10 +6,13 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+
+import com.google.common.collect.Sets;
 import org.bridj.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +24,19 @@ import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
 
 /**
- * 
  * System Util<br>
  * http://webcam-capture.sarxos.pl/
- * 
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年10月20日 下午9:37:03
  */
 public final class DKSystemUtil {
+
+    /**
+     * windows 安全命令
+     */
+    private static final Set<String> WIN_WHITE_LIST_CMDS = Sets.newHashSet(new String[]{"msinfo32", "dxdiag"});
 
     /**
      * 声音类型：扫描声音
@@ -39,11 +46,12 @@ public final class DKSystemUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUtil.class);
     private static final SystemInfo SYSTEM_INFO = new SystemInfo();
 
-    private DKSystemUtil() {}
+    private DKSystemUtil() {
+    }
 
     /**
      * open local application
-     * 
+     *
      * @param appName the application name need to open
      */
     public static void invokeLocalApp(String appName) {
@@ -70,7 +78,7 @@ public final class DKSystemUtil {
 
     /**
      * 判断当前程序是否是以jar的方式运行
-     * 
+     *
      * @return 是否是以jar运行
      */
     public static boolean isDevelopMode() {
@@ -80,8 +88,9 @@ public final class DKSystemUtil {
 
     /**
      * 搜索指定对象在数组的索引位置
+     *
      * @param array 待搜索的数组
-     * @param key 待搜索的对象
+     * @param key   待搜索的对象
      * @return 索引
      */
     public static int arraysSearch(String[] array, String key) {
@@ -92,7 +101,6 @@ public final class DKSystemUtil {
         }
         return -1;
     }
-
 
 
     /**
@@ -112,10 +120,9 @@ public final class DKSystemUtil {
     }
 
 
-
     /**
      * 获取屏幕宽度和高度
-     * 
+     *
      * @return 屏幕宽度和高度
      */
     public static Dimension getScreenSize() {
@@ -125,6 +132,7 @@ public final class DKSystemUtil {
 
     /**
      * 播放执行类型的声音
+     *
      * @param soundType sound type
      */
     public static void playSound(int soundType) {
@@ -140,7 +148,7 @@ public final class DKSystemUtil {
 
     /**
      * get system startup time
-     * 
+     *
      * @return Formats the up time in seconds as days, hh:mm:ss.
      */
     public static String getSystemUpTime() {
@@ -156,7 +164,7 @@ public final class DKSystemUtil {
 
     /**
      * get OS Name & Version
-     * 
+     *
      * @return OS name and Version
      */
     public static String getOsInfo() {
@@ -167,7 +175,7 @@ public final class DKSystemUtil {
     /**
      * 获取系统临时文件目录<br>
      * Windows: "C:\Users\ADMINI~1\AppData\Local\Temp\"
-     * 
+     *
      * @return 临时文件目录
      */
     public static String getSystemTempDir() {
@@ -177,6 +185,7 @@ public final class DKSystemUtil {
 
     /**
      * 获取操作系统名称
+     *
      * @return 操作系统名称
      */
     public static String getOsName() {
@@ -186,6 +195,7 @@ public final class DKSystemUtil {
 
     /**
      * 判断当前操作系统是否是windows
+     *
      * @return 当前系统是否是windows
      */
     public static boolean isWindows() {
@@ -200,7 +210,7 @@ public final class DKSystemUtil {
 
     /**
      * get CPU process info.
-     * 
+     *
      * @return CPU information
      */
     public static String getCpuInfo() {
@@ -218,5 +228,17 @@ public final class DKSystemUtil {
         } catch (InterruptedException e) {
             LOGGER.error("System sleep Failed: {}", i);
         }
+    }
+
+    public static boolean openSystemInfoClient(String cmd) {
+        if (isWindows() && WIN_WHITE_LIST_CMDS.contains(cmd)) {
+            try {
+                Runtime.getRuntime().exec(cmd);
+                return true;
+            } catch (IOException e) {
+                LOGGER.error("Open windows cmd ‘{}’ failed!", cmd);
+            }
+        }
+        return false;
     }
 }
