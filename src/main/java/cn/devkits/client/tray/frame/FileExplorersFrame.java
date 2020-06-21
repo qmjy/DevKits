@@ -1,7 +1,6 @@
 package cn.devkits.client.tray.frame;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.JRootPane;
 import javax.swing.JSplitPane;
@@ -14,14 +13,12 @@ public class FileExplorersFrame extends DKAbstractFrame {
     public FileExplorersFrame() {
         super("File Explorer", 1.2f);
 
-        initUI(getRootPane());
+        initUI(getContentPane());
         initListener();
     }
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
-        jRootPane.setLayout(new BorderLayout());
-
+    protected void initUI(Container rootContianer) {
         JSplitPane top = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         top.setLeftComponent(getDirs());
         top.setRightComponent(getDirs());
@@ -35,7 +32,7 @@ public class FileExplorersFrame extends DKAbstractFrame {
         JSplitPane comp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
         comp.setResizeWeight(0.5);
 
-        jRootPane.add(comp, BorderLayout.CENTER);
+        rootContianer.add(comp);
     }
 
     private Component getDirs() {

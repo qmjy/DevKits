@@ -56,7 +56,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
     public LogonImageManageFrame() {
         super("Logon Background Manager", 0.7f, 0.25f);
 
-        initUI(getRootPane());
+        initUI(getContentPane());
         if ("Windows 7".equals(DKSystemUtil.getOsName())) {
             initListener();
         }
@@ -69,9 +69,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
 
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
-        jRootPane.setLayout(new BorderLayout());
-
+    protected void initUI(Container container) {
         JPanel centerPanel = new JPanel();
         SpringLayout layout = new SpringLayout();
         centerPanel.setLayout(layout);
@@ -102,14 +100,14 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         SpringLayout.Constraints centerPanelCons = layout.getConstraints(centerPanel);
         centerPanelCons.setConstraint(SpringLayout.EAST, Spring.sum(textFieldCons.getConstraint(SpringLayout.EAST), Spring.constant(15)));
 
-        jRootPane.add(centerPanel, BorderLayout.CENTER);
+        container.add(centerPanel, BorderLayout.CENTER);
 
-        jRootPane.add(createButtonPanel(jRootPane), BorderLayout.PAGE_END);
+        container.add(createButtonPanel(container), BorderLayout.PAGE_END);
     }
 
 
 
-    private Component createButtonPanel(JRootPane jRootPane) {
+    private Component createButtonPanel(Container jRootPane) {
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -121,7 +119,6 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         buttonPane.add(Box.createHorizontalGlue());
 
         this.applyBtn = new JButton("Apply");
-        jRootPane.setDefaultButton(applyBtn);
 
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));

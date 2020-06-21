@@ -5,9 +5,8 @@ import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -89,16 +88,13 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     public LargeDuplicateFilesFrame() {
         super("Large Duplicate Files", 1.2f);
 
-        initUI(getRootPane());
+        initUI(getContentPane());
         initListener();
     }
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
-        jRootPane.setLayout(new BorderLayout());
-        jRootPane.setBorder(new EmptyBorder(5, 5, 0, 5));
-
-        jRootPane.add(initNorthPane(), BorderLayout.NORTH);
+    protected void initUI(Container rootContainer) {
+        rootContainer.add(initNorthPane(), BorderLayout.NORTH);
 
         JSplitPane jSplitPane = new JSplitPane();
 
@@ -118,11 +114,11 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         jSplitPane.setRightComponent(new JScrollPane(table));
 
         jSplitPane.setResizeWeight(0.3);
-        jRootPane.add(jSplitPane, BorderLayout.CENTER);
+        rootContainer.add(jSplitPane, BorderLayout.CENTER);
 
         statusLine = new JLabel("Ready to go...");
         statusLine.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, 25));
-        jRootPane.add(statusLine, BorderLayout.SOUTH);
+        rootContainer.add(statusLine, BorderLayout.SOUTH);
 
         initDataModel();
     }

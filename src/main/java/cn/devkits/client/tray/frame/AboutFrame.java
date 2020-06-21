@@ -10,28 +10,13 @@ import org.apache.maven.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -53,12 +38,12 @@ public class AboutFrame extends DKAbstractFrame {
     public AboutFrame() {
         super(DKSystemUIUtil.getLocaleString("ABOUT_APP"), 0.7f, 0.6f);
 
-        initUI(getRootPane());
+        initUI(getContentPane());
         initListener();
     }
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
+    protected void initUI(Container jRootPane) {
         name.setFont(getAFont());
 
         version = new JLabel(DKSystemUIUtil.getLocaleString("VERSION") + DKConfigUtil.getInstance().getPomInfo().getVersion());
@@ -80,19 +65,37 @@ public class AboutFrame extends DKAbstractFrame {
 
         panel.add(initTabContent());
 
-        jRootPane.setContentPane(panel);
+        jRootPane.add(panel);
     }
 
 
     private Component initTabContent() {
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("VERSION_INFO"), loadVersionDetail());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE"), loadOpenSourceTable());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE_JAVA"), loadOpenSourceTable());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE_PRJ"), loadOpenSourcePrj());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("LICENSE"), loadLicensePane());
 
         jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
         return jTabbedPane;
+    }
+
+    /**
+     * 其他开源项目
+     * @return 其他开源项目
+     */
+    private Component loadOpenSourcePrj() {
+        DefaultListModel  listModel = new DefaultListModel();
+        listModel.addElement("https://github.com/521xueweihan/GitHub520");
+
+        JList list = new JList(listModel);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setSelectedIndex(0);
+        list.addListSelectionListener(null);
+        JScrollPane listScrollPane = new JScrollPane(list);
+
+        return listScrollPane;
     }
 
     private Component loadLicensePane() {

@@ -25,12 +25,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -99,7 +95,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
     public QrCodeFrame() {
         super("QR Code", (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
 
-        initUI(getRootPane());
+        initUI(getContentPane());
         initListener();
 
         executor.execute(this);
@@ -130,7 +126,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
+    protected void initUI(Container jRootPane) {
         CardLayout cardLayout = new CardLayout();
         jRootPane.setLayout(cardLayout);
 

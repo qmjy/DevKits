@@ -6,6 +6,7 @@ import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
 import cn.devkits.client.tray.frame.AboutFrame;
+import cn.devkits.client.tray.frame.SettingsFrame;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
@@ -111,11 +112,14 @@ public class AppStarter implements Runnable {
         popupMenu.add(initComputerMenu());// 系统
 
         popupMenu.addSeparator();
-        popupMenu.add(DKSystemUIUtil.getLocaleStringWithEllipsis("SETTINGS"));
+        MenuItem settings = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("SETTINGS"));
+        settings.addActionListener(e -> {
+            new SettingsFrame().setVisible(true);
+        });
+        popupMenu.add(settings);
 
         MenuItem mi = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("ABOUT"));
         mi.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 new AboutFrame().setVisible(true);

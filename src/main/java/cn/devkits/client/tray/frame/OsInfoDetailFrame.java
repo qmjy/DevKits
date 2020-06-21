@@ -75,15 +75,12 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     public OsInfoDetailFrame() {
         super("System Details", 0.9f);
 
-        initUI(getRootPane());
+        initUI(getContentPane());
         initListener();
     }
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
-        jRootPane.setLayout(new BorderLayout());
-        jRootPane.setBorder(new EmptyBorder(5, 5, 0, 5));
-
+    protected void initUI(Container rootContainer) {
         this.jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab("Dashboard", initDashboard(si.getHardware(), si.getOperatingSystem()));
         jTabbedPane.addTab("CPU", new JScrollPane());
@@ -99,7 +96,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
         jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
-        jRootPane.add(jTabbedPane, BorderLayout.CENTER);
+        rootContainer.add(jTabbedPane, BorderLayout.CENTER);
     }
 
 

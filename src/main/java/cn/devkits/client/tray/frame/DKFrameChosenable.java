@@ -11,7 +11,7 @@ import java.awt.Component;
 public interface DKFrameChosenable {
     /**
      * update
-     * @param path the browse file or path
+     * @param filePath the browse file or path
      */
     void updateSelectFilePath(String filePath);
 

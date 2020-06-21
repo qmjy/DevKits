@@ -99,7 +99,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     public FileSpliterFrame() {
         super("File Spliter", 0.7f, 0.55f);
 
-        initUI(getRootPane());
+        initUI(getContentPane());
 
         initListener();
 
@@ -107,9 +107,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     }
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
-        jRootPane.setLayout(new BorderLayout());
-
+    protected void initUI(Container rootContianer) {
         JPanel centerPanel = new JPanel();
         SpringLayout layout = new SpringLayout();
         centerPanel.setLayout(layout);
@@ -174,9 +172,9 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         SpringLayout.Constraints centerPanelCons = layout.getConstraints(centerPanel);
         centerPanelCons.setConstraint(SpringLayout.EAST, Spring.sum(browseBtnCons.getConstraint(SpringLayout.EAST), Spring.constant(15)));
 
-        jRootPane.add(centerPanel, BorderLayout.CENTER);
+        rootContianer.add(centerPanel, BorderLayout.CENTER);
 
-        jRootPane.add(createButtonPanel(jRootPane), BorderLayout.PAGE_END);
+        rootContianer.add(createButtonPanel(rootContianer), BorderLayout.PAGE_END);
     }
 
     private JPanel createOrUpdateSegmentPane() {
@@ -246,7 +244,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         return fieldWrapper;
     }
 
-    private Component createButtonPanel(JRootPane jRootPane) {
+    private Component createButtonPanel(Container jRootPane) {
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -258,7 +256,6 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         buttonPane.add(Box.createHorizontalGlue());
 
         this.applyBtn = new JButton("Apply");
-        jRootPane.setDefaultButton(applyBtn);
 
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));

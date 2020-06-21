@@ -1,7 +1,6 @@
 package cn.devkits.client.tray.frame;
 
-import java.awt.BorderLayout;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -60,14 +59,12 @@ public class ServerPortsFrame extends DKAbstractFrame {
     public ServerPortsFrame() {
         super(DKSystemUIUtil.getLocaleString("SERVER_PORTS_DETECTION"), 0.6f);
 
-        initUI(getRootPane());
+        initUI(getContentPane());
         initListener();
     }
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
-        jRootPane.setLayout(new BorderLayout());
-
+    protected void initUI(Container jRootPane) {
         JPanel northPane = new JPanel();
         northPane.setLayout(new BorderLayout());
 

@@ -1,7 +1,6 @@
 package cn.devkits.client.tray.frame;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -37,21 +36,19 @@ public class CodeFormatFrame extends DKAbstractFrame {
     public CodeFormatFrame() {
         super("Code Format");
 
-        initUI(getRootPane());
+        initUI(getContentPane());
         initListener();
     }
 
 
     @Override
-    protected void initUI(JRootPane jRootPane) {
-        jRootPane.setLayout(new BorderLayout());
-
+    protected void initUI(Container rootContainer) {
         JTabbedPane tabbedPane = new JTabbedPane();
         addTabContent(tabbedPane, "Json Format");
         addTabContent(tabbedPane, "XML Format");
         tabbedPane.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HEIGHT));
 
-        jRootPane.add(tabbedPane, BorderLayout.CENTER);
+        rootContainer.add(tabbedPane);
     }
 
 

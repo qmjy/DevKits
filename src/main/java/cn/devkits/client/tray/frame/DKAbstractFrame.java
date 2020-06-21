@@ -1,7 +1,6 @@
 package cn.devkits.client.tray.frame;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 
@@ -89,9 +88,9 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
     /**
      * 创建UI
      * 
-     * @param jRootPane Root Pane
+     * @param rootContainer Root Pane
      */
-    protected abstract void initUI(JRootPane jRootPane);
+    protected abstract void initUI(Container rootContainer);
 
     /**
      * 需要初始化的监听器
