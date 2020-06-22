@@ -1,21 +1,24 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.action.LanguageSettingsAction;
+import cn.devkits.client.action.OthersSettingsAction;
+import cn.devkits.client.action.ThemeSettingsAction;
 import cn.devkits.client.util.DKSystemUIUtil;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeListener;
 
 public class SettingsFrame extends DKAbstractFrame {
 
     private JSplitPane jSplitPane;
     private JPanel rightPane;
+    private CardLayout rightCardLayout;
 
     public SettingsFrame() {
         super(DKSystemUIUtil.getLocaleString("SETTINGS_TITLE"), 0.8f, 0.7f);
@@ -37,7 +40,12 @@ public class SettingsFrame extends DKAbstractFrame {
     }
 
     private JPanel createRightPane() {
-        return new JPanel();
+        JPanel jPanel = new JPanel();
+
+        this.rightCardLayout = new CardLayout();
+        jPanel.setLayout(rightCardLayout);
+
+        return jPanel;
     }
 
     private Component createLeftPane() {
@@ -45,28 +53,27 @@ public class SettingsFrame extends DKAbstractFrame {
         JXTaskPaneContainer taskPaneContainer = new JXTaskPaneContainer();
 
         // create a first taskPane with common actions
-        JXTaskPane actionPane = new JXTaskPane();
-        actionPane.setTitle("Files and Folders");
-        actionPane.setSpecial(true);
-        actionPane.setFocusable(false);
+        JXTaskPane commonsPane = new JXTaskPane();
+        commonsPane.setTitle(DKSystemUIUtil.getLocaleString("SETTINGS_GROUP_COMMON_SETTINGS"));
+        commonsPane.setSpecial(true);
+        commonsPane.setIcon(IconFontSwing.buildIcon(FontAwesome.TACHOMETER, 16, new Color(50, 50, 50)));
+        commonsPane.setFocusable(false);
 
-        // actions can be added, a hyperlink will be created
-        Action renameSelectedFile = new LanguageSettingsAction(rightPane);
-        actionPane.add(renameSelectedFile);
-        actionPane.add(new LanguageSettingsAction(rightPane));
+        commonsPane.add(new ThemeSettingsAction(rightPane));
 
-        // add this taskPane to the taskPaneContainer
-        taskPaneContainer.add(actionPane);
+        taskPaneContainer.add(commonsPane);
 
-        // create another taskPane, it will show globalTaskPane of the selected file
-        JXTaskPane globalTaskPane = new JXTaskPane();
-        globalTaskPane.setTitle(DKSystemUIUtil.getLocaleString("SETTINGS_GROUP_GLOBAL_SETTINGS"));
-        globalTaskPane.setFocusable(false);
+        // create another taskPane, it will show sysPane of the selected file
+        JXTaskPane sysPane = new JXTaskPane();
+        sysPane.setTitle(DKSystemUIUtil.getLocaleString("SETTINGS_GROUP_SYS_SETTINGS"));
+        sysPane.setIcon(IconFontSwing.buildIcon(FontAwesome.COGS, 16, new Color(50, 50, 50)));
+        sysPane.setFocusable(false);
 
-        // add standard components to the globalTaskPane taskPane
-        globalTaskPane.add(new LanguageSettingsAction(rightPane));
+        // add standard components to the sysPane taskPane
+        sysPane.add(new LanguageSettingsAction(rightPane));
+        sysPane.add(new OthersSettingsAction(rightPane));
 
-        taskPaneContainer.add(globalTaskPane);
+        taskPaneContainer.add(sysPane);
 
         return new JScrollPane(taskPaneContainer);
     }
