@@ -2,7 +2,10 @@ package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.tray.frame.asyn.SearchFileThread;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
+import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
+import com.google.common.collect.Lists;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,30 +17,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 import javax.swing.SpringLayout.Constraints;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -47,7 +38,7 @@ import javax.swing.tree.TreeSelectionModel;
  * 重复大文件检查<br>
  * Oracle Swing DEMO:https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#
  * GlassPaneDemo
- * 
+ *
  * @author Shaofeng Liu
  * @version 1.0.0
  * @time 2019年9月26日 下午9:34:49
@@ -64,20 +55,24 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private static final int COMPONENT_MARGIN_TOP_BASE = 5;
     private static final int COMPONENT_MARGIN_TOP_LABLE = 10;
-    private static final int COMPONENT_MARGIN_RIGHT = 25;
+    private static final int COMPONENT_MARGIN_RIGHT = 10;
 
-    /** 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值 */
+    /**
+     * 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值
+     */
     public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 100;
 
     private JTree tree = null;
     private JPopupMenu jtreeMenu = null;
     private JTable table = new JTable();
     private JLabel statusLine = null;
+    private JTextField searchPath;
     private JComboBox<String> fileTypeComboBox = null;
     private JTextField minFileSizeInput = null;
     private JTextField maxFileSizeInput = null;
     private JComboBox<String> fileSizeUnitComboBox = null;
     private JButton startCancelBtn = null;
+    private JButton exportBtn = null;
     private ExecutorService theadPool = null;
 
     private DefaultMutableTreeNode treeNode = null;
@@ -136,18 +131,23 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         SpringLayout mgr = new SpringLayout();
         northRootPane.setLayout(mgr);
 
-        JLabel fileTypeLabel = new JLabel("File Type Filter: ", JLabel.RIGHT);
+        JLabel fileSearchPathLbl = new JLabel("Search Path:", JLabel.LEFT);
+        this.searchPath = new JTextField();
+        searchPath.setColumns(15);
+        searchPath.setText("Computer");
+
+        JLabel fileTypeLabel = new JLabel("File Type: ", JLabel.RIGHT);
         fileTypeComboBox = new JComboBox<String>(FILE_TYPE_UNITS);
         fileTypeComboBox.setLightWeightPopupEnabled(false);
 
-        JLabel minSizeLabel = new JLabel("Minimum Size: ", JLabel.RIGHT);
-        minFileSizeInput = new JTextField(6);
+        JLabel minSizeLabel = new JLabel("Minimum: ", JLabel.RIGHT);
+        minFileSizeInput = new JTextField(2);
         minFileSizeInput.setText("0");
 
-        JLabel maxSizeLabel = new JLabel("Maximum Size: ", JLabel.RIGHT);
-        maxFileSizeInput = new JTextField(6);
+        JLabel maxSizeLabel = new JLabel("Maximum: ", JLabel.RIGHT);
+        maxFileSizeInput = new JTextField(2);
 
-        JLabel fileSizeUnit = new JLabel("File Size Unit: ", JLabel.RIGHT);
+        JLabel fileSizeUnit = new JLabel("Size Unit: ", JLabel.RIGHT);
         fileSizeUnitComboBox = new JComboBox<String>(FILE_UNITS);
         fileSizeUnitComboBox.setLightWeightPopupEnabled(false);
         fileSizeUnitComboBox.setSelectedIndex(2);// 默认选中MB单位
@@ -155,6 +155,11 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         startCancelBtn = new JButton(BUTTONS_TEXT[0]);
         startCancelBtn.setFocusPainted(false);// 不显示焦点虚线边框
 
+        exportBtn = new JButton("Export");
+        exportBtn.setFocusPainted(false);// 不显示焦点虚线边框
+
+        northRootPane.add(fileSearchPathLbl);
+        northRootPane.add(searchPath);
         northRootPane.add(fileTypeLabel);
         northRootPane.add(fileTypeComboBox);
         northRootPane.add(minSizeLabel);
@@ -164,17 +169,26 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         northRootPane.add(fileSizeUnit);
         northRootPane.add(fileSizeUnitComboBox);
         northRootPane.add(startCancelBtn);
+        northRootPane.add(exportBtn);
 
-        Constraints fileTypeCons = mgr.getConstraints(fileTypeLabel);
-        fileTypeCons.setX(Spring.constant(COMPONENT_MARGIN_RIGHT));
-        fileTypeCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
+        Constraints searchFilePathLbl = mgr.getConstraints(fileSearchPathLbl);
+        searchFilePathLbl.setX(Spring.constant(COMPONENT_MARGIN_RIGHT));
+        searchFilePathLbl.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
+
+        Constraints searchFilePathTextFieldCons = mgr.getConstraints(searchPath);
+        searchFilePathTextFieldCons.setConstraint(SpringLayout.WEST, Spring.sum(searchFilePathLbl.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        searchFilePathTextFieldCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
+
+        Constraints fileTypeLabelCons = mgr.getConstraints(fileTypeLabel);
+        fileTypeLabelCons.setConstraint(SpringLayout.WEST, Spring.sum(searchFilePathTextFieldCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        fileTypeLabelCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
 
         Constraints fileTypeComboCons = mgr.getConstraints(fileTypeComboBox);
-        fileTypeComboCons.setConstraint(SpringLayout.WEST, Spring.sum(fileTypeCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        fileTypeComboCons.setConstraint(SpringLayout.WEST, Spring.sum(fileTypeLabelCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
         fileTypeComboCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
 
         Constraints minSizeLabelCons = mgr.getConstraints(minSizeLabel);
-        minSizeLabelCons.setConstraint(SpringLayout.WEST, Spring.sum(fileTypeComboCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT * 2)));
+        minSizeLabelCons.setConstraint(SpringLayout.WEST, Spring.sum(fileTypeComboCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
         minSizeLabelCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
 
         Constraints minFileSizeInputCons = mgr.getConstraints(minFileSizeInput);
@@ -182,7 +196,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         minFileSizeInputCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
 
         Constraints maxSizeLabelCons = mgr.getConstraints(maxSizeLabel);
-        maxSizeLabelCons.setConstraint(SpringLayout.WEST, Spring.sum(minFileSizeInputCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT * 2)));
+        maxSizeLabelCons.setConstraint(SpringLayout.WEST, Spring.sum(minFileSizeInputCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
         maxSizeLabelCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
 
         Constraints maxFileSizeInputCons = mgr.getConstraints(maxFileSizeInput);
@@ -190,7 +204,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         maxFileSizeInputCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
 
         Constraints fileSizeUnitCons = mgr.getConstraints(fileSizeUnit);
-        fileSizeUnitCons.setConstraint(SpringLayout.WEST, Spring.sum(maxFileSizeInputCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT * 2)));
+        fileSizeUnitCons.setConstraint(SpringLayout.WEST, Spring.sum(maxFileSizeInputCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
         fileSizeUnitCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_LABLE));
 
         Constraints fileSizeUnitComboBoxCons = mgr.getConstraints(fileSizeUnitComboBox);
@@ -198,16 +212,20 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         fileSizeUnitComboBoxCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
 
         Constraints startCancelBtnCons = mgr.getConstraints(startCancelBtn);
-        startCancelBtnCons.setConstraint(SpringLayout.WEST, Spring.sum(fileSizeUnitComboBoxCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT * 2)));
+        startCancelBtnCons.setConstraint(SpringLayout.WEST, Spring.sum(fileSizeUnitComboBoxCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
         startCancelBtnCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
 
+        Constraints exportBtnCons = mgr.getConstraints(exportBtn);
+        exportBtnCons.setConstraint(SpringLayout.WEST, Spring.sum(startCancelBtnCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        exportBtnCons.setY(Spring.constant(COMPONENT_MARGIN_TOP_BASE));
+
         SpringLayout.Constraints panelCons = mgr.getConstraints(northRootPane);
-        panelCons.setConstraint(SpringLayout.SOUTH, Spring.sum(startCancelBtnCons.getConstraint(SpringLayout.SOUTH), Spring.constant(COMPONENT_MARGIN_TOP_BASE)));
-        panelCons.setConstraint(SpringLayout.WEST, Spring.sum(startCancelBtnCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        panelCons.setConstraint(SpringLayout.SOUTH, Spring.sum(exportBtnCons.getConstraint(SpringLayout.SOUTH), Spring.constant(COMPONENT_MARGIN_TOP_BASE)));
+        panelCons.setConstraint(SpringLayout.WEST, Spring.sum(exportBtnCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
+        panelCons.setConstraint(SpringLayout.EAST, Spring.sum(exportBtnCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
 
         return northRootPane;
     }
-
 
 
     @Override
@@ -224,6 +242,15 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         });
 
         startCancelBtn.addActionListener(new StartEndListener(this));
+        exportBtn.addActionListener(e -> {
+            JFileChooser jfc = new JFileChooser();
+            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            jfc.setCurrentDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+            jfc.setDialogTitle("Select Export Path");
+            jfc.showSaveDialog(this);
+            File file = jfc.getSelectedFile();
+            exportResult(file);
+        });
 
         // 左侧树单选事件
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -293,6 +320,38 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         });
     }
 
+    private void exportResult(File saveFolder) {
+        File exportFile = new File(saveFolder.getAbsolutePath() + File.separator + "DevkitsDuplicateFiles_" + DKDateTimeUtil.currentTimeStr() + ".csv");
+        flushResult(exportFile, Lists.newArrayList(new String[]{"File Name, MD5, File Path, File Size"}));
+
+        DefaultTreeModel rootModel = (DefaultTreeModel) tree.getModel();
+        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) rootModel.getRoot();
+
+        Enumeration<?> children = treeNode.children();
+        while (children.hasMoreElements()) {
+            List<String> data = new ArrayList<>();
+
+            DefaultMutableTreeNode childTreeNode = (DefaultMutableTreeNode) children.nextElement();
+            String md5 = childTreeNode.getUserObject().toString();
+            Enumeration children1 = childTreeNode.children();
+            while (children1.hasMoreElements()) {
+                File f = new File(children1.nextElement().toString());
+                StringBuilder sb = new StringBuilder();
+                sb.append(f.getName()).append(",").append(md5).append(",").append(f.getAbsolutePath()).append(",").append(DKFileUtil.formatBytes(f.length()));
+                data.add(sb.toString());
+            }
+            flushResult(exportFile, data);
+        }
+    }
+
+    private void flushResult(File exportFile, List<String> data) {
+        try {
+            FileUtils.writeLines(exportFile, data, true);
+        } catch (IOException e) {
+            LOGGER.error("Flush result to file '{}' failed: {}", exportFile.getAbsolutePath(), e.getMessage());
+        }
+    }
+
     public void initDataModel() {
         fileMd5Map.clear();
 
@@ -305,6 +364,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     }
 
     public void searchComplete() {
+        theadPool.shutdown();
         updateStatusLineText("Files Search Completed!");
         startCancelBtn.setText(BUTTONS_TEXT[0]);
     }
@@ -340,7 +400,6 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private void insertTreeNode(String md5, File file) {
         DefaultTreeModel rootModel = (DefaultTreeModel) tree.getModel();
-
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) rootModel.getRoot();
 
         int childCount = treeNode.getChildCount();
@@ -382,13 +441,16 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     public JButton getStartCancelBtn() {
         return startCancelBtn;
     }
-}
 
+    public JTextField getSearchPath() {
+        return searchPath;
+    }
+}
 
 
 /**
  * 启动、取消按钮事件监听
- * 
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @datetime 2019年10月5日 下午3:25:08
@@ -412,7 +474,7 @@ class StartEndListener implements ActionListener {
             if (threadPool.isShutdown()) {
                 frame.initDataModel();
             }
-            new Thread(new SearchFileThread(frame, getFileSizeThreshold(frame, true), getFileSizeThreshold(frame, false))).start();
+            new Thread(new SearchFileThread(frame)).start();
             btn.setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[1]);
             frame.updateStatusLineText("Start to scanner File...");
         } else {
@@ -420,32 +482,5 @@ class StartEndListener implements ActionListener {
             btn.setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[0]);
             frame.updateStatusLineText("Scanner file canceled by user!");
         }
-    }
-
-
-    private long getFileSizeThreshold(LargeDuplicateFilesFrame frame, boolean isMaxThreshold) {
-        long val = convertUnti2Val(frame);
-        String minText = frame.getMinFileSizeInput().getText();
-        String maxText = frame.getMaxFileSizeInput().getText();
-        if (isMaxThreshold) {
-            try {
-                return (long) (Double.parseDouble(maxText) * val);
-            } catch (NumberFormatException e) {
-                LOGGER.error("Resolve the max value of user input failed: " + maxText);
-                return Long.MAX_VALUE;
-            }
-        } else {
-            try {
-                return (long) (Double.parseDouble(minText) * val);
-            } catch (NumberFormatException e) {
-                LOGGER.error("Resolve the min value of user input failed: " + minText);
-                return 0;
-            }
-        }
-    }
-
-    private long convertUnti2Val(LargeDuplicateFilesFrame frame) {
-        String fileUnit = (String) frame.getFileSizeUnitComboBox().getSelectedItem();
-        return DKFileUtil.convertUnti2Val(fileUnit);
     }
 }

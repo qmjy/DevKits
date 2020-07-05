@@ -16,7 +16,7 @@ public final class DKDateTimeUtil {
 
     /**
      * convert UTC time to CST, like: "2019-09-08T14:54:13Z"
-     * 
+     *
      * @param utcTimeStr UTC time string
      * @return CST time string
      * @throws ParseException
@@ -39,7 +39,7 @@ public final class DKDateTimeUtil {
 
     /**
      * 按照指定格式返回当前时间字符串
-     * 
+     *
      * @param pattern 时间格式
      * @return 当前时间字符串
      */
@@ -51,6 +51,7 @@ public final class DKDateTimeUtil {
 
     /**
      * 当前时间，默认格式：yyyyMMddmmHHss
+     *
      * @return “yyyyMMddmmHHss”格式的当前时间
      */
     public static String currentTimeStr() {
@@ -62,7 +63,7 @@ public final class DKDateTimeUtil {
 
     /**
      * convert long time to string time with pattern "yyyy-MM-dd mm:HH:ss"
-     * 
+     *
      * @param longTime long time
      * @return string time
      */

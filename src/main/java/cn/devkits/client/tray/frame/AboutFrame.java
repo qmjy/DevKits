@@ -220,8 +220,6 @@ public class AboutFrame extends DKAbstractFrame {
     @Override
     protected void initListener() {
     }
-
-
 }
 
 
@@ -318,6 +316,5 @@ class OpenSourceTableModel implements TableModel {
     @Override
     public void removeTableModelListener(TableModelListener l) {
         // TODO Auto-generated method stub
-
     }
 }

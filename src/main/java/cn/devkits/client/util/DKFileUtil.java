@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -24,8 +25,8 @@ import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
 
 /**
- * 
  * 文件类工具类
+ *
  * @author Shaofeng Liu
  * @version 1.0.1
  * @time 2020年2月17日 下午10:44:09
@@ -36,6 +37,7 @@ public final class DKFileUtil {
 
     /**
      * 计算文件的MD5
+     *
      * @param file 待计算的文件
      * @return 文件的MD5
      */
@@ -49,7 +51,7 @@ public final class DKFileUtil {
 
     /**
      * 获取文件属性
-     * 
+     *
      * @param file 文件
      * @return 文件属性
      */
@@ -65,6 +67,7 @@ public final class DKFileUtil {
 
     /**
      * 获取文件夹下的所有文件大小和
+     *
      * @param file 待检查的文件夹
      * @return folder total size
      */
@@ -77,11 +80,12 @@ public final class DKFileUtil {
 
     /**
      * 判断一个文件是否是文本文件【方法待测验】
+     *
      * @param f 待判断的文件
      * @return 是否是文本文件
      */
     @Deprecated
-    public static boolean isTextFile(File f){
+    public static boolean isTextFile(File f) {
         Path path = FileSystems.getDefault().getPath(f.getParent(), f.getName());
         try {
             String mimeType = Files.probeContentType(path);
@@ -93,6 +97,7 @@ public final class DKFileUtil {
 
     /**
      * judge a file is image or not
+     *
      * @param f the file need to check
      * @return is file or not
      */
@@ -120,6 +125,7 @@ public final class DKFileUtil {
 
     /**
      * open a file
+     *
      * @param file the file need to open
      * @return open success or not
      */
@@ -135,6 +141,7 @@ public final class DKFileUtil {
 
     /**
      * empty folder
+     *
      * @param ouputFolder the folder need to empty
      */
     public static void clearFolder(File ouputFolder) {
@@ -153,6 +160,7 @@ public final class DKFileUtil {
 
     /**
      * open text file with system text editor
+     *
      * @param f the file need to open with system editor
      */
     public static void openTextFile(File f) {
@@ -171,6 +179,7 @@ public final class DKFileUtil {
 
     /**
      * 格式化容量格式
+     *
      * @param bytes 原始long格式
      * @return 可读的格式
      */
@@ -185,6 +194,7 @@ public final class DKFileUtil {
 
     /**
      * convert file unit to long byte
+     *
      * @param fileUnit file unit of string format
      * @return long size of the input unit
      */
@@ -209,6 +219,7 @@ public final class DKFileUtil {
 
     /**
      * 获取操作系统文件ICON
+     *
      * @param f 待获取icon的file
      * @return 操作系统文件ICON
      */
@@ -222,7 +233,6 @@ public final class DKFileUtil {
 
         return FileSystemView.getFileSystemView().getSystemIcon(f);
     }
-
 
 
 }
