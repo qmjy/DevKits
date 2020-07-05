@@ -5,7 +5,9 @@ import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,10 +20,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.*;
@@ -60,7 +61,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     /**
      * 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值
      */
-    public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 100;
+    public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 10;
 
     private JTree tree = null;
     private JPopupMenu jtreeMenu = null;
@@ -77,7 +78,8 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private DefaultMutableTreeNode treeNode = null;
     private DefaultTreeModel treeModel = null;
-    private HashMap<String, List<File>> fileMd5Map = new HashMap<String, List<File>>();
+    //https://www.cnblogs.com/blueskyli/p/9816324.html    fileSize:fileMd5:filePath
+    private Map<Long, Map<String, Set<String>>> fileLengMd5Map = new ConcurrentHashMap<>();
 
 
     public LargeDuplicateFilesFrame() {
@@ -247,9 +249,11 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
             jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             jfc.setCurrentDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
             jfc.setDialogTitle("Select Export Path");
-            jfc.showSaveDialog(this);
-            File file = jfc.getSelectedFile();
-            exportResult(file);
+            int i = jfc.showSaveDialog(this);
+            if (i == JFileChooser.APPROVE_OPTION) {
+                File file = jfc.getSelectedFile();
+                exportResult(file);
+            }
         });
 
         // 左侧树单选事件
@@ -260,20 +264,21 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
                 JTree tree = (JTree) e.getSource();
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-                List<File> fileList = null;
+                Set<String> filesSet = null;
                 if (node != null) {
                     if (node.getLevel() == 0) {
                         return;
                     } else if (node.getLevel() == 1) {
-                        fileList = fileMd5Map.get(node.getUserObject().toString());
+                        String md5 = node.getUserObject().toString();
+                        filesSet = getFileSet(md5);
                     } else if (node.getLevel() == 2) {
-                        fileList = new ArrayList<File>();
-                        fileList.add(new File(node.getUserObject().toString()));
+                        filesSet = new HashSet<String>();
+                        filesSet.add(node.getUserObject().toString());
                     }
                 }
 
-                if (fileList != null) {
-                    updateTableData(fileList);
+                if (filesSet != null) {
+                    updateTableData(filesSet);
                 }
             }
         });
@@ -320,9 +325,23 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         });
     }
 
+    private Set<String> getFileSet(String md5) {
+        Iterator<Map<String, Set<String>>> iterator = fileLengMd5Map.values().iterator();
+        while (iterator.hasNext()) {
+            Map<String, Set<String>> next = iterator.next();
+            Iterator<String> md5Iter = next.keySet().iterator();
+            while (md5Iter.hasNext()) {
+                if (md5.equals(md5Iter.next())) {
+                    return next.get(md5);
+                }
+            }
+        }
+        return Sets.newHashSet();
+    }
+
     private void exportResult(File saveFolder) {
         File exportFile = new File(saveFolder.getAbsolutePath() + File.separator + "DevkitsDuplicateFiles_" + DKDateTimeUtil.currentTimeStr() + ".csv");
-        flushResult(exportFile, Lists.newArrayList(new String[]{"File Name, MD5, File Path, File Size"}));
+        flushResult(exportFile, Lists.newArrayList(new String[]{"File Name, MD5, File Extension, File Path, File Size, Create Time"}));
 
         DefaultTreeModel rootModel = (DefaultTreeModel) tree.getModel();
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) rootModel.getRoot();
@@ -337,7 +356,9 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
             while (children1.hasMoreElements()) {
                 File f = new File(children1.nextElement().toString());
                 StringBuilder sb = new StringBuilder();
-                sb.append(f.getName()).append(",").append(md5).append(",").append(f.getAbsolutePath()).append(",").append(DKFileUtil.formatBytes(f.length()));
+                sb.append(f.getName()).append(",").append(md5).append(",").append(FilenameUtils.getExtension(f.getName())).append(",")
+                        .append(f.getAbsolutePath()).append(",").append(DKFileUtil.formatBytes(f.length())).append(",")
+                        .append(DKDateTimeUtil.getDatetimeStrOfLong(f.lastModified(), "yyyy-MM-dd HH:mm:ss"));
                 data.add(sb.toString());
             }
             flushResult(exportFile, data);
@@ -353,7 +374,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     }
 
     public void initDataModel() {
-        fileMd5Map.clear();
+        fileLengMd5Map.clear();
 
         treeNode.removeAllChildren();
         treeModel.reload();
@@ -377,28 +398,32 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         });
     }
 
-    public void updateTableData(List<File> files) {
+    public void updateTableData(Set<String> files) {
         table.setModel(new LargeDuplicateFilesTableModel(files));
     }
 
-    public void updateTreeData(String md5, File file) {
-        List<File> list = null;
-        if (fileMd5Map.containsKey(md5)) {
-            list = fileMd5Map.get(md5);
-            if (list.size() == 1) {
-                insertTreeNode(md5, list.get(0));
-            }
+    public void updateTreeData(long length, String md5, String file) {
+        Map<String, Set<String>> sameLengthFiles = fileLengMd5Map.get(length);
+        if (sameLengthFiles == null) {
+            sameLengthFiles = new ConcurrentHashMap<>();
+            fileLengMd5Map.put(length, sameLengthFiles);
+        }
 
-            list.add(file);
-            insertTreeNode(md5, file);
+        Set<String> md5FilesSet = sameLengthFiles.get(md5);
+        if (md5FilesSet == null) {
+            md5FilesSet = new HashSet<>();
+            md5FilesSet.add(file);
+            sameLengthFiles.put(md5, md5FilesSet);
         } else {
-            list = new ArrayList<File>();
-            list.add(file);
-            fileMd5Map.put(md5, list);
+            if (md5FilesSet.size() == 1) {
+                insertTreeNode(md5, md5FilesSet.iterator().next());
+            }
+            md5FilesSet.add(file);
+            insertTreeNode(md5, file);
         }
     }
 
-    private void insertTreeNode(String md5, File file) {
+    private void insertTreeNode(String md5, String file) {
         DefaultTreeModel rootModel = (DefaultTreeModel) tree.getModel();
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) rootModel.getRoot();
 
@@ -444,6 +469,10 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     public JTextField getSearchPath() {
         return searchPath;
+    }
+
+    public Map<Long, Map<String, Set<String>>> getFileLengMd5Map() {
+        return fileLengMd5Map;
     }
 }
 

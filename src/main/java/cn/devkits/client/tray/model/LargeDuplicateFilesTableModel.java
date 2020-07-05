@@ -2,26 +2,25 @@ package cn.devkits.client.tray.model;
 
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
+
 import java.io.File;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import javax.swing.table.AbstractTableModel;
 
 public class LargeDuplicateFilesTableModel extends AbstractTableModel {
 
     private static final long serialVersionUID = 5068639881692339753L;
 
-    private List<File> files;
+    private Set<String> files;
     private String[] names = {"File Name", "File Path", "File Size", "Create Time", "Last Modify Time"};
 
 
     public LargeDuplicateFilesTableModel() {
-        this.files = new ArrayList<File>();
+        this.files = new HashSet<>();
     }
 
-    public LargeDuplicateFilesTableModel(List<File> files) {
+    public LargeDuplicateFilesTableModel(Set<String> files) {
         this.files = files;
     }
 
@@ -42,7 +41,7 @@ public class LargeDuplicateFilesTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        File file = files.get(rowIndex);
+        File file = selectFile(rowIndex);
         switch (columnIndex) {
             case 0:
                 return file.getName();
@@ -65,4 +64,16 @@ public class LargeDuplicateFilesTableModel extends AbstractTableModel {
 
     }
 
+    private File selectFile(int rowIndex) {
+        Iterator<String> iterator = files.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            if (rowIndex == i) {
+                return new File(next);
+            }
+            i++;
+        }
+        return null;
+    }
 }

@@ -2,6 +2,10 @@ package cn.devkits.client.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -72,5 +76,17 @@ public final class DKDateTimeUtil {
         instance.setTimeInMillis(longTime);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_TIME_PATTERN_DEFAULT);
         return simpleDateFormat.format(instance.getTime());
+    }
+
+    /**
+     * 将long格式时间转换成字符串格式
+     *
+     * @param time    long time
+     * @param pattern format pattern
+     * @return formatted string time
+     */
+    public static String getDatetimeStrOfLong(long time, String pattern) {
+        DateTimeFormatter ftf = DateTimeFormatter.ofPattern(pattern);
+        return ftf.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault()));
     }
 }

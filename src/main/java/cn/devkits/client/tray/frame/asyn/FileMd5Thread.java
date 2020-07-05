@@ -4,12 +4,16 @@ import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
 import cn.devkits.client.util.DKFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 文件MD5 计算线程
- * 
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @datetime 2019年9月26日 下午9:33:04
@@ -31,7 +35,7 @@ class FileMd5Thread extends Thread {
     public void run() {
         Optional<String> fileMd5 = DKFileUtil.getFileMd5(file);
         if (fileMd5.isPresent()) {
-            frame.updateTreeData(fileMd5.get(), file);
+            frame.updateTreeData(file.length(), fileMd5.get(), file.getAbsolutePath());
         } else {
             LOGGER.error("计算文件MD5失败：{}", file.getAbsolutePath());
         }
