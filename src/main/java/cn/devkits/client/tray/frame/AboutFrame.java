@@ -11,10 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -83,16 +87,31 @@ public class AboutFrame extends DKAbstractFrame {
 
     /**
      * 其他开源项目
+     *
      * @return 其他开源项目
      */
     private Component loadOpenSourcePrj() {
-        DefaultListModel  listModel = new DefaultListModel();
+        DefaultListModel listModel = new DefaultListModel();
         listModel.addElement("https://github.com/521xueweihan/GitHub520");
 
         JList list = new JList(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
-        list.addListSelectionListener(null);
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = list.locationToIndex(e.getPoint());
+                    String url = (String) list.getModel().getElementAt(index);
+                    try {
+                        DKSystemUIUtil.browseURL(new URI(url));
+                    } catch (URISyntaxException e1) {
+                        LOGGER.error("Open URL '{}' failed: {}", url, e1.getMessage());
+                    }
+                }
+            }
+        });
+        list.setToolTipText(DKSystemUIUtil.getLocaleString("DB_CLICK_TOOLTIPS"));
         JScrollPane listScrollPane = new JScrollPane(list);
 
         return listScrollPane;
