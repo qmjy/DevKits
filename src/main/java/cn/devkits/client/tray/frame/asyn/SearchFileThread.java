@@ -2,6 +2,7 @@ package cn.devkits.client.tray.frame.asyn;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 import cn.devkits.client.tray.filter.DKFilenameFilter;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 
 /**
- * 遍历文件线程
+ * 遍历文件线程，获取文件大小相同的文件
  *
  * @author shaofeng liu
  * @version 1.0.0
@@ -27,6 +28,9 @@ public class SearchFileThread extends Thread {
     private long minFileSize;
     private FilenameFilter filenameFilter;
 
+    //文件大小、文件路径集
+    private Map<Long, Set<String>> fileMaps = new HashMap<>();
+
     public SearchFileThread(LargeDuplicateFilesFrame frame) {
         this.frame = frame;
         this.maxFileSize = getFileSizeThreshold(frame, true);
@@ -37,14 +41,14 @@ public class SearchFileThread extends Thread {
     @Override
     public void run() {
         String text = frame.getSearchPath().getText();
-        if ("Computer".equals(text)) {
+        if ("Computer".equals(text) || text.trim().isEmpty()) {
             int warning = JOptionPane.showConfirmDialog(frame, "Are you sure to scan the entire system, which it may take a long time?", "Warning", JOptionPane.OK_CANCEL_OPTION);
             if (JOptionPane.YES_OPTION == warning) {
                 File[] listRoots = File.listRoots();
                 for (File file : listRoots) {
                     recursiveSearch(file);
                 }
-            }else{
+            } else {
                 frame.getStartCancelBtn().setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[0]);
                 return;
             }
@@ -69,12 +73,27 @@ public class SearchFileThread extends Thread {
                     if (file.isDirectory()) {
                         recursiveSearch(file);
                     } else {
-                        if (file.length() < maxFileSize && file.length() > minFileSize) {
-                            theadPool.submit(new FileMd5Thread(frame, file));
-                        }
+                        filterFileAndSubmit(theadPool, file);
                     }
                 }
             }
+        }
+    }
+
+    private void filterFileAndSubmit(ExecutorService theadPool, File file) {
+        if (file.length() < maxFileSize && file.length() > minFileSize) {
+
+            Set<String> fileSets = fileMaps.get(file.length());
+            if (fileSets == null) {
+                fileSets = new HashSet<>();
+                fileMaps.put(file.length(), fileSets);
+            } else if (fileSets.size() == 1) {
+                theadPool.submit(new FileMd5Thread(frame, new File(fileSets.iterator().next())));
+                theadPool.submit(new FileMd5Thread(frame, file));
+            } else {
+                theadPool.submit(new FileMd5Thread(frame, file));
+            }
+            fileSets.add(file.getAbsolutePath());
         }
     }
 
@@ -85,7 +104,7 @@ public class SearchFileThread extends Thread {
         String maxText = frame.getMaxFileSizeInput().getText();
         if (isMaxThreshold) {
             try {
-                if(maxText.trim().isEmpty()){
+                if (maxText.trim().isEmpty()) {
                     LOGGER.info("Max value will set to default: Long.MAX_VALUE");
                     return Long.MAX_VALUE;
                 }

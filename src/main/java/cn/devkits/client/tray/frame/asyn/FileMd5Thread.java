@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -21,9 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
 class FileMd5Thread extends Thread {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileMd5Thread.class);
+    //md5：files
+    private final LargeDuplicateFilesFrame frame;
 
     private File file;
-    private LargeDuplicateFilesFrame frame;
 
     public FileMd5Thread(LargeDuplicateFilesFrame frame, File file) {
         super(file.getName());
@@ -33,11 +35,7 @@ class FileMd5Thread extends Thread {
 
     @Override
     public void run() {
-        Optional<String> fileMd5 = DKFileUtil.getFileMd5(file);
-        if (fileMd5.isPresent()) {
-            frame.updateTreeData(file.length(), fileMd5.get(), file.getAbsolutePath());
-        } else {
-            LOGGER.error("计算文件MD5失败：{}", file.getAbsolutePath());
-        }
+        String fileMd5 = DKFileUtil.getFileMd5(file).get();
+        frame.updateTreeData(fileMd5, file.getAbsolutePath());
     }
 }

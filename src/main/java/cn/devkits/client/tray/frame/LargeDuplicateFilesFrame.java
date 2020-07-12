@@ -1,6 +1,7 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.tray.frame.asyn.SearchFileThread;
+import cn.devkits.client.tray.frame.listener.StartEndListener;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
@@ -61,7 +62,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     /**
      * 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值
      */
-    public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 10;
+    public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 2 + 1;
 
     private JTree tree = null;
     private JPopupMenu jtreeMenu = null;
@@ -78,9 +79,8 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private DefaultMutableTreeNode treeNode = null;
     private DefaultTreeModel treeModel = null;
-    //https://www.cnblogs.com/blueskyli/p/9816324.html    fileSize:fileMd5:filePath
-    private Map<Long, Map<String, Set<String>>> fileLengMd5Map = new ConcurrentHashMap<>();
 
+    private ConcurrentHashMap<String, Set<String>> fileLengMd5Map = new ConcurrentHashMap<>();
 
     public LargeDuplicateFilesFrame() {
         super("Large Duplicate Files", 1.2f);
@@ -270,7 +270,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
                         return;
                     } else if (node.getLevel() == 1) {
                         String md5 = node.getUserObject().toString();
-                        filesSet = getFileSet(md5);
+                        filesSet = fileLengMd5Map.get(md5);
                     } else if (node.getLevel() == 2) {
                         filesSet = new HashSet<String>();
                         filesSet.add(node.getUserObject().toString());
@@ -325,19 +325,6 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         });
     }
 
-    private Set<String> getFileSet(String md5) {
-        Iterator<Map<String, Set<String>>> iterator = fileLengMd5Map.values().iterator();
-        while (iterator.hasNext()) {
-            Map<String, Set<String>> next = iterator.next();
-            Iterator<String> md5Iter = next.keySet().iterator();
-            while (md5Iter.hasNext()) {
-                if (md5.equals(md5Iter.next())) {
-                    return next.get(md5);
-                }
-            }
-        }
-        return Sets.newHashSet();
-    }
 
     private void exportResult(File saveFolder) {
         File exportFile = new File(saveFolder.getAbsolutePath() + File.separator + "DevkitsDuplicateFiles_" + DKDateTimeUtil.currentTimeStr() + ".csv");
@@ -402,23 +389,17 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         table.setModel(new LargeDuplicateFilesTableModel(files));
     }
 
-    public void updateTreeData(long length, String md5, String file) {
-        Map<String, Set<String>> sameLengthFiles = fileLengMd5Map.get(length);
-        if (sameLengthFiles == null) {
-            sameLengthFiles = new ConcurrentHashMap<>();
-            fileLengMd5Map.put(length, sameLengthFiles);
-        }
-
-        Set<String> md5FilesSet = sameLengthFiles.get(md5);
-        if (md5FilesSet == null) {
-            md5FilesSet = new HashSet<>();
-            md5FilesSet.add(file);
-            sameLengthFiles.put(md5, md5FilesSet);
+    public void updateTreeData(String md5, String file) {
+        Set<String> filePathSets = fileLengMd5Map.get(md5);
+        if (filePathSets == null) {
+            filePathSets = new HashSet<>();
+            filePathSets.add(file);
+            fileLengMd5Map.put(md5, filePathSets);
         } else {
-            if (md5FilesSet.size() == 1) {
-                insertTreeNode(md5, md5FilesSet.iterator().next());
+            if (filePathSets.size() == 1) {
+                insertTreeNode(md5, filePathSets.iterator().next());
             }
-            md5FilesSet.add(file);
+            filePathSets.add(file);
             insertTreeNode(md5, file);
         }
     }
@@ -471,45 +452,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         return searchPath;
     }
 
-    public Map<Long, Map<String, Set<String>>> getFileLengMd5Map() {
+    public ConcurrentHashMap<String, Set<String>> getFileLengMd5Map() {
         return fileLengMd5Map;
-    }
-}
-
-
-/**
- * 启动、取消按钮事件监听
- *
- * @author shaofeng liu
- * @version 1.0.0
- * @datetime 2019年10月5日 下午3:25:08
- */
-class StartEndListener implements ActionListener {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StartEndListener.class);
-
-    private LargeDuplicateFilesFrame frame;
-
-    public StartEndListener(LargeDuplicateFilesFrame frame) {
-        this.frame = frame;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JButton btn = (JButton) e.getSource();
-        ExecutorService threadPool = frame.getTheadPool();
-
-        if (LargeDuplicateFilesFrame.BUTTONS_TEXT[0].equals(e.getActionCommand())) {
-            if (threadPool.isShutdown()) {
-                frame.initDataModel();
-            }
-            new Thread(new SearchFileThread(frame)).start();
-            btn.setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[1]);
-            frame.updateStatusLineText("Start to scanner File...");
-        } else {
-            threadPool.shutdownNow();
-            btn.setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[0]);
-            frame.updateStatusLineText("Scanner file canceled by user!");
-        }
     }
 }
