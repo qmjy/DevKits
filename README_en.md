@@ -4,6 +4,8 @@
 
 This kits is mainly developed for software engineers, networker, and office workers to improve work efficiency. Our goal is to do things more efficiently with the simplest tools.
 
+For to be a free programmer.
+
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 [![issues](https://img.shields.io/github/issues/qmjy/DevKits)](https://github.com/qmjy/DevKits/issues)
 [![forks](https://img.shields.io/github/forks/qmjy/DevKits)](https://github.com/qmjy/DevKits)

@@ -5,6 +5,7 @@ import cn.devkits.client.tray.frame.listener.StartEndListener;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.FileUtils;
@@ -123,10 +124,30 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     private void initPopupMenu() {
         this.jtreeMenu = new JPopupMenu();
 
-        jtreeMenu.add(new JMenuItem("Open"));
+        JMenuItem openFolder = new JMenuItem("Show in Explorer");
+        jtreeMenu.add(openFolder);
+        JMenuItem openFile = new JMenuItem("Open");
+        jtreeMenu.add(openFile);
         jtreeMenu.addSeparator();
-        jtreeMenu.add(new JMenuItem("Delete"));
+        JMenuItem delete = new JMenuItem("Delete");
+        delete.addActionListener(e -> {
+            int deleteOption = JOptionPane.showConfirmDialog(this, DKSystemUIUtil.getLocaleString(
+                    "LARGE_DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSystemUIUtil.getLocaleString(
+                    "LARGE_DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.YES_NO_OPTION);
+            if (deleteOption == JOptionPane.YES_OPTION) {
+                TreePath[] selectionPaths = tree.getSelectionPaths();
+                if (selectionPaths.length == 3) {
+                    FileUtils.deleteQuietly(new File(selectionPaths[2].toString()));
+                } else {
+                    JOptionPane.showMessageDialog(this, DKSystemUIUtil.getLocaleString(
+                            "LARGE_DUP_FILE_MENU_DEL_DIALOG_WARNING_CONTENT"), DKSystemUIUtil.getLocaleString(
+                            "LARGE_DUP_FILE_MENU_DEL_DIALOG_WARNING_TITLE"), JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+        jtreeMenu.add(delete);
     }
+
 
     private JPanel initNorthPane() {
         JPanel northRootPane = new JPanel();

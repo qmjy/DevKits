@@ -2,7 +2,7 @@
 
 ## DevKits
 
-一款为软件工程师、网络工程师和办公室工作人员开发的，以提高工作效率的工具包。我们的目标是提高工作效率
+一款为软件工程师、网络工程师和办公室工作人员提高工作效率的常用工具包。努力成为一名自由程序员。
 
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 [![issues](https://img.shields.io/github/issues/qmjy/DevKits)](https://github.com/qmjy/DevKits/issues)
