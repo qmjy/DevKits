@@ -1,5 +1,10 @@
+/*
+ * Copyright (c) 2019-2020 QMJY.CN All rights reserved.
+ */
+
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.tray.frame.DKAbstractFrame;
 import cn.devkits.client.tray.frame.listener.StartEndListener;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKDateTimeUtil;

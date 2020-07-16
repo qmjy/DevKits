@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019-2020 QMJY.CN All rights reserved.
+ */
+
 package cn.devkits.client.util;
 
 import cn.devkits.client.App;

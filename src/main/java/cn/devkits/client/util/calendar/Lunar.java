@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019-2020 QMJY.CN All rights reserved.
+ */
+
 package cn.devkits.client.util.calendar;
 
 import java.text.ParseException;
@@ -5,12 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * 计算农历<br>
- * copyright: http://www.it610.com/article/271380.htm
- * @author www.yudeshui.club
- * @datetime 2019年8月15日 上午12:17:33
- */
 public class Lunar {
     private int year;
     private int month;
