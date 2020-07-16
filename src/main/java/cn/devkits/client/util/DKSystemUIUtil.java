@@ -6,26 +6,22 @@ import jiconfont.swing.IconFontSwing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.text.MessageFormat;
-import java.util.Enumeration;
-import java.util.Locale;
-import javax.swing.JTable;
-import javax.swing.JTree;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.io.IOException;
+import java.net.URI;
+import java.text.MessageFormat;
+import java.util.Enumeration;
+import java.util.Locale;
 
 /**
  * 系统UI工具类
@@ -173,6 +169,7 @@ public final class DKSystemUIUtil {
         return false;
     }
 
+
     public static void setContainerSize(Container parent, int pad) {
         SpringLayout layout = (SpringLayout) parent.getLayout();
         Component[] components = parent.getComponents();
@@ -192,6 +189,17 @@ public final class DKSystemUIUtil {
             maxHeightSpring = Spring.max(maxHeightSpring, cons.getConstraint(SpringLayout.SOUTH));
         }
         pCons.setConstraint(SpringLayout.SOUTH, Spring.sum(Spring.constant(pad), maxHeightSpring));
+    }
+
+    /**
+     * 设置字符串到系统剪贴板
+     *
+     * @param content 要设置到剪贴板的字符串内容
+     */
+    public static void setSystemClipboard(String content) {
+        Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Transferable tText = new StringSelection(content);
+        clip.setContents(tText, null);
     }
 
     /**

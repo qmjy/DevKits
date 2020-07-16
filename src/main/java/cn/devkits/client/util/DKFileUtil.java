@@ -1,19 +1,16 @@
 package cn.devkits.client.util;
 
 import cn.devkits.client.App;
-import oshi.util.FormatUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import oshi.util.FormatUtil;
 
-import java.awt.Desktop;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
+import java.awt.*;
+import java.io.*;
 import java.net.URLConnection;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -21,8 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
-import javax.swing.Icon;
-import javax.swing.filechooser.FileSystemView;
 
 /**
  * 文件类工具类
@@ -122,6 +117,33 @@ public final class DKFileUtil {
         return false;
     }
 
+    public static boolean openFolder(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                return openFile(file);
+            } else {
+                return openFile(file.getParentFile());
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * open a file
+     *
+     * @param filePath the file path need to be opened
+     * @return opened success or not
+     */
+    public static boolean openFile(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            return openFile(file);
+        } else {
+            return false;
+        }
+    }
 
     /**
      * open a file

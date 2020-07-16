@@ -1,32 +1,16 @@
 package cn.devkits.client.tray.frame;
 
-import cn.devkits.client.tray.frame.asyn.SearchFileThread;
 import cn.devkits.client.tray.frame.listener.StartEndListener;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.swing.*;
 import javax.swing.SpringLayout.Constraints;
 import javax.swing.event.TreeSelectionEvent;
@@ -36,6 +20,18 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 重复大文件检查<br>
@@ -119,33 +115,6 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         rootContainer.add(statusLine, BorderLayout.SOUTH);
 
         initDataModel();
-    }
-
-    private void initPopupMenu() {
-        this.jtreeMenu = new JPopupMenu();
-
-        JMenuItem openFolder = new JMenuItem("Show in Explorer");
-        jtreeMenu.add(openFolder);
-        JMenuItem openFile = new JMenuItem("Open");
-        jtreeMenu.add(openFile);
-        jtreeMenu.addSeparator();
-        JMenuItem delete = new JMenuItem("Delete");
-        delete.addActionListener(e -> {
-            int deleteOption = JOptionPane.showConfirmDialog(this, DKSystemUIUtil.getLocaleString(
-                    "LARGE_DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSystemUIUtil.getLocaleString(
-                    "LARGE_DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.YES_NO_OPTION);
-            if (deleteOption == JOptionPane.YES_OPTION) {
-                TreePath[] selectionPaths = tree.getSelectionPaths();
-                if (selectionPaths.length == 3) {
-                    FileUtils.deleteQuietly(new File(selectionPaths[2].toString()));
-                } else {
-                    JOptionPane.showMessageDialog(this, DKSystemUIUtil.getLocaleString(
-                            "LARGE_DUP_FILE_MENU_DEL_DIALOG_WARNING_CONTENT"), DKSystemUIUtil.getLocaleString(
-                            "LARGE_DUP_FILE_MENU_DEL_DIALOG_WARNING_TITLE"), JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
-        jtreeMenu.add(delete);
     }
 
 
@@ -248,6 +217,56 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         panelCons.setConstraint(SpringLayout.EAST, Spring.sum(exportBtnCons.getConstraint(SpringLayout.EAST), Spring.constant(COMPONENT_MARGIN_RIGHT)));
 
         return northRootPane;
+    }
+
+    private void initPopupMenu() {
+        this.jtreeMenu = new JPopupMenu();
+
+        JMenuItem copyPath2Clipboard = new JMenuItem("Copy Path");
+        copyPath2Clipboard.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            DKSystemUIUtil.setSystemClipboard(node.getUserObject().toString());
+        });
+        jtreeMenu.add(copyPath2Clipboard);
+        jtreeMenu.addSeparator();
+        JMenuItem openFolder = new JMenuItem("Show in Explorer");
+        openFolder.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            DKFileUtil.openFolder(node.getUserObject().toString());
+        });
+        jtreeMenu.add(openFolder);
+        JMenuItem openFile = new JMenuItem("Open");
+        openFile.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            DKFileUtil.openFile(node.getUserObject().toString());
+        });
+        jtreeMenu.add(openFile);
+        jtreeMenu.addSeparator();
+        JMenuItem delete = new JMenuItem("Delete");
+        delete.addActionListener(e -> {
+            int deleteOption = JOptionPane.showConfirmDialog(this, DKSystemUIUtil.getLocaleString(
+                    "LARGE_DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSystemUIUtil.getLocaleString(
+                    "LARGE_DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.YES_NO_OPTION);
+            if (deleteOption == JOptionPane.YES_OPTION) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                if (node.getLevel() == 2) {//第三层叶子节点
+                    File file = new File(node.getUserObject().toString());
+                    boolean b = FileUtils.deleteQuietly(file);
+                    if (b) {
+                        //TODO 文件删除收树刷新
+                    } else {
+                        JOptionPane.showMessageDialog(this, DKSystemUIUtil.getLocaleString(
+                                "LARGE_DUP_FILE_MENU_DEL_FAILED_CONTENT"), DKSystemUIUtil.getLocaleString(
+                                "LARGE_DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, DKSystemUIUtil.getLocaleString(
+                            "LARGE_DUP_FILE_MENU_DEL_DIALOG_WARNING_CONTENT"), DKSystemUIUtil.getLocaleString(
+                            "LARGE_DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+        jtreeMenu.add(delete);
     }
 
 
