@@ -7,6 +7,7 @@ package cn.devkits.client.util;
 import cn.devkits.client.App;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import oshi.util.FormatUtil;
@@ -41,10 +42,16 @@ public final class DKFileUtil {
      * @return 文件的MD5
      */
     public static Optional<String> getFileMd5(File file) {
+        FileInputStream data = null;
         try {
-            return Optional.of(DigestUtils.md5Hex(new FileInputStream(file)));
+            data = new FileInputStream(file);
+            return Optional.of(DigestUtils.md5Hex(data));
         } catch (IOException e) {
             return Optional.empty();
+        } finally {
+            if (data != null) {
+                IOUtils.closeQuietly(data);
+            }
         }
     }
 
