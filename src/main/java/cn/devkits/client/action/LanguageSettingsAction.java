@@ -13,14 +13,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
- * 设置面板设置系统默认语言<br>
- * https://www.cnblogs.com/jiangzhaowei/p/7448735.html
+ * 设置面板设置系统默认语言
+ *
  */
 public class LanguageSettingsAction extends BaseAction {
 
-
-    public LanguageSettingsAction(JPanel rightPane) {
-        super(rightPane);
+    public LanguageSettingsAction(JPanel cardLayoutRootPanel) {
+        super(cardLayoutRootPanel);
 
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_LANG"));
 
@@ -31,12 +30,5 @@ public class LanguageSettingsAction extends BaseAction {
         putValue(Action.SHORT_DESCRIPTION, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_LANG_DESC"));
 
         registerPane();
-    }
-
-    @Override
-    protected void registerPane() {
-        JPanel comp = new JPanel();
-        comp.add(new JLabel((String) getValue(Action.SHORT_DESCRIPTION)));
-        contentPane.add((String) getValue(Action.NAME), comp);
     }
 }

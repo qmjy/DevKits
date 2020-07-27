@@ -4,8 +4,6 @@
 
 package cn.devkits.client.dao;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 public interface BaseDao {
@@ -18,13 +16,9 @@ public interface BaseDao {
     @Update({"CREATE TABLE IF NOT EXISTS devkits_clipboard_history(ID INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, type INT NOT NULL, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))"})
     int createClipboardTable();
 
-
     /**
-     * 判断表是否存在<br/>
-     * https://blog.csdn.net/p15097962069/article/details/103578662
-     *
-     * @return 如果返回的数组计数等于1，则表示该表存在。 否则它不存在
+     * 创建系统配置表
      */
-    @Select({"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='${tableName}';"})
-    int tableExists(@Param("tableName") String tableName);
+    @Update({"CREATE TABLE IF NOT EXISTS devkits_system(ID INTEGER PRIMARY KEY AUTOINCREMENT, key VARCHAR NOT NULL, value VARCHAR, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))"})
+    void createSystemConfig();
 }

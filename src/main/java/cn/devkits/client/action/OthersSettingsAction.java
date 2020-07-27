@@ -14,8 +14,8 @@ import java.awt.*;
 public class OthersSettingsAction extends BaseAction {
 
 
-    public OthersSettingsAction(JPanel rightPane) {
-        super(rightPane);
+    public OthersSettingsAction(JPanel cardLayoutRootPanel) {
+        super(cardLayoutRootPanel);
 
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_OTHERS"));
 
@@ -27,12 +27,4 @@ public class OthersSettingsAction extends BaseAction {
 
         registerPane();
     }
-
-    @Override
-    protected void registerPane() {
-        JPanel comp = new JPanel();
-        comp.add(new JLabel((String) getValue(Action.SHORT_DESCRIPTION)));
-        contentPane.add((String) getValue(Action.NAME), comp);
-    }
-
 }

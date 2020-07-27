@@ -21,7 +21,7 @@ import java.awt.event.WindowEvent;
 public class SettingsFrame extends DKAbstractFrame {
 
     private JSplitPane jSplitPane;
-    private JPanel rightPane;
+    private JPanel cardLayoutRootPanel;
     private CardLayout rightCardLayout;
 
     public SettingsFrame() {
@@ -35,10 +35,10 @@ public class SettingsFrame extends DKAbstractFrame {
     protected void initUI(Container rootContainer) {
         jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
-        this.rightPane = createRightPane();
+        this.cardLayoutRootPanel = createRightPane();
 
         jSplitPane.setLeftComponent(createLeftPane());
-        jSplitPane.setRightComponent(rightPane);
+        jSplitPane.setRightComponent(cardLayoutRootPanel);
 
         rootContainer.add(jSplitPane);
     }
@@ -63,7 +63,7 @@ public class SettingsFrame extends DKAbstractFrame {
         commonsPane.setIcon(IconFontSwing.buildIcon(FontAwesome.TACHOMETER, 16, new Color(50, 50, 50)));
         commonsPane.setFocusable(false);
 
-        commonsPane.add(new ThemeSettingsAction(rightPane));
+        commonsPane.add(new ThemeSettingsAction(cardLayoutRootPanel));
 
         taskPaneContainer.add(commonsPane);
 
@@ -74,8 +74,8 @@ public class SettingsFrame extends DKAbstractFrame {
         sysPane.setFocusable(false);
 
         // add standard components to the sysPane taskPane
-        sysPane.add(new LanguageSettingsAction(rightPane));
-        sysPane.add(new OthersSettingsAction(rightPane));
+        sysPane.add(new LanguageSettingsAction(cardLayoutRootPanel));
+        sysPane.add(new OthersSettingsAction(cardLayoutRootPanel));
 
         taskPaneContainer.add(sysPane);
 

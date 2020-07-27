@@ -28,9 +28,6 @@ public class ClipboardServiceImpl implements ClipboardService {
     public int insert(ClipboardModel model) {
         if (!model.equals(lastClipboardModel)) {
             lastClipboardModel = model;
-            if (dao.tableExists("devkits_clipboard_history") != 1) {
-                dao.createClipboardTable();
-            }
             return dao.insert(model);
         }
         return 1;

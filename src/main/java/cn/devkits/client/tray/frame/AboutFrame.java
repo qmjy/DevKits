@@ -97,6 +97,7 @@ public class AboutFrame extends DKAbstractFrame {
     private Component loadOpenSourcePrj() {
         DefaultListModel listModel = new DefaultListModel();
         listModel.addElement("https://github.com/521xueweihan/GitHub520");
+//        listModel.addElement("https://github.com/XX-net/XX-Net");
 
         JList list = new JList(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

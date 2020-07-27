@@ -5,6 +5,7 @@
 package cn.devkits.client;
 
 import cn.devkits.client.asyn.AppStarter;
+import org.jdesktop.swingx.JXTree;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.swing.*;

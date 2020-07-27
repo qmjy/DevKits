@@ -11,9 +11,13 @@ import jiconfont.swing.IconFontSwing;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * 主题设置面板
+ */
 public class ThemeSettingsAction extends BaseAction {
-    public ThemeSettingsAction(JPanel rightPane) {
-        super(rightPane);
+
+    public ThemeSettingsAction(JPanel cardLayoutRootPanel) {
+        super(cardLayoutRootPanel);
 
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME"));
 
@@ -24,12 +28,5 @@ public class ThemeSettingsAction extends BaseAction {
         putValue(Action.SHORT_DESCRIPTION, DKSystemUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME_DESC"));
 
         registerPane();
-    }
-
-    @Override
-    protected void registerPane() {
-        JPanel comp = new JPanel();
-        comp.add(new JLabel((String) getValue(Action.SHORT_DESCRIPTION)));
-        contentPane.add((String) getValue(Action.NAME), comp);
     }
 }
