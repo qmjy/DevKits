@@ -14,8 +14,8 @@ import java.awt.*;
 public class OthersSettingsAction extends BaseAction {
 
 
-    public OthersSettingsAction(JPanel cardLayoutRootPanel) {
-        super(cardLayoutRootPanel);
+    public OthersSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
+        super(frame, cardLayoutRootPanel);
 
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_OTHERS"));
 

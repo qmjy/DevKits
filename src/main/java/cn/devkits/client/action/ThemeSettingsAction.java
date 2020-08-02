@@ -16,8 +16,8 @@ import java.awt.*;
  */
 public class ThemeSettingsAction extends BaseAction {
 
-    public ThemeSettingsAction(JPanel cardLayoutRootPanel) {
-        super(cardLayoutRootPanel);
+    public ThemeSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
+        super(frame,cardLayoutRootPanel);
 
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME"));
 

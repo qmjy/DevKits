@@ -63,7 +63,7 @@ public class SettingsFrame extends DKAbstractFrame {
         commonsPane.setIcon(IconFontSwing.buildIcon(FontAwesome.TACHOMETER, 16, new Color(50, 50, 50)));
         commonsPane.setFocusable(false);
 
-        commonsPane.add(new ThemeSettingsAction(cardLayoutRootPanel));
+        commonsPane.add(new ThemeSettingsAction(this, cardLayoutRootPanel));
 
         taskPaneContainer.add(commonsPane);
 
@@ -74,8 +74,8 @@ public class SettingsFrame extends DKAbstractFrame {
         sysPane.setFocusable(false);
 
         // add standard components to the sysPane taskPane
-        sysPane.add(new LanguageSettingsAction(cardLayoutRootPanel));
-        sysPane.add(new OthersSettingsAction(cardLayoutRootPanel));
+        sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel));
+        sysPane.add(new OthersSettingsAction(this, cardLayoutRootPanel));
 
         taskPaneContainer.add(sysPane);
 

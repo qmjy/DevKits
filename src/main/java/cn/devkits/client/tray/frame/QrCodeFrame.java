@@ -55,7 +55,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -68,15 +67,17 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * 
  * 二维码
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年12月19日 下午10:18:50
  */
 public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameChosenable, ThreadFactory {
 
-    /** serialVersionUID */
+    /**
+     * serialVersionUID
+     */
     private static final long serialVersionUID = -4030282787993924346L;
     private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeFrame.class);
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
@@ -206,17 +207,17 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
     private void layoutInputPanel(JPanel topPanel, SpringLayout springLayout, JTextField jTextField, JButton uploadBtn) {
         // Adjust constraints for the label so it's at (5,5).
         SpringLayout.Constraints labelCons = springLayout.getConstraints(jTextField);
-        labelCons.setX(Spring.constant(5));
-        labelCons.setY(Spring.constant(5));
+        labelCons.setX(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5));
+        labelCons.setY(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5));
 
         // Adjust constraints for the text field so it's at
         // (<label's right edge> + 5, 5).
         SpringLayout.Constraints textFieldCons = springLayout.getConstraints(uploadBtn);
-        textFieldCons.setX(Spring.sum(Spring.constant(5), labelCons.getConstraint(SpringLayout.EAST)));
-        textFieldCons.setY(Spring.constant(5));
+        textFieldCons.setX(Spring.sum(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5), labelCons.getConstraint(SpringLayout.EAST)));
+        textFieldCons.setY(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5));
 
         // Adjust constraints for the content pane.
-        DKSystemUIUtil.setContainerSize(topPanel, 5);
+        DKSystemUIUtil.setContainerSize(topPanel, DKSystemUIUtil.COMPONENT_UI_PADDING_5);
     }
 
 
@@ -241,10 +242,10 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
             }
         });
 
-        FileFilter[] filters = new FileFilter[] {DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
+        FileFilter[] filters = new FileFilter[]{DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
                 DKSystemUIUtil.createFileFilter("Portable Network Graphics", true, "png")};
 
-        uploadBtn.addActionListener(new BrowserActionListener(this, filters, "QR file",true));
+        uploadBtn.addActionListener(new BrowserActionListener(this, filters, "QR file", true));
 
         siteBtn.addActionListener(new ActionListener() {
             @Override
@@ -427,7 +428,6 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         t.setDaemon(true);
         return t;
     }
-
 
 
 }

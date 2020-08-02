@@ -35,6 +35,14 @@ import java.util.Locale;
  * @time 2020年1月12日 下午1:05:12
  */
 public final class DKSystemUIUtil {
+    /**
+     * 控件边距：5
+     */
+    public static final int COMPONENT_UI_PADDING_5 = 5;
+    /**
+     * 控件边距：8
+     */
+    public static final int COMPONENT_UI_PADDING_8 = 8;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUIUtil.class);
 
