@@ -5,18 +5,12 @@
 package cn.devkits.client.tray.listener;
 
 import cn.devkits.client.tray.MenuItemEnum;
-import cn.devkits.client.tray.frame.CodeFormatFrame;
-import cn.devkits.client.tray.frame.FileExplorersFrame;
-import cn.devkits.client.tray.frame.FileSpliterFrame;
-import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
-import cn.devkits.client.tray.frame.LogonImageManageFrame;
-import cn.devkits.client.tray.frame.OsInfoDetailFrame;
-import cn.devkits.client.tray.frame.QrCodeFrame;
-import cn.devkits.client.tray.frame.ServerPortsFrame;
+import cn.devkits.client.tray.frame.*;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -24,9 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
- * 
  * tray item click listener
- * 
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年10月24日 下午9:38:36
@@ -67,6 +60,9 @@ public class TrayItemWindowListener implements ActionListener {
                 break;
             case FILEEXPLORER:
                 frame = new FileExplorersFrame();
+                break;
+            case TODOS:
+                frame = new TodoListFrame();
                 break;
             case QR:
                 frame = new QrCodeFrame();

@@ -201,7 +201,6 @@ public class AppStarter implements Runnable {
         toolsItem.add(menuItem);
 
         menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("TODO_LIST"));
-        menuItem.setEnabled(false);
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.TODOS));
         toolsItem.add(menuItem);
 

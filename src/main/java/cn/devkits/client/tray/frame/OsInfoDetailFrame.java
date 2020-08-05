@@ -81,17 +81,17 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         add(toolBar, BorderLayout.PAGE_START);
 
         this.jTabbedPane = new JTabbedPane();
-        jTabbedPane.addTab("Dashboard", initDashboard(si.getHardware(), si.getOperatingSystem()));
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard(si.getHardware(), si.getOperatingSystem()));
         jTabbedPane.addTab("CPU", new JScrollPane());
-        jTabbedPane.addTab("Main Board", new JScrollPane());
-        jTabbedPane.addTab("Memory", new JScrollPane());
-        jTabbedPane.addTab("Disk", new JScrollPane());
-        jTabbedPane.addTab("Sensors", new JScrollPane());
-        jTabbedPane.addTab("Displays", new JScrollPane());
-        jTabbedPane.addTab("Network", new JScrollPane());
-        jTabbedPane.addTab("Sound Cards", new JScrollPane());
-        jTabbedPane.addTab("USB Devices", new JScrollPane());
-        jTabbedPane.addTab("Power Sources", new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MEMORY"), new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DISK"), new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_SENSORS"), new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DISPLAYS"), new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_NETWORK"), new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_SOUNDCARDS"), new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_USB_DEVICES"), new JScrollPane());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_POWER_SOURCES"), new JScrollPane());
 
         jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
 
