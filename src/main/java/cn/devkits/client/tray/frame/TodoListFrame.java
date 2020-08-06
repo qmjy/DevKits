@@ -5,7 +5,6 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,7 +49,9 @@ public class TodoListFrame extends DKAbstractFrame {
         JButton systemBtn = new JButton(DKSystemUIUtil.getLocaleString("TODO_LIST_CREATE"));
         systemBtn.setFocusable(false);
         systemBtn.addActionListener(e -> {
-
+            NewTodoTaskFrame frame = new NewTodoTaskFrame();
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setVisible(true);
         });
         toolBar.add(systemBtn);
     }

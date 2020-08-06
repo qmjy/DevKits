@@ -4,6 +4,8 @@
 
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.util.DKSystemUIUtil;
+
 import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -22,7 +24,7 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
     /**
      * constructor
-     * 
+     *
      * @param title window title
      */
     protected DKAbstractFrame(String title) {
@@ -33,8 +35,8 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
     /**
      * constructor
-     * 
-     * @param title window title
+     *
+     * @param title      window title
      * @param loadFactor window width and height factor
      */
     protected DKAbstractFrame(String title, float loadFactor) {
@@ -44,24 +46,21 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
     /**
      * frame constructor
-     * 
-     * @param title frame title
-     * @param width width
+     *
+     * @param title  frame title
+     * @param width  width
      * @param height height
      */
     protected DKAbstractFrame(String title, int width, int height) {
         super(title);
-
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        this.setBounds((int) ((screenSize.width - width) / 2), (int) ((screenSize.height - height) / 2), (int) width, (int) height);
+        this.setBounds(DKSystemUIUtil.getCenter(width, height));
     }
 
     /**
      * frame constructor
-     * 
-     * @param title frame title
-     * @param widthLoadFactor width set factor
+     *
+     * @param title            frame title
+     * @param widthLoadFactor  width set factor
      * @param heightLoadFactor height set factor
      */
     protected DKAbstractFrame(String title, float widthLoadFactor, float heightLoadFactor) {
@@ -91,7 +90,7 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
     /**
      * 创建UI
-     * 
+     *
      * @param rootContainer Root Pane
      */
     protected abstract void initUI(Container rootContainer);
@@ -101,6 +100,5 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      */
     protected abstract void initListener();
 
-  
 
 }

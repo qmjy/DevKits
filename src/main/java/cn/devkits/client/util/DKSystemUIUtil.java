@@ -100,6 +100,18 @@ public final class DKSystemUIUtil {
         return App.getContext().getMessage(code, null, defualt, default1);
     }
 
+    /**
+     * get center bounds
+     *
+     * @param width  dialog or frame width
+     * @param height dialog or frame height
+     * @return dialog or frame bounds
+     */
+    public static Rectangle getCenter(int width, int height) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        return new Rectangle((int) ((screenSize.width - width) / 2), (int) ((screenSize.height - height) / 2), (int) width, (int) height);
+    }
+
 
     /**
      * 表格头列自适应

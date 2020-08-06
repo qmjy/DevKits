@@ -16,6 +16,8 @@ public interface DKConstant {
     int DK_HOTKEY_SCR_CAP = 0;
     // 环境变量
     int DK_HOTKEY_ENV_EDIT = 1;
+    // 新建待办
+    int DK_HOTKEY_NEW_TODO = 2;
 
     HashSet<String> FILE_TYPE_DOC = Sets.newHashSet(".doc", ".dot", ".wbk", ".docx", ".docm",
             ".dotx", ".dotm", ".docb", ".xls", ".xlt", ".xlm", ".xlsx", ".xlsm", ".xltx", ".xltm",

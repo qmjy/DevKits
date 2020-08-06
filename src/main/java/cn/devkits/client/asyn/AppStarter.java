@@ -10,6 +10,7 @@ import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
 import cn.devkits.client.tray.frame.AboutFrame;
+import cn.devkits.client.tray.frame.NewTodoTaskFrame;
 import cn.devkits.client.tray.frame.SettingsFrame;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKSystemUIUtil;
@@ -49,6 +50,7 @@ public class AppStarter implements Runnable {
 
     private static void initSystemHotKey() {
         JIntellitype.getInstance().registerHotKey(DKConstant.DK_HOTKEY_SCR_CAP, JIntellitype.MOD_ALT + JIntellitype.MOD_CONTROL, (int) 'A');
+        JIntellitype.getInstance().registerHotKey(DKConstant.DK_HOTKEY_NEW_TODO, JIntellitype.MOD_CONTROL, (int) 'T');
 
         JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
             @Override
@@ -57,7 +59,8 @@ public class AppStarter implements Runnable {
                     case DKConstant.DK_HOTKEY_SCR_CAP:
                         DKSystemUtil.invokeLocalApp("QQSnapShot.exe");
                         break;
-
+                    case DKConstant.DK_HOTKEY_NEW_TODO:
+                        new NewTodoTaskFrame().setVisible(true);
                     default:
                         break;
                 }
