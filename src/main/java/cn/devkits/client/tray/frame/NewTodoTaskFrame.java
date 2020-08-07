@@ -6,11 +6,10 @@ package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.util.DKSystemUIUtil;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.JTextField;
-import javax.swing.JCheckBox;
+import javax.swing.*;
 import java.awt.Container;
 import java.awt.BorderLayout;
 
@@ -25,7 +24,7 @@ import java.awt.BorderLayout;
  */
 public class NewTodoTaskFrame extends DKAbstractFrame {
 
-    private static final int JTextField_COLUMN_15 = 15;
+    private static final int JTextField_COLUMN_20 = 20;
 
     public NewTodoTaskFrame() {
         super(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
@@ -34,48 +33,32 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         initListener();
     }
 
+    /**
+     * 布局参考：https://blog.csdn.net/miaoxiongvip/article/details/84464984、https://blog.csdn.net/miaoxiongvip/article/details/84296522
+     *
+     * @param rootContainer Root Pane
+     */
     @Override
     protected void initUI(Container rootContainer) {
-        DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout(""));
-        builder.setBorder(BorderFactory.createEmptyBorder(DKSystemUIUtil.COMPONENT_UI_PADDING_5, DKSystemUIUtil.COMPONENT_UI_PADDING_5, DKSystemUIUtil.COMPONENT_UI_PADDING_5, DKSystemUIUtil.COMPONENT_UI_PADDING_5));
-        builder.appendColumn("right:pref");
-        builder.appendColumn("3dlu");
-        builder.appendColumn("fill:max(pref; 100px)");
-        builder.appendColumn("5dlu");
-        builder.appendColumn("right:pref");
-        builder.appendColumn("3dlu");
-        builder.appendColumn("fill:max(pref; 100px)");
+        FormLayout layout = new FormLayout(
+                "pref, 4dlu, 50dlu, 4dlu, pref", // columns：各列的大小
+                "pref, 2dlu, pref, 2dlu, pref"); // rows：各行的大小
 
-        builder.append("First:", new JTextField(JTextField_COLUMN_15));
+        layout.setRowGroups(new int[][]{{1, 3, 5}});//第1，3，5行具有相同的高度
+        JPanel panel = new JPanel();
+        panel.setLayout(layout);
 
-        builder.append("Last:", new JTextField(JTextField_COLUMN_15));
-        builder.nextLine();
-
-        builder.append("Married:", new JCheckBox());
-        builder.nextLine();
-
-        builder.append("Phone:", new JTextField(JTextField_COLUMN_15));
-        builder.nextLine();
-
-        builder.append("Fax:", new JTextField(JTextField_COLUMN_15));
-        builder.nextLine();
-
-        builder.append("Email:", new JTextField(JTextField_COLUMN_15));
-        builder.nextLine();
-
-        builder.appendSeparator("Work");
-
-        builder.append("Company:", new JTextField(JTextField_COLUMN_15));
-        builder.nextLine();
-
-        builder.append("Phone:", new JTextField(JTextField_COLUMN_15));
-        builder.nextLine();
-
-        builder.append("Fax:", new JTextField(JTextField_COLUMN_15));
-        builder.nextLine();
+        CellConstraints cc = new CellConstraints();//网格约束
+        panel.add(new JLabel("Name:"), cc.xy(1, 1)); //第一列，第一行
+        panel.add(new JTextField(), cc.xyw(3, 1, 3));//第一列，第三行，占3列的宽度
+        panel.add(new JLabel("Reminder:"), cc.xy(1, 3));//第一列，第三行
+        panel.add(new JTextField(), cc.xy(3, 3));//第3列，第3行
+        panel.add(new JLabel("Description:"), cc.xy(1, 5));//第一列，第五行
+        panel.add(new JTextField(), cc.xy(3, 5));//第3列，第五行
+        panel.add(new JButton("detail"), cc.xy(5, 5));//第5列，第5行
 
 
-        rootContainer.add(builder.getPanel(), BorderLayout.CENTER);
+        rootContainer.add(panel, BorderLayout.CENTER);
     }
 
     @Override
@@ -83,4 +66,8 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
     }
 
+    @Override
+    public boolean isResizable() {
+        return false;
+    }
 }
