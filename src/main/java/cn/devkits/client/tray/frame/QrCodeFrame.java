@@ -74,7 +74,6 @@ import javax.swing.filechooser.FileFilter;
  * @time 2019年12月19日 下午10:18:50
  */
 public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameChosenable, ThreadFactory {
-
     /**
      * serialVersionUID
      */
