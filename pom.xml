@@ -154,13 +154,6 @@
             <version>10.3.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/jgoodies/forms -->
-        <dependency>
-            <groupId>jgoodies</groupId>
-            <artifactId>forms</artifactId>
-            <version>1.0.5</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.swinglabs.swingx/swingx-core -->
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>

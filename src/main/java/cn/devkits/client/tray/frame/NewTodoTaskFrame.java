@@ -48,30 +48,45 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
      */
     @Override
     protected void initUI(Container rootContainer) {
-        FormLayout layout = new FormLayout(
-                "right:pref, 4dlu, 270dlu, 4dlu, pref", // columns：各列的大小
-                "pref, 2dlu, pref,2dlu, pref, 2dlu, top:pref"); // rows：各行的大小
 
-        //Column and row groups specifiy that a set of columns or rows will get the same width or height.
-        layout.setRowGroups(new int[][]{{1, 3}});
         JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createEmptyBorder(DKSystemUIUtil.COMPONENT_UI_PADDING_5, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
-                DKSystemUIUtil.COMPONENT_UI_PADDING_5, DKSystemUIUtil.COMPONENT_UI_PADDING_5));
-        panel.setLayout(layout);
+        SpringLayout springLayout = new SpringLayout();
+        panel.setLayout(springLayout);
 
-        CellConstraints cc = new CellConstraints();
-        panel.add(new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME")), cc.xy(1, 1));
-        panel.add(new JTextField(), cc.xyw(3, 1, 3));
+        JComponent[][] components = new JComponent[4][3];
 
-        panel.add(new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_REMINDER")), cc.xy(1, 3));
-        panel.add(new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL")), cc.xyw(3, 3, 2));//第3列，第3行
+        JLabel nameLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME"));
+        panel.add(nameLbl);
+        JTextField nameTextField = new JTextField();
+        panel.add(nameTextField);
+        components[0][0] = nameLbl;
+        components[0][1] = nameTextField;
 
-        panel.add(new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CORN")), cc.xy(1, 5));
-        panel.add(new JTextField(), cc.xy(3, 5));
-        panel.add(createCornHelpIcon(), cc.xy(5, 5));
+        JLabel reminderLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_REMINDER"));
+        panel.add(reminderLbl);
+        JRadioButton reminderTypeOfEmail = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL"));
+        panel.add(reminderTypeOfEmail);
+        components[1][0] = reminderLbl;
+        components[1][1] = reminderTypeOfEmail;
 
-        panel.add(new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_DESC")), cc.xy(1, 7));
-        panel.add(createDescTextArea(), cc.xyw(3, 7, 3));
+        JLabel cornLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CORN"));
+        panel.add(cornLbl);
+        JTextField cornTextField = new JTextField();
+        panel.add(cornTextField);
+        JLabel cornHelpIconLbl = createCornHelpIcon();
+        panel.add(cornHelpIconLbl);
+        components[2][0] = cornLbl;
+        components[2][1] = cornTextField;
+        components[2][2] = cornHelpIconLbl;
+
+        JLabel descLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_DESC"));
+        panel.add(descLbl);
+        JScrollPane descTextAreaPane = createDescTextArea();
+        panel.add(descTextAreaPane);
+        components[3][0] = descLbl;
+        components[3][1] = descTextAreaPane;
+
+        DKSystemUIUtil.doLayoutOfSpring(springLayout, panel, components);
 
         rootContainer.add(panel, BorderLayout.CENTER);
         rootContainer.add(createBottomPane(), BorderLayout.PAGE_END);
@@ -110,6 +125,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         JTextArea comp = new JTextArea();
         comp.setRows(10);
+        comp.setColumns(40);
         jScrollPane.setViewportView(comp);
 
         return jScrollPane;

@@ -36,6 +36,10 @@ import java.util.Locale;
  */
 public final class DKSystemUIUtil {
     /**
+     * 控件边距：2
+     */
+    public static final int COMPONENT_UI_PADDING_2 = 2;
+    /**
      * 控件边距：5
      */
     public static final int COMPONENT_UI_PADDING_5 = 5;
@@ -43,6 +47,11 @@ public final class DKSystemUIUtil {
      * 控件边距：8
      */
     public static final int COMPONENT_UI_PADDING_8 = 8;
+
+    /**
+     * 控件边距：10
+     */
+    public static final int COMPONENT_UI_PADDING_10 = 10;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUIUtil.class);
 
@@ -172,6 +181,55 @@ public final class DKSystemUIUtil {
         } else {
             tree.collapsePath(parent);
         }
+    }
+
+    public static void doLayoutOfSpring(SpringLayout layout, JPanel parentPane, JComponent[][] components) {
+        for (int i = 0; i < components.length; i++) {
+            for (int j = 0; j < components[i].length; j++) {
+                JComponent c = components[i][j];
+                if (c == null) {
+                    continue;
+                }
+                SpringLayout.Constraints rc1Cons = layout.getConstraints(c);
+                if (i == 0) {
+                    rc1Cons.setY(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8));
+                } else {
+                    SpringLayout.Constraints constraints = layout.getConstraints(components[i - 1][0]);
+                    rc1Cons.setY(Spring.sum(constraints.getConstraint(SpringLayout.SOUTH), Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8)));
+                }
+
+                if (j == 0) {
+                    rc1Cons.setX(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8));
+                } else {
+                    SpringLayout.Constraints constraints = layout.getConstraints(components[i][j - 1]);
+                    rc1Cons.setX(Spring.sum(constraints.getConstraint(SpringLayout.EAST), Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_10)));
+
+                    if (isEndColumnOfRow(components, i, j)) {
+                        SpringLayout.Constraints panelCons = layout.getConstraints(parentPane);
+                        panelCons.setConstraint(SpringLayout.EAST, Spring.sum(constraints.getConstraint(SpringLayout.EAST),
+                                Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8)));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 坐标索引超出最大范围，或当前行的下一个控件为null,则为当前行最后一个组件
+     *
+     * @param components 组件集合
+     * @param i          行号
+     * @param j          列号
+     * @return 是否一行的最后一个组件
+     */
+    private static boolean isEndColumnOfRow(JComponent[][] components, int i, int j) {
+        if (i >= components.length - 1 || j >= components[0].length - 1) {
+            return true;
+        }
+        if (components[i][j + 1] == null) {
+            return true;
+        }
+        return false;
     }
 
 
