@@ -35,6 +35,12 @@ import java.util.Locale;
  * @time 2020年1月12日 下午1:05:12
  */
 public final class DKSystemUIUtil {
+
+    /**
+     * 控件边距：0
+     */
+    public static final int COMPONENT_UI_PADDING_0 = 0;
+
     /**
      * 控件边距：2
      */
@@ -180,37 +186,6 @@ public final class DKSystemUIUtil {
             tree.expandPath(parent);
         } else {
             tree.collapsePath(parent);
-        }
-    }
-
-    public static void doLayoutOfSpring(SpringLayout layout, JPanel parentPane, JComponent[][] components) {
-        for (int i = 0; i < components.length; i++) {
-            for (int j = 0; j < components[i].length; j++) {
-                JComponent c = components[i][j];
-                if (c == null) {
-                    continue;
-                }
-                SpringLayout.Constraints rc1Cons = layout.getConstraints(c);
-                if (i == 0) {
-                    rc1Cons.setY(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8));
-                } else {
-                    SpringLayout.Constraints constraints = layout.getConstraints(components[i - 1][0]);
-                    rc1Cons.setY(Spring.sum(constraints.getConstraint(SpringLayout.SOUTH), Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8)));
-                }
-
-                if (j == 0) {
-                    rc1Cons.setX(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8));
-                } else {
-                    SpringLayout.Constraints constraints = layout.getConstraints(components[i][j - 1]);
-                    rc1Cons.setX(Spring.sum(constraints.getConstraint(SpringLayout.EAST), Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_10)));
-
-                    if (isEndColumnOfRow(components, i, j)) {
-                        SpringLayout.Constraints panelCons = layout.getConstraints(parentPane);
-                        panelCons.setConstraint(SpringLayout.EAST, Spring.sum(constraints.getConstraint(SpringLayout.EAST),
-                                Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8)));
-                    }
-                }
-            }
         }
     }
 

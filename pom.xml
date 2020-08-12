@@ -126,6 +126,13 @@
             <version>4.1.0</version>
         </dependency>
 
+        <!-- http://cron-parser.com/ -->
+        <dependency>
+            <groupId>com.cronutils</groupId>
+            <artifactId>cron-utils</artifactId>
+            <version>9.1.1</version>
+        </dependency>
+
         <!-- 提供Hex、DigestUtils、Base64等 -->
         <dependency>
             <groupId>commons-codec</groupId>
@@ -145,6 +152,12 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.12.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.redhogs.cronparser</groupId>
+            <artifactId>cron-parser</artifactId>
+            <version>3.5</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.github.lgooddatepicker/LGoodDatePicker -->

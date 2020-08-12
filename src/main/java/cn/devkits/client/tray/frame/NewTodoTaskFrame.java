@@ -5,20 +5,27 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.util.DKSystemUIUtil;
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
+import cn.devkits.client.util.SpringUtilities;
+import com.cronutils.descriptor.CronDescriptor;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.parser.CronParser;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
+
+import static com.cronutils.model.CronType.QUARTZ;
 
 
 /**
@@ -33,6 +40,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewTodoTaskFrame.class);
     private static final int JTextField_COLUMN_20 = 20;
+    private JTextField cornTextField;
 
     public NewTodoTaskFrame() {
         super(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
@@ -42,54 +50,83 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     }
 
     /**
-     * 布局参考：https://blog.csdn.net/miaoxiongvip/article/details/84464984、https://blog.csdn.net/miaoxiongvip/article/details/84296522
+     * initUI
      *
      * @param rootContainer Root Pane
      */
     @Override
     protected void initUI(Container rootContainer) {
+        JPanel panel = new JPanel(new SpringLayout());
 
-        JPanel panel = new JPanel();
-        SpringLayout springLayout = new SpringLayout();
-        panel.setLayout(springLayout);
-
-        JComponent[][] components = new JComponent[4][3];
-
-        JLabel nameLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME"));
+        JLabel nameLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME"), JLabel.TRAILING);
         panel.add(nameLbl);
         JTextField nameTextField = new JTextField();
+        nameLbl.setLabelFor(nameTextField);
         panel.add(nameTextField);
-        components[0][0] = nameLbl;
-        components[0][1] = nameTextField;
 
-        JLabel reminderLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_REMINDER"));
+        JLabel reminderLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_REMINDER"), JLabel.TRAILING);
         panel.add(reminderLbl);
-        JRadioButton reminderTypeOfEmail = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL"));
-        panel.add(reminderTypeOfEmail);
-        components[1][0] = reminderLbl;
-        components[1][1] = reminderTypeOfEmail;
+        JPanel reminderPane = createReminderPane();
+        reminderLbl.setLabelFor(reminderPane);
+        panel.add(reminderPane);
 
-        JLabel cornLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CORN"));
+        JLabel cornLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CORN"), JLabel.TRAILING);
         panel.add(cornLbl);
-        JTextField cornTextField = new JTextField();
-        panel.add(cornTextField);
-        JLabel cornHelpIconLbl = createCornHelpIcon();
-        panel.add(cornHelpIconLbl);
-        components[2][0] = cornLbl;
-        components[2][1] = cornTextField;
-        components[2][2] = cornHelpIconLbl;
+        JPanel cornTextFieldPane = createCornPane();
+        cornLbl.setLabelFor(cornTextFieldPane);
+        panel.add(cornTextFieldPane);
 
-        JLabel descLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_DESC"));
+        JLabel descLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_DESC"), JLabel.TRAILING);
         panel.add(descLbl);
         JScrollPane descTextAreaPane = createDescTextArea();
+        descLbl.setLabelFor(descTextAreaPane);
         panel.add(descTextAreaPane);
-        components[3][0] = descLbl;
-        components[3][1] = descTextAreaPane;
 
-        DKSystemUIUtil.doLayoutOfSpring(springLayout, panel, components);
+        //Lay out the panel.
+        SpringUtilities.makeCompactGrid(panel,
+                4, 2,
+                DKSystemUIUtil.COMPONENT_UI_PADDING_5, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
+                6, 6);
 
         rootContainer.add(panel, BorderLayout.CENTER);
         rootContainer.add(createBottomPane(), BorderLayout.PAGE_END);
+    }
+
+    private JPanel createReminderPane() {
+        JPanel jPanel = new JPanel(new SpringLayout());
+        JRadioButton reminderTypeOfTrayMsg = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_TRAY_MSG"));
+        reminderTypeOfTrayMsg.setSelected(true);
+        jPanel.add(reminderTypeOfTrayMsg);
+
+        JRadioButton reminderTypeOfEmail = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL"));
+        jPanel.add(reminderTypeOfEmail);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(reminderTypeOfTrayMsg);
+        group.add(reminderTypeOfEmail);
+
+        SpringUtilities.makeCompactGrid(jPanel,
+                1, 2,
+                DKSystemUIUtil.COMPONENT_UI_PADDING_0, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
+                DKSystemUIUtil.COMPONENT_UI_PADDING_5, 2);
+
+        return jPanel;
+    }
+
+    private JPanel createCornPane() {
+        JPanel jPanel = new JPanel(new SpringLayout());
+
+        this.cornTextField = new JTextField();
+        jPanel.add(cornTextField);
+        JLabel cornHelpIconLbl = createCornHelpIcon();
+        jPanel.add(cornHelpIconLbl);
+
+        SpringUtilities.makeCompactGrid(jPanel,
+                1, 2,
+                DKSystemUIUtil.COMPONENT_UI_PADDING_0, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
+                2, 2);
+
+        return jPanel;
     }
 
     private JLabel createCornHelpIcon() {
@@ -157,7 +194,30 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
     @Override
     protected void initListener() {
+        cornTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
 
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                //get a predefined instance
+                CronDefinition cronDefinition =
+                        CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
+                //create a parser based on provided definition
+                CronParser parser = new CronParser(cronDefinition);
+                CronDescriptor descriptor = CronDescriptor.instance(Locale.CHINA);
+                //parse some expression and ask descriptor for description
+                String description = descriptor.describe(parser.parse(cornTextField.getText().trim()));
+                cornTextField.setToolTipText(description);
+            }
+        });
     }
 
     @Override
