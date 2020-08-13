@@ -40,7 +40,7 @@ public class AboutFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 3737746590178589617L;
     private static final Logger LOGGER = LoggerFactory.getLogger(AboutFrame.class);
-    private JLabel name = new JLabel(DKSystemUIUtil.getLocaleString("APP_NAME"));
+    private JLabel name = new JLabel(DKSystemUIUtil.getLocaleString("APP_LOGO"));
     private JLabel version = null;
 
     public AboutFrame() {

@@ -9,8 +9,23 @@ import java.util.HashSet;
 
 import com.google.common.collect.Sets;
 
-public interface DKConstant {
+/**
+ * <p>
+ * 系统常量
+ * </p>
+ *
+ * @author Shaofeng Liu
+ * @since 2020/8/14
+ */
+public interface DKConstants {
     String DEVKIT_WORKSPACE = System.getenv("USERPROFILE") + File.separator + ".devkits" + File.separator;
+
+    /**
+     * 待办通知类型
+     */
+    enum TODO_REMINDER {
+        TRAY, EMAIL;
+    }
 
     // 截屏
     int DK_HOTKEY_SCR_CAP = 0;

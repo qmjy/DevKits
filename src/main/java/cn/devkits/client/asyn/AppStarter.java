@@ -5,7 +5,7 @@
 package cn.devkits.client.asyn;
 
 import cn.devkits.client.App;
-import cn.devkits.client.DKConstant;
+import cn.devkits.client.DKConstants;
 import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
@@ -32,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Timer;
 
@@ -49,17 +48,17 @@ public class AppStarter implements Runnable {
     }
 
     private static void initSystemHotKey() {
-        JIntellitype.getInstance().registerHotKey(DKConstant.DK_HOTKEY_SCR_CAP, JIntellitype.MOD_ALT + JIntellitype.MOD_CONTROL, (int) 'A');
-        JIntellitype.getInstance().registerHotKey(DKConstant.DK_HOTKEY_NEW_TODO, JIntellitype.MOD_CONTROL, (int) 'T');
+        JIntellitype.getInstance().registerHotKey(DKConstants.DK_HOTKEY_SCR_CAP, JIntellitype.MOD_ALT + JIntellitype.MOD_CONTROL, (int) 'A');
+        JIntellitype.getInstance().registerHotKey(DKConstants.DK_HOTKEY_NEW_TODO, JIntellitype.MOD_CONTROL, (int) 'T');
 
         JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
             @Override
             public void onHotKey(int identifier) {
                 switch (identifier) {
-                    case DKConstant.DK_HOTKEY_SCR_CAP:
+                    case DKConstants.DK_HOTKEY_SCR_CAP:
                         DKSystemUtil.invokeLocalApp("QQSnapShot.exe");
                         break;
-                    case DKConstant.DK_HOTKEY_NEW_TODO:
+                    case DKConstants.DK_HOTKEY_NEW_TODO:
                         new NewTodoTaskFrame().setVisible(true);
                     default:
                         break;

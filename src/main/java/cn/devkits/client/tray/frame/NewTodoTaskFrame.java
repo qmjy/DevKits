@@ -5,6 +5,7 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.App;
+import cn.devkits.client.DKConstants;
 import cn.devkits.client.service.impl.TodoTaskServiceImpl;
 import cn.devkits.client.tray.model.TodoTaskModel;
 import cn.devkits.client.util.DKSystemUIUtil;
@@ -48,6 +49,8 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     private JTextField nameTextField;
     private JTextField cornTextField;
     private JTextArea desTextArea;
+    private JTextField emailsInput;
+    private boolean isEmailReminder = false;
 
     public NewTodoTaskFrame() {
         super(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
@@ -112,15 +115,17 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         group.add(reminderTypeOfTrayMsg);
         group.add(reminderTypeOfEmail);
 
-        JTextField emailInput = new JTextField();
-        emailInput.setEnabled(false);
-        jPanel.add(emailInput);
+        this.emailsInput = new JTextField();
+        emailsInput.setToolTipText(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL_TOOLTIPS"));
+        emailsInput.setEnabled(false);
+        jPanel.add(emailsInput);
 
         reminderTypeOfEmail.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 JRadioButton item = (JRadioButton) e.getItem();
-                emailInput.setEnabled(item.isSelected());
+                emailsInput.setEnabled(item.isSelected());
+                isEmailReminder = item.isSelected();
             }
         });
 
@@ -199,7 +204,8 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
             TodoTaskServiceImpl service = (TodoTaskServiceImpl) App.getContext().getBean("todoTaskServiceImpl");
             //TODO 校验用户输入参数
             TodoTaskModel todoTaskModel = new TodoTaskModel(nameTextField.getText(), cornTextField.getText(), desTextArea.getText());
-            //TODO 通知方式参数持久化
+            todoTaskModel.setReminder(isEmailReminder ? DKConstants.TODO_REMINDER.EMAIL : DKConstants.TODO_REMINDER.TRAY);
+            todoTaskModel.setEmail(emailsInput.getText());
 
             service.newTodoTask(todoTaskModel);
 

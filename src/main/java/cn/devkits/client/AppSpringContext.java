@@ -53,7 +53,7 @@ public class AppSpringContext {
     @Lazy(false)
     public DataSource dataSource() {
         if (ds == null) {
-            File f = new File(DKConstant.DEVKIT_WORKSPACE);
+            File f = new File(DKConstants.DEVKIT_WORKSPACE);
             if (!f.exists()) {
                 f.mkdirs();
             }
@@ -72,7 +72,7 @@ public class AppSpringContext {
 
     private DataSource createDataSource() {
         this.ds = new SQLiteDataSource();
-        ds.setUrl(jdbcUrlPrefix + DKConstant.DEVKIT_WORKSPACE + jdbcFileName);
+        ds.setUrl(jdbcUrlPrefix + DKConstants.DEVKIT_WORKSPACE + jdbcFileName);
         return ds;
     }
 }

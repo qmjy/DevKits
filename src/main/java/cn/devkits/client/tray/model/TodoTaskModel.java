@@ -4,6 +4,7 @@
 
 package cn.devkits.client.tray.model;
 
+import cn.devkits.client.DKConstants;
 import com.google.gson.internal.$Gson$Preconditions;
 
 /**
@@ -49,8 +50,8 @@ public class TodoTaskModel {
         return reminder;
     }
 
-    public void setReminder(int reminder) {
-        this.reminder = reminder;
+    public void setReminder(DKConstants.TODO_REMINDER reminder) {
+        this.reminder = reminder.ordinal();
     }
 
     public String getCorn() {
