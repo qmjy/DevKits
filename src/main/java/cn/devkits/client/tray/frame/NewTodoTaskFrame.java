@@ -4,6 +4,9 @@
 
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.App;
+import cn.devkits.client.service.impl.TodoTaskServiceImpl;
+import cn.devkits.client.tray.model.TodoTaskModel;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.SpringUtilities;
 import com.cronutils.descriptor.CronDescriptor;
@@ -19,13 +22,15 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-import static com.cronutils.model.CronType.QUARTZ;
+import static com.cronutils.model.CronType.SPRING;
 
 
 /**
@@ -40,7 +45,9 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewTodoTaskFrame.class);
     private static final int JTextField_COLUMN_20 = 20;
+    private JTextField nameTextField;
     private JTextField cornTextField;
+    private JTextArea desTextArea;
 
     public NewTodoTaskFrame() {
         super(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
@@ -60,7 +67,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         JLabel nameLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME"), JLabel.TRAILING);
         panel.add(nameLbl);
-        JTextField nameTextField = new JTextField();
+        this.nameTextField = new JTextField();
         nameLbl.setLabelFor(nameTextField);
         panel.add(nameTextField);
 
@@ -105,10 +112,22 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         group.add(reminderTypeOfTrayMsg);
         group.add(reminderTypeOfEmail);
 
+        JTextField emailInput = new JTextField();
+        emailInput.setEnabled(false);
+        jPanel.add(emailInput);
+
+        reminderTypeOfEmail.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                JRadioButton item = (JRadioButton) e.getItem();
+                emailInput.setEnabled(item.isSelected());
+            }
+        });
+
         SpringUtilities.makeCompactGrid(jPanel,
-                1, 2,
+                1, 3,
                 DKSystemUIUtil.COMPONENT_UI_PADDING_0, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
-                DKSystemUIUtil.COMPONENT_UI_PADDING_5, 2);
+                DKSystemUIUtil.COMPONENT_UI_PADDING_0, 2);
 
         return jPanel;
     }
@@ -160,10 +179,10 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     private JScrollPane createDescTextArea() {
         JScrollPane jScrollPane = new JScrollPane();
 
-        JTextArea comp = new JTextArea();
-        comp.setRows(10);
-        comp.setColumns(40);
-        jScrollPane.setViewportView(comp);
+        this.desTextArea = new JTextArea();
+        desTextArea.setRows(10);
+        desTextArea.setColumns(40);
+        jScrollPane.setViewportView(desTextArea);
 
         return jScrollPane;
     }
@@ -177,7 +196,14 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         JButton applyBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CREATE"));
         applyBtn.addActionListener(e -> {
+            TodoTaskServiceImpl service = (TodoTaskServiceImpl) App.getContext().getBean("todoTaskServiceImpl");
+            //TODO 校验用户输入参数
+            TodoTaskModel todoTaskModel = new TodoTaskModel(nameTextField.getText(), cornTextField.getText(), desTextArea.getText());
+            //TODO 通知方式参数持久化
 
+            service.newTodoTask(todoTaskModel);
+
+            this.setVisible(false);
         });
 
         buttonPane.add(applyBtn);
@@ -185,7 +211,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         JButton closeBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
         closeBtn.addActionListener(e -> {
-
+            this.setVisible(false);
         });
         buttonPane.add(closeBtn);
 
@@ -197,23 +223,23 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         cornTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-
+                updateTooltips();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-
+                updateTooltips();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                //get a predefined instance
-                CronDefinition cronDefinition =
-                        CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
-                //create a parser based on provided definition
+                updateTooltips();
+            }
+
+            private void updateTooltips() {
+                CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(SPRING);
                 CronParser parser = new CronParser(cronDefinition);
                 CronDescriptor descriptor = CronDescriptor.instance(Locale.CHINA);
-                //parse some expression and ask descriptor for description
                 String description = descriptor.describe(parser.parse(cornTextField.getText().trim()));
                 cornTextField.setToolTipText(description);
             }

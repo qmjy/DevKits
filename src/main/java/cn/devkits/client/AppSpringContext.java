@@ -15,7 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
-import com.alibaba.druid.pool.DruidDataSource;
+import org.sqlite.SQLiteDataSource;
 
 import java.io.File;
 
@@ -29,7 +29,7 @@ import java.io.File;
 @Configuration
 @PropertySource("classpath:application.properties")
 @ComponentScan({"cn.devkits.client", "cn.devkits.client.asyn", "cn.devkits.client.beans"})
-@MapperScan("cn.devkits.client.dao")
+@MapperScan("cn.devkits.client.mapper")
 public class AppSpringContext {
 
     @Value("${jdbcDriver}")
@@ -41,7 +41,7 @@ public class AppSpringContext {
     @Value("${jdbcFileName}")
     private String jdbcFileName;
 
-    private DruidDataSource ds;
+    private SQLiteDataSource ds;
 
 
     /**
@@ -71,33 +71,8 @@ public class AppSpringContext {
     }
 
     private DataSource createDataSource() {
-        this.ds = new DruidDataSource();
-        ds.setDriverClassName(driver);
+        this.ds = new SQLiteDataSource();
         ds.setUrl(jdbcUrlPrefix + DKConstant.DEVKIT_WORKSPACE + jdbcFileName);
-
-        ds.setDefaultAutoCommit(true);// 自动提交事务
-
-        ds.setMaxActive(20);
-        ds.setInitialSize(1);
-        ds.setMaxWait(60000);
-        ds.setMinIdle(1);
-        ds.setTimeBetweenEvictionRunsMillis(60000);// 每60秒运行一次空闲连接回收器
-        ds.setMinEvictableIdleTimeMillis(30000);// 池中的连接空闲30秒钟后被回收,默认值就是30分钟。
-
-        ds.setPoolPreparedStatements(false);
-        ds.setMaxPoolPreparedStatementPerConnectionSize(20);
-
-        ds.setTestWhileIdle(true);
-        ds.setTestOnBorrow(false);// 借出连接时不要测试，否则很影响性能
-        ds.setTestOnReturn(false);
-
-        ds.setTestWhileIdle(true);// 指明连接是否被空闲连接回收器(如果有)进行检验.如果检测失败,则连接将被从池中去除.
-        ds.setValidationQuery("SELECT 1");// 验证连接是否可用，使用的SQL语句
-
-        ds.setPoolPreparedStatements(true);
-        ds.setMaxOpenPreparedStatements(0);
-        ds.setAsyncInit(true);
         return ds;
     }
-
 }

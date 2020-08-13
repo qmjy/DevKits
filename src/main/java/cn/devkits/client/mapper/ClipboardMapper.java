@@ -2,7 +2,7 @@
  * Copyright (c) 2019-2020 QMJY.CN All rights reserved.
  */
 
-package cn.devkits.client.dao;
+package cn.devkits.client.mapper;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import cn.devkits.client.model.ClipboardModel;
 
 @Mapper
 @Repository
-public interface ClipboardDao extends BaseDao {
+public interface ClipboardMapper {
     @Insert({"insert into devkits_clipboard_history(content, type, createTime) values( #{content}, #{type}, #{createTime})"})
     int insert(ClipboardModel model);
 

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
-import cn.devkits.client.dao.ClipboardDao;
+import cn.devkits.client.mapper.ClipboardMapper;
 import cn.devkits.client.model.ClipboardModel;
 import cn.devkits.client.service.ClipboardService;
 
@@ -22,7 +22,7 @@ public class ClipboardServiceImpl implements ClipboardService {
     private ClipboardModel lastClipboardModel;
 
     @Autowired
-    private ClipboardDao dao;
+    private ClipboardMapper dao;
 
     @Override
     public int insert(ClipboardModel model) {
