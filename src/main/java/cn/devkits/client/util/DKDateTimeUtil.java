@@ -15,12 +15,8 @@ import java.util.Date;
 
 public final class DKDateTimeUtil {
 
-    public static final String DATE_TIME_PATTERN_DEFAULT = "yyyy-MM-dd mm:HH:ss";
-    public static final String DATE_TIME_PATTERN_FULL = "yyyyMMddmmHHss";
-
-    public static void main(String[] args) throws ParseException {
-        System.out.println(DKDateTimeUtil.utc2CHNTime("2019-09-08T14:54:13Z"));
-    }
+    public static final String DATE_TIME_PATTERN_DEFAULT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_TIME_PATTERN_FULL = "yyyyMMddHHmmss";
 
     /**
      * convert UTC time to CST, like: "2019-09-08T14:54:13Z"
@@ -92,5 +88,19 @@ public final class DKDateTimeUtil {
     public static String getDatetimeStrOfLong(long time, String pattern) {
         DateTimeFormatter ftf = DateTimeFormatter.ofPattern(pattern);
         return ftf.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault()));
+    }
+
+    /**
+     * 讲Date转换成指定pattern的字符串
+     *
+     * @param date    待转换的Date日期
+     * @param pattern 日期格式
+     * @return 格式化后的日期字符串
+     */
+    public static String getDatetimeStr(Date date, String pattern) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
+        Instant instant = date.toInstant();
+        LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return dtf.format(localDateTime);
     }
 }

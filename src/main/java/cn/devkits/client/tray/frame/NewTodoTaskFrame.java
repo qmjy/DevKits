@@ -202,7 +202,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         JButton applyBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CREATE"));
         applyBtn.addActionListener(e -> {
             TodoTaskServiceImpl service = (TodoTaskServiceImpl) App.getContext().getBean("todoTaskServiceImpl");
-            //TODO 校验用户输入参数
+            //TODO input check
             TodoTaskModel todoTaskModel = new TodoTaskModel(nameTextField.getText(), cornTextField.getText(), desTextArea.getText());
             todoTaskModel.setReminder(isEmailReminder ? DKConstants.TODO_REMINDER.EMAIL : DKConstants.TODO_REMINDER.TRAY);
             todoTaskModel.setEmail(emailsInput.getText());

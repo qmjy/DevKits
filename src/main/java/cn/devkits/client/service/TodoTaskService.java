@@ -4,7 +4,11 @@
 
 package cn.devkits.client.service;
 
+import cn.devkits.client.DKConstants;
 import cn.devkits.client.tray.model.TodoTaskModel;
+
+import java.util.List;
+
 
 /**
  * <p>
@@ -21,4 +25,6 @@ public interface TodoTaskService {
      * @param todoTaskModel 待办任务信息
      */
     void newTodoTask(TodoTaskModel todoTaskModel);
+
+    List<TodoTaskModel> findAllToList(DKConstants.TODO_REMINDER tray);
 }

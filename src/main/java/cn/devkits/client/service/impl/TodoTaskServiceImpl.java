@@ -4,11 +4,16 @@
 
 package cn.devkits.client.service.impl;
 
+import cn.devkits.client.DKConstants;
 import cn.devkits.client.mapper.TodoTaskMapper;
 import cn.devkits.client.service.TodoTaskService;
 import cn.devkits.client.tray.model.TodoTaskModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * <p>
@@ -27,5 +32,10 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     @Override
     public void newTodoTask(TodoTaskModel todoTaskModel) {
         todoMapper.newTodoTask(todoTaskModel);
+    }
+
+    @Override
+    public List<TodoTaskModel> findAllToList(DKConstants.TODO_REMINDER tray) {
+        return todoMapper.findAllToList(tray.ordinal());
     }
 }
