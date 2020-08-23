@@ -36,7 +36,13 @@ import java.time.LocalDate;
 import java.util.Timer;
 
 public class AppStarter implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppStarter.class);
+    private final TrayIcon trayIcon;
+
+    public AppStarter(TrayIcon trayIcon) {
+        this.trayIcon = trayIcon;
+    }
+
 
     @Override
     public void run() {
@@ -47,7 +53,7 @@ public class AppStarter implements Runnable {
         DKSystemUIUtil.regIcon();
     }
 
-    private static void initSystemHotKey() {
+    private void initSystemHotKey() {
         JIntellitype.getInstance().registerHotKey(DKConstants.DK_HOTKEY_SCR_CAP, JIntellitype.MOD_ALT + JIntellitype.MOD_CONTROL, (int) 'A');
         JIntellitype.getInstance().registerHotKey(DKConstants.DK_HOTKEY_NEW_TODO, JIntellitype.MOD_CONTROL, (int) 'T');
 
@@ -67,29 +73,50 @@ public class AppStarter implements Runnable {
         });
     }
 
-    private static void initSystemTrayIcon() {
-        if (SystemTray.isSupported()) {
-            try {
-                TrayIcon trayIcon = new TrayIcon(ImageIO.read(App.class.getClassLoader().getResource("logo.png")));
-                trayIcon.setImageAutoSize(true);
-                // 添加工具提示文本
-                trayIcon.setToolTip("开发工具包" + System.lineSeparator() + "官网：www.devkits.cn");
-                trayIcon.setPopupMenu(createTrayMenu(trayIcon));
+    private void initSystemTrayIcon() {
+        trayIcon.setPopupMenu(createTrayMenu(trayIcon));
+        initDbClick(trayIcon);
+        initNotice(trayIcon);
+    }
 
-                initDbClick(trayIcon);
-                initNotice(trayIcon);
-
-                SystemTray.getSystemTray().add(trayIcon);
-                trayIcon.displayMessage("感谢您的使用", "简单高效是我的责任...", MessageType.INFO);
-                LOGGER.info("Init system tray success!");
-            } catch (AWTException e) {
-                LOGGER.error("Init System tray function failed!");
-            } catch (IOException e) {
-                LOGGER.error("Load system tray icon failed!");
+    private void initDbClick(TrayIcon trayIcon) {
+        trayIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 判断是否双击了鼠标
+                if (e.getClickCount() == 2) {
+                    showCalendarDialog();
+                }
             }
-        } else {
-            LOGGER.error("This system can not support tray function！");
-        }
+        });
+    }
+
+    private void showCalendarDialog() {
+        Container calendarPane = createCalendarPane();
+
+        JDialog jDialog = new JDialog();
+        jDialog.setTitle(DKSystemUIUtil.getLocaleString("CALENDAR_DIALOG_TITLE"));
+        jDialog.setResizable(false);
+        jDialog.setContentPane(calendarPane);
+        jDialog.pack();
+        jDialog.setLocationRelativeTo(null);
+        jDialog.setVisible(true);
+    }
+
+    private Container createCalendarPane() {
+        DatePickerSettings datePickerSettings = new DatePickerSettings();
+        datePickerSettings.setWeekNumbersDisplayed(true, true);
+
+//        int newHeight = (int) (datePickerSettings.getSizeDatePanelMinimumHeight() * 1.6);
+//        int newWidth = (int) (datePickerSettings.getSizeDatePanelMinimumWidth() * 1.6);
+//        datePickerSettings.setSizeDatePanelMinimumHeight(newHeight);
+//        datePickerSettings.setSizeDatePanelMinimumWidth(newWidth);
+
+        CalendarPanel calendarPanel = new CalendarPanel(datePickerSettings);
+        calendarPanel.setSelectedDate(LocalDate.now());
+        calendarPanel.setBorder(new LineBorder(Color.lightGray));
+
+        return calendarPanel;
     }
 
     /**
@@ -97,8 +124,7 @@ public class AppStarter implements Runnable {
      * 1.http://www.javasoft.de/synthetica/screenshots/plain/ <br>
      * 2.https://www.cnblogs.com/clarino/p/8668160.html
      */
-    private static void initLookAndFeel() {
-
+    private void initLookAndFeel() {
         // UIManager.getSystemLookAndFeelClassName() get system defualt;
         String lookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
         try {
@@ -110,7 +136,7 @@ public class AppStarter implements Runnable {
         }
     }
 
-    private static PopupMenu createTrayMenu(TrayIcon trayIcon) {
+    private PopupMenu createTrayMenu(TrayIcon trayIcon) {
         PopupMenu popupMenu = new PopupMenu();
 
         popupMenu.add(initNetworkMenu());// 网络工具
@@ -145,13 +171,13 @@ public class AppStarter implements Runnable {
         return popupMenu;
     }
 
-    private static MenuItem initNetworkMenu() {
+    private MenuItem initNetworkMenu() {
         Menu networkMenu = new Menu(DKSystemUIUtil.getLocaleString("NETWORK_TOOLS"));
         MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.SERVER_PORT);
         return networkMenu;
     }
 
-    private static Menu initDevMenu() {
+    private Menu initDevMenu() {
         Menu devMenu = new Menu(DKSystemUIUtil.getLocaleString("DEV_TOOLS"));
 
         MenuItem menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODEC"));
@@ -171,7 +197,7 @@ public class AppStarter implements Runnable {
         return devMenu;
     }
 
-    private static Menu initComputerMenu() {
+    private Menu initComputerMenu() {
         Menu computerItem = new Menu(DKSystemUIUtil.getLocaleString("COMPUTER"), false);
 
         Menu sysInfoItem = new Menu(DKSystemUIUtil.getLocaleString("SYS_INFO"), false);
@@ -230,46 +256,8 @@ public class AppStarter implements Runnable {
         return computerItem;
     }
 
-    private static void initDbClick(TrayIcon trayIcon) {
-        trayIcon.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                // 判断是否双击了鼠标
-                if (e.getClickCount() == 2) {
-                    showCalendarDialog();
-                }
-            }
-        });
-    }
 
-    private static void showCalendarDialog() {
-        Container calendarPane = createCalendarPane();
-
-        JDialog jDialog = new JDialog();
-        jDialog.setTitle(DKSystemUIUtil.getLocaleString("CALENDAR_DIALOG_TITLE"));
-        jDialog.setResizable(false);
-        jDialog.setContentPane(calendarPane);
-        jDialog.pack();
-        jDialog.setLocationRelativeTo(null);
-        jDialog.setVisible(true);
-    }
-
-    private static Container createCalendarPane() {
-        DatePickerSettings datePickerSettings = new DatePickerSettings();
-        datePickerSettings.setWeekNumbersDisplayed(true, true);
-
-//        int newHeight = (int) (datePickerSettings.getSizeDatePanelMinimumHeight() * 1.6);
-//        int newWidth = (int) (datePickerSettings.getSizeDatePanelMinimumWidth() * 1.6);
-//        datePickerSettings.setSizeDatePanelMinimumHeight(newHeight);
-//        datePickerSettings.setSizeDatePanelMinimumWidth(newWidth);
-
-        CalendarPanel calendarPanel = new CalendarPanel(datePickerSettings);
-        calendarPanel.setSelectedDate(LocalDate.now());
-        calendarPanel.setBorder(new LineBorder(Color.lightGray));
-
-        return calendarPanel;
-    }
-
-    private static void initNotice(TrayIcon trayIcon) {
+    private void initNotice(TrayIcon trayIcon) {
         Timer timer = new Timer();
         long time = 1000 * 60 * 30;// 半小时执行一次
         timer.scheduleAtFixedRate(new WinNoticeTask(trayIcon), time, time);

@@ -26,5 +26,8 @@ public interface TodoTaskService {
      */
     void newTodoTask(TodoTaskModel todoTaskModel);
 
-    List<TodoTaskModel> findAllTodoList(DKConstants.TODO_REMINDER tray);
+    List<TodoTaskModel> findAllTodoListByReminder(DKConstants.TODO_REMINDER tray);
+
+    List<TodoTaskModel> findAllTodoList();
+
 }

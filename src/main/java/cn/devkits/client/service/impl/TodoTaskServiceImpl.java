@@ -11,7 +11,6 @@ import cn.devkits.client.tray.model.TodoTaskModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,7 +34,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public List<TodoTaskModel> findAllTodoList(DKConstants.TODO_REMINDER tray) {
-        return todoMapper.findAllToList(tray.ordinal());
+    public List<TodoTaskModel> findAllTodoListByReminder(DKConstants.TODO_REMINDER tray) {
+        return todoMapper.findAllTodoListByReminder(tray.ordinal());
+    }
+
+    @Override
+    public List<TodoTaskModel> findAllTodoList() {
+        return todoMapper.findAllTodoList();
     }
 }

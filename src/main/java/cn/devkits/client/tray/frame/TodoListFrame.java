@@ -74,7 +74,7 @@ public class TodoListFrame extends DKAbstractFrame {
 
     private String[][] queryData(DKConstants.TODO_REMINDER reminder) {
         TodoTaskServiceImpl service = (TodoTaskServiceImpl) App.getContext().getBean("todoTaskServiceImpl");
-        List<TodoTaskModel> list = service.findAllTodoList(reminder);
+        List<TodoTaskModel> list = service.findAllTodoListByReminder(reminder);
         return convertTableData(list, reminder);
     }
 
@@ -84,7 +84,7 @@ public class TodoListFrame extends DKAbstractFrame {
 
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < header.length; j++) {
-                data[i][0] = String.valueOf(list.get(i).getId());
+                data[i][0] = String.valueOf(i + 1);
                 data[i][1] = list.get(i).getTaskName();
                 data[i][2] = list.get(i).getCorn();
                 data[i][3] = getNextTime(list.get(i).getCorn());

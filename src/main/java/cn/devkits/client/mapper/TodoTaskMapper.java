@@ -30,11 +30,19 @@ public interface TodoTaskMapper {
 
 
     /**
-     * 查询当前有效的所有待办任务
+     * 根据提醒方式查询当前有效的所有待办任务
      *
      * @param reminder reminder类型：系统托盘/Email
      * @return 待办事务
      */
     @Select({"SELECT * FROM devkits_todo_list WHERE reminder = #{reminder} AND deleted = 0 ORDER BY createTime DESC"})
-    List<TodoTaskModel> findAllToList(@Param("reminder") int reminder);
+    List<TodoTaskModel> findAllTodoListByReminder(@Param("reminder") int reminder);
+
+    /**
+     * 查询当前有效的所有待办任务
+     *
+     * @return 待办事务
+     */
+    @Select({"SELECT * FROM devkits_todo_list WHERE deleted = 0 ORDER BY createTime DESC"})
+    List<TodoTaskModel> findAllTodoList();
 }
