@@ -27,6 +27,6 @@ public interface BaseMapper {
      * 创建待办任务信息
      */
     @Update({"CREATE TABLE IF NOT EXISTS devkits_todo_list(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT NOT NULL, reminder INTEGER, corn TEXT " +
-            "NOT NULL, email TEXT, description TEXT, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))"})
+            "NOT NULL, email TEXT, description TEXT, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')), deleted NUMERIC DEFAULT 0)"})
     void createTodoTask();
 }

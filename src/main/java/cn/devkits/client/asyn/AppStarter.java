@@ -59,7 +59,7 @@ public class AppStarter implements Runnable {
                         DKSystemUtil.invokeLocalApp("QQSnapShot.exe");
                         break;
                     case DKConstants.DK_HOTKEY_NEW_TODO:
-                        new NewTodoTaskFrame().setVisible(true);
+                        new NewTodoTaskFrame(null).setVisible(true);
                     default:
                         break;
                 }

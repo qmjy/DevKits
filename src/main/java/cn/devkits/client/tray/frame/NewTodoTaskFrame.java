@@ -11,6 +11,7 @@ import cn.devkits.client.tray.model.TodoTaskModel;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.SpringUtilities;
 import com.cronutils.descriptor.CronDescriptor;
+import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
@@ -43,20 +44,22 @@ import static com.cronutils.model.CronType.SPRING;
  * @since 2020/8/6
  */
 public class NewTodoTaskFrame extends DKAbstractFrame {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(NewTodoTaskFrame.class);
     private static final int JTextField_COLUMN_20 = 20;
+    private TodoListFrame todoListFrame;
     private JTextField nameTextField;
     private JTextField cornTextField;
     private JTextArea desTextArea;
     private JTextField emailsInput;
     private boolean isEmailReminder = false;
 
-    public NewTodoTaskFrame() {
+    public NewTodoTaskFrame(TodoListFrame todoListFrame) {
         super(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
 
         initUI(getContentPane());
         initListener();
+
+        this.todoListFrame = todoListFrame;
     }
 
     /**
@@ -149,7 +152,6 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
                 1, 2,
                 DKSystemUIUtil.COMPONENT_UI_PADDING_0, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
                 2, 2);
-
         return jPanel;
     }
 
@@ -208,8 +210,12 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
             todoTaskModel.setEmail(emailsInput.getText());
 
             service.newTodoTask(todoTaskModel);
-
             this.setVisible(false);
+
+            // 快捷键方式创建待办不用刷新
+            if (todoListFrame != null) {
+                todoListFrame.refresh();
+            }
         });
 
         buttonPane.add(applyBtn);
@@ -246,8 +252,13 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
                 CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(SPRING);
                 CronParser parser = new CronParser(cronDefinition);
                 CronDescriptor descriptor = CronDescriptor.instance(Locale.CHINA);
-                String description = descriptor.describe(parser.parse(cornTextField.getText().trim()));
-                cornTextField.setToolTipText(description);
+                try {
+                    Cron parse = parser.parse(cornTextField.getText().trim());
+                    String description = descriptor.describe(parse);
+                    cornTextField.setToolTipText(description);
+                } catch (IllegalArgumentException e) {
+                    LOGGER.error("The input corn expression is invalid!");
+                }
             }
         });
     }

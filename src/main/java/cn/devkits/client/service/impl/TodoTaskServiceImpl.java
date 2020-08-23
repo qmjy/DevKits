@@ -35,7 +35,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public List<TodoTaskModel> findAllToList(DKConstants.TODO_REMINDER tray) {
+    public List<TodoTaskModel> findAllTodoList(DKConstants.TODO_REMINDER tray) {
         return todoMapper.findAllToList(tray.ordinal());
     }
 }

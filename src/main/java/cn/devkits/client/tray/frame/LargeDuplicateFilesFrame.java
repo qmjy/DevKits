@@ -424,6 +424,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     public void updateStatusLineText(final String text) {
         EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 statusLine.setText(text);
             }

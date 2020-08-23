@@ -23,6 +23,7 @@ public class TodoTaskModel {
     private String email;
     private String description;
     private String createTime;
+    private boolean isDeleted = false;
 
     public TodoTaskModel(String name, String corn, String desc) {
         this.taskName = name;
@@ -88,5 +89,14 @@ public class TodoTaskModel {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
