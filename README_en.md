@@ -11,7 +11,7 @@ For to be a free programmer.
 [![forks](https://img.shields.io/github/forks/qmjy/DevKits)](https://github.com/qmjy/DevKits)
 [![stars](https://img.shields.io/github/stars/qmjy/DevKits)](https://github.com/qmjy/DevKits)
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
-
+[![downloads](https://img.shields.io/github/downloads/qmjy/Devkits/total)](https://github.com/qmjy/DevKits)
 
 ## Feature
 
@@ -24,6 +24,7 @@ For to be a free programmer.
 - Open Local Hosts File
 - XML & JSON Format
 - Computer System Information Detection
+- Todo Reminder(Tray Message or Email)
 
 
 ## Runtime Version

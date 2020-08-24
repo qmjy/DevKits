@@ -9,6 +9,7 @@
 [![forks](https://img.shields.io/github/forks/qmjy/DevKits)](https://github.com/qmjy/DevKits)
 [![stars](https://img.shields.io/github/stars/qmjy/DevKits)](https://github.com/qmjy/DevKits)
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![downloads](https://img.shields.io/github/downloads/qmjy/Devkits/total)](https://github.com/qmjy/DevKits)
 
 
 ## 特性
@@ -22,6 +23,7 @@
 - 快速打开Hosts文件
 - XML & JSON 格式化
 - 计算机信息展示
+- 待办事务提醒（系统消息、邮件）
 
 
 ## 依赖环境
