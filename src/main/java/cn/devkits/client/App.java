@@ -5,26 +5,16 @@
 package cn.devkits.client;
 
 import cn.devkits.client.asyn.AppStarter;
-import cn.devkits.client.util.DKSystemUIUtil;
-import com.github.lgooddatepicker.components.CalendarPanel;
-import com.github.lgooddatepicker.components.DatePickerSettings;
-import org.jdesktop.swingx.JXTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.LineBorder;
+import javax.swing.SwingUtilities;
 import java.awt.AWTException;
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.time.LocalDate;
 
 
 /**

@@ -8,12 +8,14 @@ import cn.devkits.client.App;
 import cn.devkits.client.DKConstants;
 import cn.devkits.client.service.impl.TodoTaskServiceImpl;
 import cn.devkits.client.tray.model.TodoTaskModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.TriggerContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.stereotype.Component;
 
 import java.awt.TrayIcon;
 import java.util.Date;
@@ -22,19 +24,22 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *
+ * 待办事务提醒
  * </p>
  *
  * @author Shaofeng Liu
  * @since 2020/8/23
  */
+@Component
 @EnableScheduling
 public class TodoTaskScheduling implements SchedulingConfigurer {
 
+    @Autowired
+    private TodoTaskServiceImpl todoTaskServiceImpl;
+
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        TodoTaskServiceImpl service = (TodoTaskServiceImpl) App.getContext().getBean("todoTaskServiceImpl");
-        List<TodoTaskModel> allTodoList = service.findAllTodoList();
+        List<TodoTaskModel> allTodoList = todoTaskServiceImpl.findAllTodoList();
         if (!allTodoList.isEmpty()) {
             List<TodoTaskModel> trayTodoList = allTodoList.stream().filter(e -> {
                 return e.getReminder() == DKConstants.TODO_REMINDER.TRAY.ordinal();
@@ -76,7 +81,9 @@ class TodoThread implements Runnable {
 
     @Override
     public void run() {
-        App.getTrayIcon().displayMessage(model.getTaskName(), model.getDescription(), TrayIcon.MessageType.INFO);
+        if (model.getReminder() == DKConstants.TODO_REMINDER.TRAY.ordinal()) {
+            App.getTrayIcon().displayMessage(model.getTaskName(), model.getDescription(), TrayIcon.MessageType.INFO);
+        }
     }
 }
 
