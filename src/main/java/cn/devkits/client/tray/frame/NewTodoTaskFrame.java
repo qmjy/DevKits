@@ -95,7 +95,6 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         descLbl.setLabelFor(descTextAreaPane);
         panel.add(descTextAreaPane);
 
-        //Lay out the panel.
         SpringUtilities.makeCompactGrid(panel,
                 4, 2,
                 DKSystemUIUtil.COMPONENT_UI_PADDING_5, DKSystemUIUtil.COMPONENT_UI_PADDING_5,

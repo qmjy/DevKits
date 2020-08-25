@@ -8,13 +8,16 @@ import cn.devkits.client.util.DKSystemUIUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Frame;
 
-public class OthersSettingsAction extends BaseAction {
 
+public class OtherSettingsAction extends BaseAction {
 
-    public OthersSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
+    public OtherSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_OTHERS"));

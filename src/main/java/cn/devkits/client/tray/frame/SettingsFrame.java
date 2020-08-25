@@ -4,8 +4,9 @@
 
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.action.EmailSettingsAction;
 import cn.devkits.client.action.LanguageSettingsAction;
-import cn.devkits.client.action.OthersSettingsAction;
+import cn.devkits.client.action.OtherSettingsAction;
 import cn.devkits.client.action.ThemeSettingsAction;
 import cn.devkits.client.util.DKSystemUIUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
@@ -75,7 +76,8 @@ public class SettingsFrame extends DKAbstractFrame {
 
         // add standard components to the sysPane taskPane
         sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel));
-        sysPane.add(new OthersSettingsAction(this, cardLayoutRootPanel));
+        sysPane.add(new EmailSettingsAction(this, cardLayoutRootPanel));
+        sysPane.add(new OtherSettingsAction(this, cardLayoutRootPanel));
 
         taskPaneContainer.add(sysPane);
 
