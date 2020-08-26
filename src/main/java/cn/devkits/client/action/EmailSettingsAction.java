@@ -5,24 +5,21 @@
 package cn.devkits.client.action;
 
 import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.SpringUtilities;
-import com.privatejgoodies.forms.layout.CellConstraints;
-import com.privatejgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
-import java.awt.GridLayout;
 
 /**
  * <p>
@@ -57,18 +54,26 @@ public class EmailSettingsAction extends BaseAction {
      */
     @Override
     protected Component drawCenterPanel() {
-        FormLayout layout = new FormLayout(
-                "right:pref, 6dlu, pref",
-                "pref, 3dlu, pref, 3dlu, pref");
-
+        FormLayout layout = new FormLayout("right:max(50dlu;p), 4dlu, 150dlu, 50dlu",
+                "p, 2dlu, p, 3dlu, p, 3dlu, p");
+        PanelBuilder builder = new PanelBuilder(layout);
+        builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
-        JPanel panel = new JPanel(layout);
-        panel.add(new JLabel("服务器："), cc.xy(1, 1));
-        panel.add(new JTextField(50), cc.xy(3, 1));
-        panel.add(new JLabel("账户："), cc.xy(1, 3));
-        panel.add(new JTextField(50), cc.xy(3, 3));
-        panel.add(new JLabel("密码："), cc.xy(1, 5));
-        panel.add(new JTextField(50), cc.xy(3, 5));
-        return panel;
+        builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SEG_SEP"), cc.xyw(1, 1, 4));
+        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_SERVER"), cc.xy(1, 3));
+        builder.add(createServerListComponet(), cc.xy(3, 3));
+        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_ACCOUNT"), cc.xy(1, 5));
+        builder.add(new JTextField(), cc.xy(3, 5));
+        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PWD"), cc.xy(1, 7));
+        builder.add(new JPasswordField(), cc.xy(3, 7));
+        return builder.getPanel();
+    }
+
+    private Component createServerListComponet() {
+        JComboBox<Object> cmb = new JComboBox<>();
+        cmb.addItem("身份证");
+        cmb.addItem("驾驶证");
+        cmb.addItem("军官证");
+        return cmb;
     }
 }
