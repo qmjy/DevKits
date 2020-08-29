@@ -21,12 +21,19 @@ public interface BaseMapper {
      * 创建系统配置表
      */
     @Update({"CREATE TABLE IF NOT EXISTS devkits_system(id INTEGER PRIMARY KEY AUTOINCREMENT, key VARCHAR NOT NULL, value VARCHAR, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))"})
-    void createSystemConfig();
+    void createSystemConfigTable();
 
     /**
      * 创建待办任务信息
      */
     @Update({"CREATE TABLE IF NOT EXISTS devkits_todo_list(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT NOT NULL, reminder INTEGER, corn TEXT " +
             "NOT NULL, email TEXT, description TEXT, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')), deleted NUMERIC DEFAULT 0)"})
-    void createTodoTask();
+    void createTodoTaskTable();
+
+    /**
+     * 创建邮箱配置表
+     */
+    @Update({"CREATE TABLE IF NOT EXISTS devkits_email_list(id INTEGER PRIMARY KEY AUTOINCREMENT, host TEXT NOT NULL, port INTEGER, account TEXT NOT NUll, " +
+            "pwd TEXT NOT NULL, tls NUMERIC DEFAULT 0, defaultServer NUMERIC DEFAULT 0, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')), deleted NUMERIC DEFAULT 0)"})
+    void createEmailTable();
 }

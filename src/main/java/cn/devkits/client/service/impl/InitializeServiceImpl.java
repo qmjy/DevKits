@@ -20,7 +20,8 @@ public class InitializeServiceImpl implements InitializeService {
     @Override
     public void initDb() {
         baseDao.createClipboardTable();
-        baseDao.createSystemConfig();
-        baseDao.createTodoTask();
+        baseDao.createSystemConfigTable();
+        baseDao.createTodoTaskTable();
+        baseDao.createEmailTable();
     }
 }

@@ -26,7 +26,7 @@ public class SettingsFrame extends DKAbstractFrame {
     private CardLayout rightCardLayout;
 
     public SettingsFrame() {
-        super(DKSystemUIUtil.getLocaleString("SETTINGS_TITLE"), 0.8f, 0.7f);
+        super(DKSystemUIUtil.getLocaleString("SETTINGS_TITLE"), 0.8f);
 
         initUI(getRootPane().getContentPane());
         initListener();
@@ -64,7 +64,7 @@ public class SettingsFrame extends DKAbstractFrame {
         commonsPane.setIcon(IconFontSwing.buildIcon(FontAwesome.TACHOMETER, 16, new Color(50, 50, 50)));
         commonsPane.setFocusable(false);
 
-        commonsPane.add(new ThemeSettingsAction(this, cardLayoutRootPanel));
+        commonsPane.add(new ThemeSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
 
         taskPaneContainer.add(commonsPane);
 
@@ -75,9 +75,9 @@ public class SettingsFrame extends DKAbstractFrame {
         sysPane.setFocusable(false);
 
         // add standard components to the sysPane taskPane
-        sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel));
-        sysPane.add(new EmailSettingsAction(this, cardLayoutRootPanel));
-        sysPane.add(new OtherSettingsAction(this, cardLayoutRootPanel));
+        sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
+        sysPane.add(new EmailSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
+        sysPane.add(new OtherSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
 
         taskPaneContainer.add(sysPane);
 

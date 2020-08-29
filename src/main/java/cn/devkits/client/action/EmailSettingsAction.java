@@ -4,7 +4,11 @@
 
 package cn.devkits.client.action;
 
+import cn.devkits.client.App;
 import cn.devkits.client.DKConstants;
+import cn.devkits.client.service.EmailService;
+import cn.devkits.client.tray.model.EmailCfgModel;
+import cn.devkits.client.util.DKNetworkUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -14,7 +18,10 @@ import jiconfont.swing.IconFontSwing;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
@@ -26,6 +33,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,6 +45,24 @@ import java.awt.Frame;
  * @since 2020/8/25
  */
 public class EmailSettingsAction extends BaseAction {
+
+    private final String[] header = new String[]{"编号", "SMTP", "端口", "账户", "TLS", "默认", "创建时间"};
+    private final String[] items = new String[]{
+//            "smtpscn.huawei.com",
+//            "smtp.qq.com",
+//            "smtp.exmail.qq.com",
+            "smtp.163.com",
+//            "smtp.gmail.com",
+//            "smtp.isoftstone.com"
+    };
+    private final JTable savedEmailsTable = new JTable() {
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return DKSystemUIUtil.updatePreferredScrollableViewportSize(this);
+        }
+    };
+
+    private JComboBox<String> smtpServers = new JComboBox<>(items);
 
     public EmailSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
@@ -60,8 +87,8 @@ public class EmailSettingsAction extends BaseAction {
      */
     @Override
     protected Component drawCenterPanel() {
-        FormLayout layout = new FormLayout("right:max(50dlu;p), 4dlu, 90dlu, 4dlu, right:max(20dlu;p), 4dlu, 40dlu, 4dlu, right:max(20dlu;p), 4dlu, 30dlu",
-                "p, 2dlu, p, 3dlu, p, 3dlu, p, 10dlu, p, 2dlu, p");
+        FormLayout layout = new FormLayout("right:max(50dlu;p), 4dlu, 90dlu, 4dlu, right:max(20dlu;p), 4dlu, 30dlu, 4dlu, right:max(30dlu;p), 4dlu, 55dlu",
+                "p, 2dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 10dlu, p, 2dlu, d");
 
         layout.setRowGroups(new int[][]{{1, 9}});
 
@@ -72,54 +99,102 @@ public class EmailSettingsAction extends BaseAction {
         builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SEG_NEW"), cc.xyw(1, 1, 11));
 
         builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_SERVER"), cc.xy(1, 3));
-        builder.add(createServerListComponet(), cc.xy(3, 3));
+        builder.add(smtpServers, cc.xy(3, 3));
         builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PORT"), cc.xy(5, 3));
-        builder.add(new JTextField(), cc.xy(7, 3));
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_SSL"), cc.xy(9, 3));
-        builder.add(new JRadioButton(), cc.xy(11, 3));
+        JTextField portComponent = new JTextField();
+        portComponent.setText("25");
+        builder.add(portComponent, cc.xy(7, 3));
+        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_TLS"), cc.xy(9, 3));
+        JRadioButton tlsComponent = new JRadioButton();
+        builder.add(tlsComponent, cc.xy(11, 3));
 
         builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_ACCOUNT"), cc.xy(1, 5));
-        builder.add(new JTextField(), cc.xy(3, 5));
+        JTextField accountComponent = new JTextField();
+        builder.add(accountComponent, cc.xy(3, 5));
+        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PWD"), cc.xy(5, 5));
+        JPasswordField pwdComponent = new JPasswordField();
+        builder.add(pwdComponent, cc.xyw(7, 5, 5));
 
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PWD"), cc.xy(1, 7));
-        builder.add(new JPasswordField(), cc.xy(3, 7));
+        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_DEFAULT"), cc.xy(1, 7));
+        JCheckBox defaultSmtpServerComponent = new JCheckBox();
+        builder.add(defaultSmtpServerComponent, cc.xy(3, 7));
 
-        builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SEG_ALL"), cc.xyw(1, 9, 11));
+        JButton testBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_TEST"));
+        builder.add(testBtn, cc.xy(7, 9));
+        testBtn.addActionListener(e -> {
+            testSmtpSever(portComponent, tlsComponent, accountComponent, pwdComponent);
+        });
+        JButton save = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_SAVE"));
+        builder.add(save, cc.xy(9, 9));
+        save.addActionListener(e -> {
+            save2Db(portComponent, tlsComponent, accountComponent, pwdComponent, defaultSmtpServerComponent);
+        });
 
-        builder.add(loadServersTable(), cc.xyw(1, 11, 11));
+        builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SEG_ALL"), cc.xyw(1, 11, 11));
 
+        refreshAllMailsTable();
+        builder.add(new JScrollPane(savedEmailsTable), cc.xyw(1, 13, 11));
         return builder.getPanel();
     }
 
-    private JScrollPane loadServersTable() {
-        JTable jTable = new JTable() {
-            @Override
-            public Dimension getPreferredScrollableViewportSize() {
-                return DKSystemUIUtil.updatePreferredScrollableViewportSize(this);
-            }
-        };
-        String[][] emailData = new String[1][6];
-        emailData[0][0] = "1";
-        emailData[0][1] = "smtp.huawei.com";
-        emailData[0][2] = "456";
-        emailData[0][3] = "false";
-        emailData[0][4] = "lwx166646";
-        emailData[0][5] = "false";
-        DefaultTableModel emailTableModel = new DefaultTableModel(emailData, new String[]{"编号", "SMTP", "端口", "SSL", "账户","默认"});
-        jTable.setModel(emailTableModel);
-        DKSystemUIUtil.fitTableColumns(jTable);
-
-        return new JScrollPane(jTable);
+    private void save2Db(JTextField portComponent, JRadioButton tlsComponent, JTextField accountComponent, JPasswordField pwdComponent, JCheckBox defaultSmtpServerComponent) {
+        EmailCfgModel cfg = new EmailCfgModel(smtpServers.getSelectedItem().toString(),
+                Integer.parseInt(portComponent.getText()), accountComponent.getText(), new String(pwdComponent.getPassword()), tlsComponent.isSelected());
+        Map.Entry<Boolean, String> next = doSmtpServerTest(cfg);
+        if (next.getKey()) {
+            // TODO 去重
+            persistence2Db(cfg, defaultSmtpServerComponent.isSelected());
+            refreshAllMailsTable();
+            JOptionPane.showMessageDialog(frame, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SAVE_MSG_SUCCESS"),
+                    DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"), JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(frame, next.getValue(), DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"),
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    private Component createServerListComponet() {
-        JComboBox<Object> cmb = new JComboBox<>();
-        cmb.addItem("smtpscn.huawei.com");
-        cmb.addItem("smtp.qq.com");
-        cmb.addItem("smtp.exmail.qq.com");
-        cmb.addItem("smtp.163.com");
-        cmb.addItem("smtp.gmail.com");
-        cmb.addItem("smtp.isoftstone.com");
-        return cmb;
+    private void refreshAllMailsTable() {
+        EmailService service = (EmailService) App.getContext().getBean("emailServiceImpl");
+        List<EmailCfgModel> allMails = service.loadAllEmails();
+
+        String[][] emailData = new String[allMails.size()][header.length];
+        for (int i = 0; i < allMails.size(); i++) {
+            for (int j = 0; j < header.length; j++) {
+                emailData[i][0] = String.valueOf(i + 1);
+                emailData[i][1] = allMails.get(i).getHost();
+                emailData[i][2] = String.valueOf(allMails.get(i).getPort());
+                emailData[i][3] = allMails.get(i).getAccount();
+                emailData[i][4] = String.valueOf(allMails.get(i).isTls());
+                emailData[i][5] = String.valueOf(allMails.get(i).isDefaultServer());
+                emailData[i][6] = allMails.get(i).getCreateTime();
+            }
+        }
+        DefaultTableModel emailTableModel = new DefaultTableModel(emailData, header);
+        savedEmailsTable.setModel(emailTableModel);
+        DKSystemUIUtil.fitTableColumns(savedEmailsTable);
+    }
+
+    private void testSmtpSever(JTextField portComponent, JRadioButton tlsComponent, JTextField accountComponent, JPasswordField pwdComponent) {
+        EmailCfgModel cfg = new EmailCfgModel(smtpServers.getSelectedItem().toString(),
+                Integer.parseInt(portComponent.getText()), accountComponent.getText(), new String(pwdComponent.getPassword()), tlsComponent.isSelected());
+        Map.Entry<Boolean, String> next = doSmtpServerTest(cfg);
+        if (next.getKey()) {
+            JOptionPane.showMessageDialog(frame, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_SUCCESS"),
+                    DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"), JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(frame, next.getValue(), DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"),
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private Map.Entry<Boolean, String> doSmtpServerTest(EmailCfgModel cfg) {
+        Map<Boolean, String> success = DKNetworkUtil.testSmtpServer(cfg);
+        return success.entrySet().iterator().next();
+    }
+
+    private void persistence2Db(EmailCfgModel cfg, boolean defaultSmtpServer) {
+        EmailService service = (EmailService) App.getContext().getBean("emailServiceImpl");
+        cfg.setDefaultServer(defaultSmtpServer);
+        service.newEmail(cfg);
     }
 }

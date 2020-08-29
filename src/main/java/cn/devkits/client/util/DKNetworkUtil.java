@@ -13,9 +13,19 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
+
+import cn.devkits.client.tray.model.EmailCfgModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
 
 public class DKNetworkUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKNetworkUtil.class);
@@ -54,6 +64,7 @@ public class DKNetworkUtil {
 
     /**
      * 获取本地IP地址
+     *
      * @return 本地IP
      */
     public static Optional<String> getIp() {
@@ -68,6 +79,7 @@ public class DKNetworkUtil {
 
     /**
      * 获取当前活动网络设备的MAC地址
+     *
      * @return MAC
      */
     public static Optional<String> getMacAddress() {
@@ -116,12 +128,12 @@ public class DKNetworkUtil {
             LOGGER.error("UnknownHostException: " + e.getMessage());
         }
         return Optional.empty();
-
     }
 
     private static boolean isVMMac(byte[] mac) {
-        if (null == mac)
+        if (null == mac) {
             return false;
+        }
         byte invalidMacs[][] = {{0x00, 0x05, 0x69}, // VMWare
                 {0x00, 0x1C, 0x14}, // VMWare
                 {0x00, 0x0C, 0x29}, // VMWare
@@ -133,10 +145,39 @@ public class DKNetworkUtil {
         };
 
         for (byte[] invalid : invalidMacs) {
-            if (invalid[0] == mac[0] && invalid[1] == mac[1] && invalid[2] == mac[2])
+            if (invalid[0] == mac[0] && invalid[1] == mac[1] && invalid[2] == mac[2]) {
                 return true;
+            }
         }
 
         return false;
+    }
+
+    /**
+     * 邮箱SMTP服务器验证
+     *
+     * @param cfg 服务器参数配置
+     * @return SMTP服务校验结果
+     */
+    public static Map<Boolean, String> testSmtpServer(EmailCfgModel cfg) {
+        HashMap<Boolean, String> resultMap = new HashMap<>();
+        try {
+            Properties props = new Properties();
+            // required for gmail
+            props.put("mail.smtp.starttls.enable", cfg.isTls());
+            props.put("mail.smtp.auth", "true");
+            // or use getDefaultInstance instance if desired...
+            Session session = Session.getInstance(props, null);
+            Transport transport = session.getTransport("smtp");
+            transport.connect(cfg.getHost(), cfg.getPort(), cfg.getAccount(), cfg.getPwd());
+            transport.close();
+            resultMap.put(true, "");
+            return resultMap;
+        } catch (AuthenticationFailedException e) {
+            resultMap.put(false, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_ERROR_AUTHFAILED"));
+        } catch (MessagingException e) {
+            resultMap.put(false, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_ERROR_OTHERS"));
+        }
+        return resultMap;
     }
 }
