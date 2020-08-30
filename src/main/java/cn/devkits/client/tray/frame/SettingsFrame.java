@@ -16,6 +16,9 @@ import org.jdesktop.swingx.JXTaskPaneContainer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -92,6 +95,13 @@ public class SettingsFrame extends DKAbstractFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
+                jSplitPane.setDividerLocation(.26);
+            }
+        });
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
                 jSplitPane.setDividerLocation(.26);
             }
         });

@@ -34,6 +34,6 @@ public interface BaseMapper {
      * 创建邮箱配置表
      */
     @Update({"CREATE TABLE IF NOT EXISTS devkits_email_list(id INTEGER PRIMARY KEY AUTOINCREMENT, host TEXT NOT NULL, port INTEGER, account TEXT NOT NUll, " +
-            "pwd TEXT NOT NULL, tls NUMERIC DEFAULT 0, defaultServer NUMERIC DEFAULT 0, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')), deleted NUMERIC DEFAULT 0)"})
+            "pwd TEXT NOT NULL, tls NUMERIC DEFAULT 0, defaultServer NUMERIC DEFAULT 0, createTime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))"})
     void createEmailTable();
 }

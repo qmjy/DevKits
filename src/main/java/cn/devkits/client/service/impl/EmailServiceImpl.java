@@ -27,8 +27,16 @@ public class EmailServiceImpl implements EmailService {
     private EmailMapper emailMapper;
 
     @Override
-    public void newEmail(EmailCfgModel model) {
-        emailMapper.newEmail(model);
+    public void saveOrUpdate(EmailCfgModel model) {
+        if (emailMapper.exist(model.getHost(), model.getAccount()) == null) {
+            emailMapper.newEmail(model);
+        } else {
+            emailMapper.update(model);
+        }
+
+        if (model.isDefaultServer()) {
+            emailMapper.disableOtherDefaultServer(model);
+        }
     }
 
     @Override

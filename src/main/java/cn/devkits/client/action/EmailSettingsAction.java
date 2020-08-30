@@ -5,7 +5,6 @@
 package cn.devkits.client.action;
 
 import cn.devkits.client.App;
-import cn.devkits.client.DKConstants;
 import cn.devkits.client.service.EmailService;
 import cn.devkits.client.tray.model.EmailCfgModel;
 import cn.devkits.client.util.DKNetworkUtil;
@@ -32,6 +31,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +87,7 @@ public class EmailSettingsAction extends BaseAction {
      */
     @Override
     protected Component drawCenterPanel() {
-        FormLayout layout = new FormLayout("right:max(50dlu;p), 4dlu, 90dlu, 4dlu, right:max(20dlu;p), 4dlu, 30dlu, 4dlu, right:max(30dlu;p), 4dlu, 55dlu",
+        FormLayout layout = new FormLayout("right:max(50dlu;p):grow, 4dlu, 90dlu:grow, 4dlu, right:max(20dlu;p):grow, 4dlu, 30dlu:grow, 4dlu, right:max(30dlu;p):grow, 4dlu, 55dlu:grow",
                 "p, 2dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 10dlu, p, 2dlu, d");
 
         layout.setRowGroups(new int[][]{{1, 9}});
@@ -119,16 +119,7 @@ public class EmailSettingsAction extends BaseAction {
         JCheckBox defaultSmtpServerComponent = new JCheckBox();
         builder.add(defaultSmtpServerComponent, cc.xy(3, 7));
 
-        JButton testBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_TEST"));
-        builder.add(testBtn, cc.xy(7, 9));
-        testBtn.addActionListener(e -> {
-            testSmtpSever(portComponent, tlsComponent, accountComponent, pwdComponent);
-        });
-        JButton save = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_SAVE"));
-        builder.add(save, cc.xy(9, 9));
-        save.addActionListener(e -> {
-            save2Db(portComponent, tlsComponent, accountComponent, pwdComponent, defaultSmtpServerComponent);
-        });
+        builder.add(createBtnsPane(portComponent, tlsComponent, accountComponent, pwdComponent, defaultSmtpServerComponent), cc.xyw(1, 9, 11));
 
         builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SEG_ALL"), cc.xyw(1, 11, 11));
 
@@ -137,12 +128,28 @@ public class EmailSettingsAction extends BaseAction {
         return builder.getPanel();
     }
 
+    private Component createBtnsPane(JTextField portComponent, JRadioButton tlsComponent, JTextField accountComponent, JPasswordField pwdComponent, JCheckBox defaultSmtpServerComponent) {
+        JPanel jPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        JButton testBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_TEST"));
+        jPanel.add(testBtn);
+        testBtn.addActionListener(e -> {
+            testSmtpSever(portComponent, tlsComponent, accountComponent, pwdComponent);
+        });
+
+        JButton save = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_SAVE_UPDATE"));
+        jPanel.add(save);
+        save.addActionListener(e -> {
+            save2Db(portComponent, tlsComponent, accountComponent, pwdComponent, defaultSmtpServerComponent);
+        });
+        return jPanel;
+    }
+
     private void save2Db(JTextField portComponent, JRadioButton tlsComponent, JTextField accountComponent, JPasswordField pwdComponent, JCheckBox defaultSmtpServerComponent) {
         EmailCfgModel cfg = new EmailCfgModel(smtpServers.getSelectedItem().toString(),
                 Integer.parseInt(portComponent.getText()), accountComponent.getText(), new String(pwdComponent.getPassword()), tlsComponent.isSelected());
         Map.Entry<Boolean, String> next = doSmtpServerTest(cfg);
         if (next.getKey()) {
-            // TODO 去重
             persistence2Db(cfg, defaultSmtpServerComponent.isSelected());
             refreshAllMailsTable();
             JOptionPane.showMessageDialog(frame, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SAVE_MSG_SUCCESS"),
@@ -152,6 +159,7 @@ public class EmailSettingsAction extends BaseAction {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     private void refreshAllMailsTable() {
         EmailService service = (EmailService) App.getContext().getBean("emailServiceImpl");
@@ -195,6 +203,6 @@ public class EmailSettingsAction extends BaseAction {
     private void persistence2Db(EmailCfgModel cfg, boolean defaultSmtpServer) {
         EmailService service = (EmailService) App.getContext().getBean("emailServiceImpl");
         cfg.setDefaultServer(defaultSmtpServer);
-        service.newEmail(cfg);
+        service.saveOrUpdate(cfg);
     }
 }

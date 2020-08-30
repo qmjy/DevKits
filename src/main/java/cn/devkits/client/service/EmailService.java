@@ -18,11 +18,11 @@ import java.util.List;
  */
 public interface EmailService {
     /**
-     * 添加一个email服务器
+     * 添加一个email服务器，重复判断条件：SMTP服务器，用户名
      *
      * @param model emial服务器信息
      */
-    void newEmail(EmailCfgModel model);
+    void saveOrUpdate(EmailCfgModel model);
 
     /**
      * 加载所有邮箱配置
