@@ -6,8 +6,11 @@ package cn.devkits.client.asyn;
 
 import cn.devkits.client.App;
 import cn.devkits.client.DKConstants;
+import cn.devkits.client.service.EmailService;
 import cn.devkits.client.service.impl.TodoTaskServiceImpl;
+import cn.devkits.client.tray.model.EmailCfgModel;
 import cn.devkits.client.tray.model.TodoTaskModel;
+import cn.devkits.client.util.DKNetworkUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.TriggerContext;
@@ -36,7 +39,10 @@ public class TodoTaskScheduling implements SchedulingConfigurer {
 
     @Autowired
     private TodoTaskServiceImpl todoTaskServiceImpl;
+    @Autowired
+    private EmailService emailService;
 
+    //TODO 新增和删除通知的功能待开发
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         List<TodoTaskModel> allTodoList = todoTaskServiceImpl.findAllTodoList();
@@ -57,13 +63,13 @@ public class TodoTaskScheduling implements SchedulingConfigurer {
 
     private void registerTrayReminder(ScheduledTaskRegistrar taskRegistrar, List<TodoTaskModel> trayTodoList) {
         for (TodoTaskModel model : trayTodoList) {
-            taskRegistrar.addTriggerTask(new TodoThread(model), new TodoTrigger(model.getCorn()));
+            taskRegistrar.addTriggerTask(new TodoThread(model, emailService), new TodoTrigger(model.getCorn()));
         }
     }
 
     private void registerEmailReminder(ScheduledTaskRegistrar taskRegistrar, List<TodoTaskModel> emailTodoList) {
         for (TodoTaskModel model : emailTodoList) {
-            taskRegistrar.addTriggerTask(new TodoThread(model), new TodoTrigger(model.getCorn()));
+            taskRegistrar.addTriggerTask(new TodoThread(model, emailService), new TodoTrigger(model.getCorn()));
         }
     }
 }
@@ -74,15 +80,20 @@ public class TodoTaskScheduling implements SchedulingConfigurer {
 class TodoThread implements Runnable {
 
     private final TodoTaskModel model;
+    private final EmailService emailService;
 
-    public TodoThread(TodoTaskModel model) {
+    public TodoThread(TodoTaskModel model, EmailService emailService) {
         this.model = model;
+        this.emailService = emailService;
     }
 
     @Override
     public void run() {
         if (model.getReminder() == DKConstants.TODO_REMINDER.TRAY.ordinal()) {
             App.getTrayIcon().displayMessage(model.getTaskName(), model.getDescription(), TrayIcon.MessageType.INFO);
+        } else {
+            EmailCfgModel cfg = emailService.findDefaultSmtpServer();
+            DKNetworkUtil.sendMail(cfg, model.getTaskName(), model.getDescription(), model.getEmail());
         }
     }
 }

@@ -39,4 +39,7 @@ public interface EmailMapper {
 
     @Update({"Update devkits_email_list SET defaultServer=0 WHERE host!=#{model.host} AND account!=#{model.account}"})
     void disableOtherDefaultServer(@Param("model") EmailCfgModel model);
+
+    @Select({"SELECT * FROM devkits_email_list WHERE defaultServer = 1"})
+    List<EmailCfgModel> loadDefaultEmails();
 }

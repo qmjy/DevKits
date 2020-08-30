@@ -14,6 +14,8 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -45,22 +47,18 @@ import java.util.Map;
  * @since 2020/8/25
  */
 public class EmailSettingsAction extends BaseAction {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailSettingsAction.class);
 
-    private final String[] header = new String[]{"编号", "SMTP", "端口", "账户", "TLS", "默认", "创建时间"};
+    private final String[] header = new String[]{"编号", "账户", "SMTP", "端口", "TLS", "默认", "创建时间"};
     private final String[] items = new String[]{
-//            "smtpscn.huawei.com",
+            "smtpscn.huawei.com",
 //            "smtp.qq.com",
-//            "smtp.exmail.qq.com",
+            "smtp.exmail.qq.com",
             "smtp.163.com",
 //            "smtp.gmail.com",
-//            "smtp.isoftstone.com"
+            "smtp.isoftstone.com"
     };
-    private final JTable savedEmailsTable = new JTable() {
-        @Override
-        public Dimension getPreferredScrollableViewportSize() {
-            return DKSystemUIUtil.updatePreferredScrollableViewportSize(this);
-        }
-    };
+    private final JTable savedEmailsTable = new JTable();
 
     private JComboBox<String> smtpServers = new JComboBox<>(items);
 
@@ -169,9 +167,9 @@ public class EmailSettingsAction extends BaseAction {
         for (int i = 0; i < allMails.size(); i++) {
             for (int j = 0; j < header.length; j++) {
                 emailData[i][0] = String.valueOf(i + 1);
-                emailData[i][1] = allMails.get(i).getHost();
-                emailData[i][2] = String.valueOf(allMails.get(i).getPort());
-                emailData[i][3] = allMails.get(i).getAccount();
+                emailData[i][1] = allMails.get(i).getAccount();
+                emailData[i][2] = allMails.get(i).getHost();
+                emailData[i][3] = String.valueOf(allMails.get(i).getPort());
                 emailData[i][4] = String.valueOf(allMails.get(i).isTls());
                 emailData[i][5] = String.valueOf(allMails.get(i).isDefaultServer());
                 emailData[i][6] = allMails.get(i).getCreateTime();

@@ -26,7 +26,15 @@ public interface EmailService {
 
     /**
      * 加载所有邮箱配置
+     *
      * @return 邮箱配置
      */
     List<EmailCfgModel> loadAllEmails();
+
+    /**
+     * 获取当前默认SMTP服务器
+     *
+     * @return SMTP服务配置
+     */
+    EmailCfgModel findDefaultSmtpServer();
 }

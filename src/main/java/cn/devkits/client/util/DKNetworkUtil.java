@@ -19,13 +19,23 @@ import java.util.Optional;
 import java.util.Properties;
 
 import cn.devkits.client.tray.model.EmailCfgModel;
+import cn.devkits.client.tray.model.TodoTaskModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.AuthenticationFailedException;
+import javax.mail.BodyPart;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class DKNetworkUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKNetworkUtil.class);
@@ -163,9 +173,12 @@ public class DKNetworkUtil {
         HashMap<Boolean, String> resultMap = new HashMap<>();
         try {
             Properties props = new Properties();
-            // required for gmail
-            props.put("mail.smtp.starttls.enable", cfg.isTls());
+            props.put("mail.smtp.starttls.enable", String.valueOf(cfg.isTls()));
             props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.connectiontimeout", "5000");
+            props.put("mail.smtp.timeout", "5000");
+            props.put("mail.smtp.writetimeout", "5000");
+
             // or use getDefaultInstance instance if desired...
             Session session = Session.getInstance(props, null);
             Transport transport = session.getTransport("smtp");
@@ -179,5 +192,44 @@ public class DKNetworkUtil {
             resultMap.put(false, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_ERROR_OTHERS"));
         }
         return resultMap;
+    }
+
+    /**
+     * 发送邮件
+     *
+     * @param cfg      邮箱服务器信息
+     * @param title    邮件主题
+     * @param content  邮件内容
+     * @param reciever 邮件接收人
+     */
+    public static void sendMail(EmailCfgModel cfg, String title, String content, String reciever) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", cfg.getHost());
+        props.put("mail.smtp.auth", "true");
+
+        Session session = Session.getDefaultInstance(props);
+        session.setDebug(false);
+
+        MimeMessage message = new MimeMessage(session);
+        try {
+            message.setFrom(new InternetAddress(cfg.getAccount()));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(reciever));
+            message.setSubject(title);
+
+            Multipart multipart = new MimeMultipart();
+
+            BodyPart contentPart = new MimeBodyPart();
+            contentPart.setText(content);
+            multipart.addBodyPart(contentPart);
+
+            message.setContent(multipart);
+            message.saveChanges();
+            Transport transport = session.getTransport("smtp");
+            transport.connect(cfg.getHost(), cfg.getAccount(), cfg.getPwd());
+            transport.sendMessage(message, message.getAllRecipients());
+            transport.close();
+        } catch (Exception e) {
+            LOGGER.error("Send email failed: {}", e.getMessage());
+        }
     }
 }
