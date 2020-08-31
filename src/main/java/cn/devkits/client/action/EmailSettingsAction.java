@@ -85,7 +85,8 @@ public class EmailSettingsAction extends BaseAction {
      */
     @Override
     protected Component drawCenterPanel() {
-        FormLayout layout = new FormLayout("right:max(50dlu;p):grow, 4dlu, 90dlu:grow, 4dlu, right:max(20dlu;p):grow, 4dlu, 30dlu:grow, 4dlu, right:max(30dlu;p):grow, 4dlu, 55dlu:grow",
+        FormLayout layout = new FormLayout("right:max(15dlu;p):grow, 4dlu, 80dlu:grow, 4dlu, right:max(15dlu;p):grow, 4dlu, 30dlu:grow, 4dlu, right:max" +
+                "(30dlu;p):grow, 4dlu, 55dlu:grow",
                 "p, 2dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 10dlu, p, 2dlu, d");
 
         layout.setRowGroups(new int[][]{{1, 9}});
