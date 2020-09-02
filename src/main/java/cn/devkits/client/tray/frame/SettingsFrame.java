@@ -78,7 +78,7 @@ public class SettingsFrame extends DKAbstractFrame {
         sysPane.setFocusable(false);
 
         // add standard components to the sysPane taskPane
-        sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
+//        sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new EmailSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new OtherSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
 

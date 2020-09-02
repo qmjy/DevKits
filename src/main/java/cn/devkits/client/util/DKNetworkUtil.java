@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+import javax.mail.Address;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -213,13 +214,13 @@ public class DKNetworkUtil {
         MimeMessage message = new MimeMessage(session);
         try {
             message.setFrom(new InternetAddress(cfg.getAccount()));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(reciever));
+            wrapRecipients(reciever, message);
             message.setSubject(title);
 
             Multipart multipart = new MimeMultipart();
 
             BodyPart contentPart = new MimeBodyPart();
-            contentPart.setText(content);
+            contentPart.setContent(convertHtmlContent(content), "text/html; charset=utf-8");
             multipart.addBodyPart(contentPart);
 
             message.setContent(multipart);
@@ -230,6 +231,30 @@ public class DKNetworkUtil {
             transport.close();
         } catch (Exception e) {
             LOGGER.error("Send email failed: {}", e.getMessage());
+        }
+    }
+
+    private static String convertHtmlContent(String content) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html><body>")
+                .append("<p>")
+                .append(content)
+                .append("</p>")
+                .append("<p style='padding:0;font-size:12px;line-height:18px;color:#888 !important;'><br/><br/><br/>蛋壳需求诉求：")
+                .append("<a href='https://github.com/qmjy/DevKits/issues/new' blank='_target' style='color:#555;'>github</a>")
+                .append(" | ")
+                .append("<a href='' blank='_target' style='color:#555;'>toolscloud</a>")
+                .append("</p>")
+                .append("</body></html>");
+        return sb.toString();
+    }
+
+    private static void wrapRecipients(String reciever, MimeMessage message) throws MessagingException {
+        if (reciever.indexOf(",") >= 0) {
+            Address[] internetAddressTo = InternetAddress.parse(reciever);
+            message.addRecipients(Message.RecipientType.TO, internetAddressTo);
+        } else {
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(reciever));
         }
     }
 }
