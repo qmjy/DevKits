@@ -17,6 +17,7 @@ public class EmailCfgModel {
     private String host;
     private int port;
     private String account;
+    private String email;
     private String pwd;
     private boolean isTls;
     private boolean defaultServer;
@@ -39,6 +40,14 @@ public class EmailCfgModel {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getHost() {

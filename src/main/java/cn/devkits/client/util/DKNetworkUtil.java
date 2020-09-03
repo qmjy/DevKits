@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import cn.devkits.client.tray.model.EmailCfgModel;
 import cn.devkits.client.tray.model.TodoTaskModel;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,7 +184,7 @@ public class DKNetworkUtil {
             // or use getDefaultInstance instance if desired...
             Session session = Session.getInstance(props, null);
             Transport transport = session.getTransport("smtp");
-            transport.connect(cfg.getHost(), cfg.getPort(), cfg.getAccount(), cfg.getPwd());
+            transport.connect(cfg.getHost(), cfg.getPort(), StringUtils.isEmpty(cfg.getAccount()) ? cfg.getEmail() : cfg.getAccount(), cfg.getPwd());
             transport.close();
             resultMap.put(true, "");
             return resultMap;
@@ -204,6 +205,11 @@ public class DKNetworkUtil {
      * @param reciever 邮件接收人
      */
     public static void sendMail(EmailCfgModel cfg, String title, String content, String reciever) {
+        if (cfg == null) {
+            LOGGER.error("Can't find default SMTP settings...");
+            return;
+        }
+
         Properties props = new Properties();
         props.put("mail.smtp.host", cfg.getHost());
         props.put("mail.smtp.auth", "true");
@@ -213,12 +219,11 @@ public class DKNetworkUtil {
 
         MimeMessage message = new MimeMessage(session);
         try {
-            message.setFrom(new InternetAddress(cfg.getAccount()));
+            message.setFrom(new InternetAddress(cfg.getEmail()));
             wrapRecipients(reciever, message);
             message.setSubject(title);
 
             Multipart multipart = new MimeMultipart();
-
             BodyPart contentPart = new MimeBodyPart();
             contentPart.setContent(convertHtmlContent(content), "text/html; charset=utf-8");
             multipart.addBodyPart(contentPart);
@@ -226,7 +231,7 @@ public class DKNetworkUtil {
             message.setContent(multipart);
             message.saveChanges();
             Transport transport = session.getTransport("smtp");
-            transport.connect(cfg.getHost(), cfg.getAccount(), cfg.getPwd());
+            transport.connect(cfg.getHost(), StringUtils.isEmpty(cfg.getAccount()) ? cfg.getEmail() : cfg.getAccount(), cfg.getPwd());
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
         } catch (Exception e) {
@@ -243,7 +248,7 @@ public class DKNetworkUtil {
                 .append("<p style='padding:0;font-size:12px;line-height:18px;color:#888 !important;'><br/><br/><br/>蛋壳需求诉求：")
                 .append("<a href='https://github.com/qmjy/DevKits/issues/new' blank='_target' style='color:#555;'>github</a>")
                 .append(" | ")
-                .append("<a href='' blank='_target' style='color:#555;'>toolscloud</a>")
+                .append("<a href='http://toolcloud.huawei.com/toolmall/tooldetails/46718d31406842deb0e969a715377c93' blank='_target' style='color:#555;'>toolcloud</a>")
                 .append("</p>")
                 .append("</body></html>");
         return sb.toString();
