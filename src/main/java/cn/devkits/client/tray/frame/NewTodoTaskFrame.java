@@ -15,6 +15,7 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import com.google.common.eventbus.Subscribe;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         initListener();
 
         this.todoListFrame = todoListFrame;
+        App.getEventBus().register(this);
     }
 
     /**
@@ -209,6 +211,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
             todoTaskModel.setEmail(emailsInput.getText());
 
             service.newTodoTask(todoTaskModel);
+            App.getEventBus().post(todoTaskModel);
             this.setVisible(false);
 
             // 快捷键方式创建待办不用刷新
@@ -256,7 +259,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
                     String description = descriptor.describe(parse);
                     cornTextField.setToolTipText(description);
                 } catch (IllegalArgumentException e) {
-                    LOGGER.error("The input corn expression is invalid!");
+                    LOGGER.warn("The input corn expression is invalid!");
                 }
             }
         });
@@ -266,4 +269,6 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     public boolean isResizable() {
         return false;
     }
+
+
 }

@@ -21,7 +21,7 @@ public interface DKConstants {
     String DEVKIT_WORKSPACE = System.getenv("USERPROFILE") + File.separator + ".devkits" + File.separator;
 
     /**
-     * 待办通知类型
+     * 待办通知类型，枚举内容顺序不能调整，顺序业务有依赖，新增类型依次往后追加
      */
     enum TODO_REMINDER {
         TRAY, EMAIL;

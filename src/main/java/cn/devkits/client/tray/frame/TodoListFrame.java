@@ -63,10 +63,8 @@ public class TodoListFrame extends DKAbstractFrame {
         setPreferredSize(new Dimension(450, 130));
         add(toolBar, BorderLayout.PAGE_START);
 
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, trayReminderHeader,
-                DKConstants.TODO_REMINDER.TRAY));
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader,
-                DKConstants.TODO_REMINDER.EMAIL));
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, trayReminderHeader, DKConstants.TODO_REMINDER.TRAY));
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader, DKConstants.TODO_REMINDER.EMAIL));
 
         jTabbedPane.setFocusable(false);
         rootContainer.add(jTabbedPane, BorderLayout.CENTER);
@@ -112,7 +110,6 @@ public class TodoListFrame extends DKAbstractFrame {
         String[][] data = queryData(reminder);
         DefaultTableModel tableModel = new DefaultTableModel(data, head);
         jTable.setModel(tableModel);
-        DKSystemUIUtil.fitTableColumns(jTable);
 
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setViewportView(jTable);
@@ -139,11 +136,9 @@ public class TodoListFrame extends DKAbstractFrame {
         String[][] trayData = queryData(DKConstants.TODO_REMINDER.TRAY);
         DefaultTableModel trayTableModel = new DefaultTableModel(trayData, trayReminderHeader);
         trayTable.setModel(trayTableModel);
-        DKSystemUIUtil.fitTableColumns(trayTable);
 
-        String[][] emailData = queryData(DKConstants.TODO_REMINDER.TRAY);
+        String[][] emailData = queryData(DKConstants.TODO_REMINDER.EMAIL);
         DefaultTableModel emailTableModel = new DefaultTableModel(emailData, emailReminderHeader);
         emailTable.setModel(emailTableModel);
-        DKSystemUIUtil.fitTableColumns(emailTable);
     }
 }

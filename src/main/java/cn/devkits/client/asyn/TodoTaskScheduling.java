@@ -11,6 +11,7 @@ import cn.devkits.client.service.impl.TodoTaskServiceImpl;
 import cn.devkits.client.tray.model.EmailCfgModel;
 import cn.devkits.client.tray.model.TodoTaskModel;
 import cn.devkits.client.util.DKNetworkUtil;
+import com.google.common.eventbus.Subscribe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.TriggerContext;
@@ -20,6 +21,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
+import java.awt.Event;
 import java.awt.TrayIcon;
 import java.util.Date;
 import java.util.List;
@@ -41,36 +43,28 @@ public class TodoTaskScheduling implements SchedulingConfigurer {
     private TodoTaskServiceImpl todoTaskServiceImpl;
     @Autowired
     private EmailService emailService;
+    private ScheduledTaskRegistrar taskRegistrar;
 
-    //TODO 新增和删除通知的功能待开发
+    public TodoTaskScheduling() {
+        App.getEventBus().register(this);
+    }
+
+    //TODO 删除通知的功能待开发
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        this.taskRegistrar = taskRegistrar;
+
         List<TodoTaskModel> allTodoList = todoTaskServiceImpl.findAllTodoList();
         if (!allTodoList.isEmpty()) {
-            List<TodoTaskModel> trayTodoList = allTodoList.stream().filter(e -> {
-                return e.getReminder() == DKConstants.TODO_REMINDER.TRAY.ordinal();
-            }).collect(Collectors.toList());
-
-            List<TodoTaskModel> emailTodoList = allTodoList.stream().filter(e -> {
-                return e.getReminder() == DKConstants.TODO_REMINDER.EMAIL.ordinal();
-            }).collect(Collectors.toList());
-
-            registerTrayReminder(taskRegistrar, trayTodoList);
-            registerEmailReminder(taskRegistrar, emailTodoList);
+            for (TodoTaskModel model : allTodoList) {
+                taskRegistrar.addTriggerTask(new TodoThread(model, emailService), new TodoTrigger(model.getCorn()));
+            }
         }
     }
 
-
-    private void registerTrayReminder(ScheduledTaskRegistrar taskRegistrar, List<TodoTaskModel> trayTodoList) {
-        for (TodoTaskModel model : trayTodoList) {
-            taskRegistrar.addTriggerTask(new TodoThread(model, emailService), new TodoTrigger(model.getCorn()));
-        }
-    }
-
-    private void registerEmailReminder(ScheduledTaskRegistrar taskRegistrar, List<TodoTaskModel> emailTodoList) {
-        for (TodoTaskModel model : emailTodoList) {
-            taskRegistrar.addTriggerTask(new TodoThread(model, emailService), new TodoTrigger(model.getCorn()));
-        }
+    @Subscribe
+    public void listen(TodoTaskModel model) {
+        taskRegistrar.addTriggerTask(new TodoThread(model, emailService), new TodoTrigger(model.getCorn()));
     }
 }
 

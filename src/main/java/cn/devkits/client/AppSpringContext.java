@@ -15,6 +15,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.sqlite.SQLiteDataSource;
 
 import java.io.File;
@@ -68,6 +70,14 @@ public class AppSpringContext {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource());
         return factoryBean.getObject();
+    }
+
+    @Bean
+    public TaskScheduler scheduledExecutorService() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(Runtime.getRuntime().availableProcessors());
+        scheduler.setThreadNamePrefix("devkits-scheduled-thread-");
+        return scheduler;
     }
 
     private DataSource createDataSource() {

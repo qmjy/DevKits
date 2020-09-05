@@ -5,6 +5,7 @@
 package cn.devkits.client;
 
 import cn.devkits.client.asyn.AppStarter;
+import com.google.common.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -27,6 +28,7 @@ import java.io.IOException;
 public class App {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
     private static AnnotationConfigApplicationContext context;
+    private static EventBus eventBus = new EventBus("DevkitsEvents");
     private static TrayIcon trayIcon;
 
     @SuppressWarnings("resource")
@@ -66,5 +68,10 @@ public class App {
 
     public static TrayIcon getTrayIcon() {
         return trayIcon;
+    }
+
+
+    public static EventBus getEventBus() {
+        return eventBus;
     }
 }
