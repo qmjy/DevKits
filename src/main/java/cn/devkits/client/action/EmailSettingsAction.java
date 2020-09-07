@@ -32,7 +32,6 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.util.List;
@@ -204,7 +203,8 @@ public class EmailSettingsAction extends BaseAction {
     }
 
     private Map.Entry<Boolean, String> doSmtpServerTest(EmailCfgModel cfg) {
-        Map<Boolean, String> success = DKNetworkUtil.testSmtpServer(cfg);
+        EmailService service = (EmailService) App.getContext().getBean("emailServiceImpl");
+        Map<Boolean, String> success = service.testSMTPServer(cfg);
         return success.entrySet().iterator().next();
     }
 

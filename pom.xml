@@ -43,7 +43,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <artifactId>spring-context-support</artifactId>
             <version>5.2.1.RELEASE</version>
         </dependency>
 
@@ -127,11 +127,11 @@
             <version>9.1.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+        <!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
         </dependency>
 
         <!-- 提供Hex、DigestUtils、Base64等 -->

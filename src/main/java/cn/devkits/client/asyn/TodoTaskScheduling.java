@@ -95,10 +95,24 @@ class TodoThread implements Runnable {
         if (model.getReminder() == DKConstants.TODO_REMINDER.TRAY.ordinal()) {
             App.getTrayIcon().displayMessage(model.getTaskName(), model.getDescription(), TrayIcon.MessageType.INFO);
         } else {
-            EmailCfgModel cfg = emailService.findDefaultSmtpServer();
-            DKNetworkUtil.sendMail(cfg, model.getTaskName(), model.getDescription(), model.getEmail());
+            emailService.sendHtmlMail(model.getEmail(), model.getTaskName(), convertHtmlContent(model.getDescription()));
         }
         LOGGER.info("Trigger task detail remind at '{}' with content: {}", DKDateTimeUtil.currentTimeStr(), model.toString());
+    }
+
+    private static String convertHtmlContent(String content) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html><body>")
+                .append("<p>")
+                .append(content)
+                .append("</p>")
+                .append("<p style='padding:0;font-size:12px;line-height:18px;color:#888 !important;'><br/><br/><br/>蛋壳需求反馈：")
+                .append("<a href='https://github.com/qmjy/DevKits/issues/new' blank='_target' style='color:#555;'>github</a>")
+                .append(" | ")
+                .append("<a href='http://toolcloud.huawei.com/toolmall/tooldetails/46718d31406842deb0e969a715377c93' blank='_target' style='color:#555;'>toolcloud</a>")
+                .append("</p>")
+                .append("</body></html>");
+        return sb.toString();
     }
 }
 

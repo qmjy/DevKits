@@ -51,7 +51,7 @@ public class AppSpringContext {
      *
      * @return datasource
      */
-    @Bean("dataSource")
+    @Bean
     @Lazy(false)
     public DataSource dataSource() {
         if (ds == null) {

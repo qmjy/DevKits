@@ -99,4 +99,11 @@ public class TodoTaskModel {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+
+
+    @Override
+    public String toString() {
+        return "TodoTaskModel{" + "id=" + id + ", taskName='" + taskName + '\'' + ", reminder=" + reminder + ", corn='" + corn + '\'' + ", email='" + email + '\''
+                + ", description='" + description + '\'' + ", createTime='" + createTime + '\'' + ", isDeleted=" + isDeleted + '}';
+    }
 }
