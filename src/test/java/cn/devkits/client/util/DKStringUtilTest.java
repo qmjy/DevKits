@@ -1,6 +1,7 @@
 package cn.devkits.client.util;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class DKStringUtilTest {
@@ -11,9 +12,18 @@ public class DKStringUtilTest {
         assertFalse(DKStringUtil.isIP("2.3.5"));
     }
 
+    @Test
+    public void testCountSubStr() {
+        int count = DKStringUtil.countSubStr("cc:liushaofeng89@qq.com,cc:admin@yudeshui.club,bc:wechat@yudeshui.club", "cc:");
+        assertEquals(2, count);
+
+        count = DKStringUtil.countSubStr("abaababadfgdgdsdgdejrtwerdflgksjdfgklniodgjioertnkert", "df");
+        assertEquals(3, count);
+    }
 
     @Test
-    public void testIsReachable() {}
+    public void testIsReachable() {
+    }
 
     @Test
     public void testXmlFormat() {
