@@ -4,9 +4,14 @@
 
 package cn.devkits.client.asyn;
 
-import cn.devkits.client.App;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.lgooddatepicker.components.CalendarPanel;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.melloware.jintellitype.HotkeyListener;
+import com.melloware.jintellitype.JIntellitype;
 import cn.devkits.client.DKConstants;
-import cn.devkits.client.task.WinNoticeTask;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
 import cn.devkits.client.tray.frame.AboutFrame;
@@ -15,25 +20,22 @@ import cn.devkits.client.tray.frame.SettingsFrame;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
-import com.github.lgooddatepicker.components.CalendarPanel;
-import com.github.lgooddatepicker.components.DatePickerSettings;
-import com.melloware.jintellitype.HotkeyListener;
-import com.melloware.jintellitype.JIntellitype;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.JDialog;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
-import java.awt.*;
-import java.awt.TrayIcon.MessageType;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Menu;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Timer;
 
 public class AppStarter implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppStarter.class);
@@ -76,7 +78,6 @@ public class AppStarter implements Runnable {
     private void initSystemTrayIcon() {
         trayIcon.setPopupMenu(createTrayMenu(trayIcon));
         initDbClick(trayIcon);
-        initNotice(trayIcon);
     }
 
     private void initDbClick(TrayIcon trayIcon) {
@@ -254,12 +255,5 @@ public class AppStarter implements Runnable {
 
         computerItem.add(toolsItem);
         return computerItem;
-    }
-
-
-    private void initNotice(TrayIcon trayIcon) {
-        Timer timer = new Timer();
-        long time = 1000 * 60 * 30;// 半小时执行一次
-        timer.scheduleAtFixedRate(new WinNoticeTask(trayIcon), time, time);
     }
 }
