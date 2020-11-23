@@ -4,6 +4,16 @@
 
 package cn.devkits.client.util;
 
+import org.bridj.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Sets;
+import cn.devkits.client.tray.listener.TrayItemWindowListener;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -12,18 +22,9 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 
-import com.google.common.collect.Sets;
-import org.bridj.Platform;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
-import oshi.hardware.platform.windows.WindowsCentralProcessor;
 import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
 
@@ -218,12 +219,8 @@ public final class DKSystemUtil {
      * @return CPU information
      */
     public static String getCpuInfo() {
-        CentralProcessor processor = SYSTEM_INFO.getHardware().getProcessor();
-        if (processor instanceof WindowsCentralProcessor) {
-            WindowsCentralProcessor winPro = (WindowsCentralProcessor) processor;
-            return winPro.getName();
-        }
-        return processor.toString();
+
+        return "";
     }
 
     public static void sleep(int i) {
