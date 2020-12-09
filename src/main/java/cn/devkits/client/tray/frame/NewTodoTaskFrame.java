@@ -4,27 +4,41 @@
 
 package cn.devkits.client.tray.frame;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cronutils.descriptor.CronDescriptor;
+import com.cronutils.model.Cron;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.parser.CronParser;
 import cn.devkits.client.App;
 import cn.devkits.client.DKConstants;
 import cn.devkits.client.service.impl.TodoTaskServiceImpl;
 import cn.devkits.client.tray.model.TodoTaskModel;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.SpringUtilities;
-import com.cronutils.descriptor.CronDescriptor;
-import com.cronutils.model.Cron;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.parser.CronParser;
-import com.google.common.eventbus.Subscribe;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -32,6 +46,9 @@ import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
+
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 
 import static com.cronutils.model.CronType.SPRING;
 

@@ -4,29 +4,6 @@
 
 package cn.devkits.client.tray.frame;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.SpringLayout.Constraints;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-
 import cn.devkits.client.component.osinfo.FileStorePanel;
 import cn.devkits.client.component.osinfo.MemoryPanel;
 import cn.devkits.client.component.osinfo.ProcessPanel;
@@ -34,28 +11,39 @@ import cn.devkits.client.component.osinfo.ProcessorPanel;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.JTree;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.time.Instant;
+import java.util.List;
+
 import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.CentralProcessor.TickType;
 import oshi.hardware.ComputerSystem;
 import oshi.hardware.Display;
-import oshi.hardware.GlobalMemory;
-import oshi.hardware.HWDiskStore;
-import oshi.hardware.HWPartition;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
-import oshi.hardware.PhysicalMemory;
 import oshi.hardware.PowerSource;
 import oshi.hardware.Sensors;
 import oshi.hardware.SoundCard;
 import oshi.hardware.UsbDevice;
-import oshi.hardware.VirtualMemory;
-import oshi.hardware.platform.windows.WindowsUsbDevice;
 import oshi.software.os.NetworkParams;
-import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
-import oshi.util.Util;
 
 /**
  * 当前计算机软硬件信息展示
