@@ -53,7 +53,7 @@
 			<directory>${project.basedir}\src\main\resources</directory>
 			<outputDirectory>bin</outputDirectory>
 			<includes>
-				<include>QQSnapShot.exe</include>
+				<include>*.exe</include>
 				<include>devkits.db</include>
 				<include>startup.*</include>
 			</includes>
