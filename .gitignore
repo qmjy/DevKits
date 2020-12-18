@@ -25,3 +25,4 @@ target
 /devkits.db
 .idea
 *.iml
+jre

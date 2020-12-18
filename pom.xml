@@ -120,7 +120,6 @@
             <version>5.3.6</version>
         </dependency>
 
-
         <!-- http://cron-parser.com/ -->
         <dependency>
             <groupId>com.cronutils</groupId>
