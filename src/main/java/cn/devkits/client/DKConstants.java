@@ -24,7 +24,7 @@ public interface DKConstants {
      * 待办通知类型，枚举内容顺序不能调整，顺序业务有依赖，新增类型依次往后追加
      */
     enum TODO_REMINDER {
-        TRAY, EMAIL;
+        TRAY, EMAIL, DIALOG;
     }
 
     // 截屏

@@ -12,7 +12,9 @@ import cn.devkits.client.tray.model.EmailCfgModel;
 import cn.devkits.client.tray.model.TodoTaskModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKNetworkUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
 import com.google.common.eventbus.Subscribe;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.scheduling.config.TriggerTask;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
+import javax.swing.JOptionPane;
 import java.awt.TrayIcon;
 import java.util.Date;
 import java.util.List;
@@ -94,10 +97,13 @@ class TodoThread implements Runnable {
     public void run() {
         if (model.getReminder() == DKConstants.TODO_REMINDER.TRAY.ordinal()) {
             App.getTrayIcon().displayMessage(model.getTaskName(), model.getDescription(), TrayIcon.MessageType.INFO);
-        } else {
+        } else if (model.getReminder() == DKConstants.TODO_REMINDER.EMAIL.ordinal()) {
             emailService.sendHtmlMail(model.getEmail(), model.getTaskName(), convertHtmlContent(model.getDescription()));
+        } else if (model.getReminder() == DKConstants.TODO_REMINDER.DIALOG.ordinal()) {
+            JOptionPane.showMessageDialog(null, model.getDescription(), model.getTaskName(), JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            LOGGER.info("Trigger task detail remind at '{}' with content: {}", DKDateTimeUtil.currentTimeStr(), model.toString());
         }
-        LOGGER.info("Trigger task detail remind at '{}' with content: {}", DKDateTimeUtil.currentTimeStr(), model.toString());
     }
 
     private static String convertHtmlContent(String content) {

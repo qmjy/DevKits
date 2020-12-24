@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -116,7 +117,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     private void setRecipients(SimpleMailMessage message, MimeMessageHelper helper, String tos) throws MessagingException {
-        String[] split = tos.split(",");
+        String[] split = getSplit(tos);
         int ccLength = DKStringUtil.countSubStr(tos, "cc:");
         int bcLength = DKStringUtil.countSubStr(tos, "bc:");
         int toLength = split.length - ccLength - bcLength;
@@ -144,6 +145,16 @@ public class EmailServiceImpl implements EmailService {
             message.setTo(toArray);
             message.setCc(ccArray);
             message.setBcc(bcArray);
+        }
+    }
+
+    private String[] getSplit(String tos) {
+        if (tos.indexOf(";") > 0) {
+            return tos.split(";");
+        } else if (tos.indexOf(",") > 0) {
+            return tos.split(",");
+        } else {
+            return new String[0];
         }
     }
 

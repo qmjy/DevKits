@@ -23,6 +23,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -63,13 +64,12 @@ import static com.cronutils.model.CronType.SPRING;
  */
 public class NewTodoTaskFrame extends DKAbstractFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewTodoTaskFrame.class);
-    private static final int JTextField_COLUMN_20 = 20;
     private TodoListFrame todoListFrame;
     private JTextField nameTextField;
     private JTextField cornTextField;
     private JTextArea desTextArea;
     private JTextField emailsInput;
-    private boolean isEmailReminder = false;
+    private int reminder;
 
     public NewTodoTaskFrame(TodoListFrame todoListFrame) {
         super(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
@@ -127,13 +127,20 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         JPanel jPanel = new JPanel(new SpringLayout());
         JRadioButton reminderTypeOfTrayMsg = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_TRAY_MSG"));
         reminderTypeOfTrayMsg.setSelected(true);
+        reminderTypeOfTrayMsg.setName(String.valueOf(DKConstants.TODO_REMINDER.TRAY.ordinal()));
         jPanel.add(reminderTypeOfTrayMsg);
 
+        JRadioButton reminderTypeOfDialog = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_DIALOG"));
+        reminderTypeOfDialog.setName(String.valueOf(DKConstants.TODO_REMINDER.DIALOG.ordinal()));
+        jPanel.add(reminderTypeOfDialog);
+
         JRadioButton reminderTypeOfEmail = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL"));
+        reminderTypeOfEmail.setName(String.valueOf(DKConstants.TODO_REMINDER.EMAIL.ordinal()));
         jPanel.add(reminderTypeOfEmail);
 
         ButtonGroup group = new ButtonGroup();
         group.add(reminderTypeOfTrayMsg);
+        group.add(reminderTypeOfDialog);
         group.add(reminderTypeOfEmail);
 
         this.emailsInput = new JTextField();
@@ -141,17 +148,12 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         emailsInput.setEnabled(false);
         jPanel.add(emailsInput);
 
-        reminderTypeOfEmail.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                JRadioButton item = (JRadioButton) e.getItem();
-                emailsInput.setEnabled(item.isSelected());
-                isEmailReminder = item.isSelected();
-            }
-        });
+        reminderTypeOfTrayMsg.addItemListener(new TodoReminderItemListener(this));
+        reminderTypeOfDialog.addItemListener(new TodoReminderItemListener(this));
+        reminderTypeOfEmail.addItemListener(new TodoReminderItemListener(this));
 
         SpringUtilities.makeCompactGrid(jPanel,
-                1, 3,
+                1, 4,
                 DKSystemUIUtil.COMPONENT_UI_PADDING_0, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
                 DKSystemUIUtil.COMPONENT_UI_PADDING_0, 2);
 
@@ -224,7 +226,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
             TodoTaskServiceImpl service = (TodoTaskServiceImpl) App.getContext().getBean("todoTaskServiceImpl");
             //TODO input check
             TodoTaskModel todoTaskModel = new TodoTaskModel(nameTextField.getText(), cornTextField.getText(), desTextArea.getText());
-            todoTaskModel.setReminder(isEmailReminder ? DKConstants.TODO_REMINDER.EMAIL : DKConstants.TODO_REMINDER.TRAY);
+            todoTaskModel.setReminder(reminder);
             todoTaskModel.setEmail(emailsInput.getText());
 
             service.newTodoTask(todoTaskModel);
@@ -287,5 +289,30 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         return false;
     }
 
+    /**
+     * 提醒类型监听器
+     */
+    class TodoReminderItemListener implements ItemListener {
 
+        private final NewTodoTaskFrame newTodoTaskFrame;
+
+        public TodoReminderItemListener(NewTodoTaskFrame newTodoTaskFrame) {
+            this.newTodoTaskFrame = newTodoTaskFrame;
+        }
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            JRadioButton item = (JRadioButton) e.getItem();
+            emailsInput.setEnabled(String.valueOf(DKConstants.TODO_REMINDER.EMAIL.ordinal()).equals(item.getName()));
+            newTodoTaskFrame.setReminder(Integer.parseInt(item.getName()));
+        }
+    }
+
+    public int getReminder() {
+        return reminder;
+    }
+
+    public void setReminder(int reminder) {
+        this.reminder = reminder;
+    }
 }
