@@ -10,6 +10,7 @@ import cn.devkits.client.service.impl.TodoTaskServiceImpl;
 import cn.devkits.client.tray.model.TodoTaskModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
+
 import org.springframework.scheduling.support.CronSequenceGenerator;
 
 import java.util.Date;
@@ -36,12 +37,13 @@ import java.awt.Dimension;
  * @since 2020/8/5
  */
 public class TodoListFrame extends DKAbstractFrame {
-    private String[] trayReminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "内容", "创建时间"};
+    private String[] reminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "内容", "创建时间"};
     private String[] emailReminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "收件人", "内容", "创建时间"};
 
     private JTabbedPane jTabbedPane;
     private JTable trayTable;
     private JTable emailTable;
+    private JTable dialogTable;
 
     public TodoListFrame() {
         super(DKSystemUIUtil.getLocaleString("TODO_LIST_TITLE"), 0.7f);
@@ -49,6 +51,7 @@ public class TodoListFrame extends DKAbstractFrame {
         this.jTabbedPane = new JTabbedPane();
         this.trayTable = new JTable();
         this.emailTable = new JTable();
+        this.dialogTable = new JTable();
 
         initUI(getContentPane());
         initListener();
@@ -63,8 +66,10 @@ public class TodoListFrame extends DKAbstractFrame {
         setPreferredSize(new Dimension(450, 130));
         add(toolBar, BorderLayout.PAGE_START);
 
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, trayReminderHeader, DKConstants.TODO_REMINDER.TRAY));
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, reminderHeader, DKConstants.TODO_REMINDER.TRAY));
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader, DKConstants.TODO_REMINDER.EMAIL));
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_DIALOG"), createReminderPane(dialogTable, reminderHeader,
+                DKConstants.TODO_REMINDER.DIALOG));
 
         jTabbedPane.setFocusable(false);
         rootContainer.add(jTabbedPane, BorderLayout.CENTER);
@@ -77,7 +82,7 @@ public class TodoListFrame extends DKAbstractFrame {
     }
 
     private String[][] convertTableData(List<TodoTaskModel> list, DKConstants.TODO_REMINDER reminder) {
-        String[] header = reminder == DKConstants.TODO_REMINDER.TRAY ? trayReminderHeader : emailReminderHeader;
+        String[] header = reminder == DKConstants.TODO_REMINDER.EMAIL ? emailReminderHeader : reminderHeader;
         String[][] data = new String[list.size()][header.length];
 
         for (int i = 0; i < list.size(); i++) {
@@ -87,13 +92,13 @@ public class TodoListFrame extends DKAbstractFrame {
                 data[i][2] = list.get(i).getCorn();
                 data[i][3] = getNextTime(list.get(i).getCorn());
 
-                if (reminder == DKConstants.TODO_REMINDER.TRAY) {
-                    data[i][4] = list.get(i).getDescription();
-                    data[i][5] = list.get(i).getCreateTime();
-                } else {
+                if (reminder == DKConstants.TODO_REMINDER.EMAIL) {
                     data[i][4] = list.get(i).getEmail();
                     data[i][5] = list.get(i).getDescription();
                     data[i][6] = list.get(i).getCreateTime();
+                } else {
+                    data[i][4] = list.get(i).getDescription();
+                    data[i][5] = list.get(i).getCreateTime();
                 }
             }
         }
@@ -134,11 +139,15 @@ public class TodoListFrame extends DKAbstractFrame {
 
     public void refresh() {
         String[][] trayData = queryData(DKConstants.TODO_REMINDER.TRAY);
-        DefaultTableModel trayTableModel = new DefaultTableModel(trayData, trayReminderHeader);
+        DefaultTableModel trayTableModel = new DefaultTableModel(trayData, reminderHeader);
         trayTable.setModel(trayTableModel);
 
         String[][] emailData = queryData(DKConstants.TODO_REMINDER.EMAIL);
         DefaultTableModel emailTableModel = new DefaultTableModel(emailData, emailReminderHeader);
         emailTable.setModel(emailTableModel);
+
+        String[][] dialogData = queryData(DKConstants.TODO_REMINDER.DIALOG);
+        DefaultTableModel dialogTableModel = new DefaultTableModel(dialogData, reminderHeader);
+        dialogTable.setModel(dialogTableModel);
     }
 }

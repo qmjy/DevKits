@@ -23,7 +23,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -102,7 +101,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         reminderLbl.setLabelFor(reminderPane);
         panel.add(reminderPane);
 
-        JLabel cornLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CORN"), JLabel.TRAILING);
+        JLabel cornLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CRON"), JLabel.TRAILING);
         panel.add(cornLbl);
         JPanel cornTextFieldPane = createCornPane();
         cornLbl.setLabelFor(cornTextFieldPane);
