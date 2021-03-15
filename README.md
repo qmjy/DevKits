@@ -54,3 +54,8 @@ mvn clean package assembly:single
 ## 开源协议
 
 Devkits 采用 [MIT](https://choosealicense.com/licenses/mit/) 和 [Anti-996 License](https://github.com/996icu/996.ICU/blob/master/LICENSE_CN)开源协议。
+
+## 感谢支持
+
+本项目采用Jetbrains IDEA开发，感谢Jetbrains对开源项目的免费支持，谢谢。
+![https://jb.gg/OpenSource](./logo/jetbrains.svg)

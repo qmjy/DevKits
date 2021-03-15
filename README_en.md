@@ -55,3 +55,8 @@ Any problem or suggesstion, [contact to me]((mailto:admin@devkits.cn)) or post t
 ## License
 
 Devkits is released under the [MIT](https://choosealicense.com/licenses/mit/) and [Anti-996 License](https://github.com/996icu/996.ICU/blob/master/LICENSE_CN)
+
+## Thanks
+
+This project is developed by JetBrains idea. Thank JetBrains for its free support for open source projects. 
+![https://jb.gg/OpenSource](./logo/jetbrains.svg)
