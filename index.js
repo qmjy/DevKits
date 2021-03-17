@@ -1,13 +1,32 @@
 const { app, Menu, Tray, BrowserWindow } = require('electron')
 const path = require('path')
-var appIcon = null
+var tray = null
+
+function bookmark(){
+  var win = new BrowserWindow({
+    width: 500,
+    height: 500,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+  win.loadFile('bookmark/index.html');
+  win.on('closed',()=>{
+      win = null
+  })
+}
 
 function createTray() {
-  appIcon = new Tray(path.join(__dirname, "./assets/logo.ico"));
+  tray = new Tray(path.join(__dirname, "./assets/img/logo.ico"));
   var contextMenu = Menu.buildFromTemplate([
     {
       label: '计算机', submenu: [{
         label: '系统信息'
+      }, {
+        label: '书签管理', click: () => {
+          bookmark()
+        }
       }, {
         label: '工具'
       }]
@@ -17,10 +36,13 @@ function createTray() {
     { type: 'separator' },
     { label: '退出', role: 'quit' }
   ]);
-  appIcon.setToolTip('软件开发工具包');
-  appIcon.setContextMenu(contextMenu);
-}
+  tray.setToolTip('软件开发工具包');
+  tray.setContextMenu(contextMenu);
 
+  tray.on('click', (Event) => {
+    createWindow()
+  })
+}
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -32,16 +54,12 @@ function createWindow() {
   })
 
   win.loadFile('index.html')
-
-  createTray()
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(createTray)
 
+//所有窗口关闭后不退出程序
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
 })
 
 app.on('activate', () => {
