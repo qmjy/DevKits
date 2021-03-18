@@ -2,18 +2,18 @@ const { app, Menu, Tray, BrowserWindow } = require('electron')
 const path = require('path')
 var tray = null
 
-function bookmark(){
+function bookmark() {
   var win = new BrowserWindow({
-    width: 500,
-    height: 500,
-    frame: false,
+    width: 1266,
+    height: 768,
+    // frame: false,
     webPreferences: {
       nodeIntegration: true
     }
   })
   win.loadFile('bookmark/index.html');
-  win.on('closed',()=>{
-      win = null
+  win.on('closed', () => {
+    win = null
   })
 }
 
@@ -39,8 +39,20 @@ function createTray() {
   tray.setToolTip('软件开发工具包');
   tray.setContextMenu(contextMenu);
 
-  tray.on('click', (Event) => {
+  // 任务栏点击事件
+  let timeCount = 0
+  tray.on('click', function (Event) {
+    setTimeout(() => {
+      if (timeCount === 0) {
+        createWindow()
+        timeCount = 0
+      }
+    }, 300)
+  })
+  // 任务栏点击事件
+  tray.on('double-click', function () {
     createWindow()
+    timeCount = 1
   })
 }
 
