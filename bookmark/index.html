@@ -21,8 +21,8 @@
 <header class="u-header">
     <div class="u-header-left">
         <a class="u-header-logo" href="index.html">
-            <img class="u-logo-desktop" src="../assets/img/logo.png" width="160" alt="Stream Dashboard">
-            <img class="img-fluid u-logo-mobile" src="../assets/img/logo-mobile.png" width="50" alt="Stream Dashboard">
+            <img class="u-logo-desktop" src="../assets/img/logo.png" width="160" alt="Devkits">
+            <img class="img-fluid u-logo-mobile" src="../assets/img/logo-mobile.png" width="50" alt="Devkits">
         </a>
     </div>
 
@@ -442,7 +442,7 @@
         <div class="u-sidebar-inner">
             <header class="u-sidebar-header">
                 <a class="u-sidebar-logo" href="index.html">
-                    <img class="img-fluid" src="../assets/img/logo.png" width="124" alt="Stream Dashboard">
+                    <img class="img-fluid" src="../assets/img/logo.png" width="124" alt="Devkits">
                 </a>
             </header>
 
@@ -450,18 +450,18 @@
                 <ul class="u-sidebar-nav-menu u-sidebar-nav-menu--top-level">
                     <!-- Dashboard -->
                     <li class="u-sidebar-nav-menu__item">
-                        <a class="u-sidebar-nav-menu__link" href="./index.html">
+                        <a class="u-sidebar-nav-menu__link active" href="./index.html">
                             <i class="fa fa-cubes u-sidebar-nav-menu__item-icon"></i>
-                            <span class="u-sidebar-nav-menu__item-title">Dashboard</span>
+                            <span class="u-sidebar-nav-menu__item-title">My Bookmark</span>
                         </a>
                     </li>
                     <!-- End Dashboard -->
 
-                    <!-- Base UI -->
+                    <!-- Browser Bookmark -->
                     <li class="u-sidebar-nav-menu__item">
                         <a class="u-sidebar-nav-menu__link" href="#!" data-target="#baseUI">
                             <i class="far fa-gem u-sidebar-nav-menu__item-icon"></i>
-                            <span class="u-sidebar-nav-menu__item-title">Base UI</span>
+                            <span class="u-sidebar-nav-menu__item-title">Browser Bookmark</span>
                             <i class="fa fa-angle-right u-sidebar-nav-menu__item-arrow"></i>
                             <span class="u-sidebar-nav-menu__indicator"></span>
                         </a>
@@ -470,25 +470,37 @@
                             style="display: none;">
                             <li class="u-sidebar-nav-menu__item">
                                 <a class="u-sidebar-nav-menu__link" href="./ui-typography.html">
-                                    <span class="u-sidebar-nav-menu__item-icon">T</span>
-                                    <span class="u-sidebar-nav-menu__item-title">Typography</span>
+                                    <i class="fab fa-chrome u-sidebar-nav-menu__item-icon"></i>
+                                    <span class="u-sidebar-nav-menu__item-title">Chrome</span>
                                 </a>
                             </li>
                             <li class="u-sidebar-nav-menu__item">
                                 <a class="u-sidebar-nav-menu__link" href="./ui-colors.html">
-                                    <span class="u-sidebar-nav-menu__item-icon">C</span>
-                                    <span class="u-sidebar-nav-menu__item-title">Colors</span>
+                                    <i class="fab fa-edge u-sidebar-nav-menu__item-icon"></i>
+                                    <span class="u-sidebar-nav-menu__item-title">Edge</span>
+                                </a>
+                            </li>
+                            <li class="u-sidebar-nav-menu__item">
+                                <a class="u-sidebar-nav-menu__link" href="./ui-colors.html">
+                                    <i class="fab fa-internet-explorer u-sidebar-nav-menu__item-icon"></i>
+                                    <span class="u-sidebar-nav-menu__item-title">Internet Explorer</span>
+                                </a>
+                            </li>
+                            <li class="u-sidebar-nav-menu__item">
+                                <a class="u-sidebar-nav-menu__link" href="./ui-colors.html">
+                                    <i class="fab fa-firefox u-sidebar-nav-menu__item-icon"></i>
+                                    <span class="u-sidebar-nav-menu__item-title">Firefox</span>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <!-- End Base UI -->
+                    <!-- Browser Bookmark -->
 
-                    <!-- UI Components -->
+                    <!-- Popular Websites -->
                     <li class="u-sidebar-nav-menu__item">
                         <a class="u-sidebar-nav-menu__link" href="#!" data-target="#subMenu1">
                             <i class="far fa-paper-plane u-sidebar-nav-menu__item-icon"></i>
-                            <span class="u-sidebar-nav-menu__item-title">UI Components</span>
+                            <span class="u-sidebar-nav-menu__item-title">Popular Websites</span>
                             <i class="fa fa-angle-right u-sidebar-nav-menu__item-arrow"></i>
                             <span class="u-sidebar-nav-menu__indicator"></span>
                         </a>
@@ -535,7 +547,7 @@
                             <!-- End Components -->
                         </ul>
                     </li>
-                    <!-- End UI Components -->
+                    <!-- Popular Websites -->
 
                     <!-- Forms -->
                     <li class="u-sidebar-nav-menu__item">
@@ -548,7 +560,7 @@
 
                     <!-- Tables -->
                     <li class="u-sidebar-nav-menu__item">
-                        <a class="u-sidebar-nav-menu__link active" href="./tables.html">
+                        <a class="u-sidebar-nav-menu__link" href="./tables.html">
                             <i class="far fa-list-alt u-sidebar-nav-menu__item-icon"></i>
                             <span class="u-sidebar-nav-menu__item-title">Tables</span>
                         </a>
@@ -655,11 +667,11 @@
 
     <div class="u-content">
         <div class="u-body">
-            <h1 class="h2 font-weight-semibold mb-4">Tables</h1>
+            <h1 class="h2 font-weight-semibold mb-4">My Bookmark</h1>
 
             <div class="card mb-4">
                 <header class="card-header">
-                    <h2 class="h3 card-header-title">Basic Table</h2>
+                    <h2 class="h3 card-header-title">All Bookmarks</h2>
                 </header>
 
                 <div class="card-body">
@@ -865,6 +877,9 @@
     </div>
 </main>
 
+<!-- Insert this line above script imports  -->
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
 <!-- Global Vendor -->
 <script src="../assets/vendor/jquery/dist/jquery.min.js"></script>
 <script src="../assets/vendor/jquery-migrate/jquery-migrate.min.js"></script>
@@ -877,6 +892,9 @@
 <!-- Initialization  -->
 <script src="../assets/js/sidebar-nav.js"></script>
 <script src="../assets/js/main.js"></script>
+
+<!-- Insert this line after script imports -->
+<script>if (window.module) module = window.module;</script>
 </body>
 
 </html>

@@ -37,6 +37,7 @@ function createTray() {
     { label: '退出', role: 'quit' }
   ]);
   tray.setToolTip('软件开发工具包');
+   //  一但注册了 菜单，托盘图标将不再响应right-click事件
   tray.setContextMenu(contextMenu);
 
   // 任务栏点击事件
@@ -44,7 +45,6 @@ function createTray() {
   tray.on('click', function (Event) {
     setTimeout(() => {
       if (timeCount === 0) {
-        createWindow()
         timeCount = 0
       }
     }, 300)
