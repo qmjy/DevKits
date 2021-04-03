@@ -1,18 +1,18 @@
 /**
  * MIT License
- *
+ * <p>
  * Copyright (c) 2010 - 2020 The OSHI Project Contributors: https://github.com/oshi/oshi/graphs/contributors
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,8 +32,12 @@ import org.jfree.data.time.Second;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -48,6 +52,8 @@ import oshi.hardware.CentralProcessor.TickType;
 public class ProcessorPanel extends JPanel { // NOSONAR squid:S110
 
     private static final long serialVersionUID = 1L;
+    private ChartPanel proCpuChartPanel;
+    private ChartPanel systemCpuChartPanel;
 
     private long[] oldTicks;
     private long[][] oldProcTicks;
@@ -58,6 +64,19 @@ public class ProcessorPanel extends JPanel { // NOSONAR squid:S110
         oldTicks = new long[TickType.values().length];
         oldProcTicks = new long[cpu.getLogicalProcessorCount()][TickType.values().length];
         init(cpu);
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        systemCpuChartPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
+                        proCpuChartPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
+                    }
+                }).start();
+            }
+        });
     }
 
     private void init(CentralProcessor processor) {
@@ -87,8 +106,10 @@ public class ProcessorPanel extends JPanel { // NOSONAR squid:S110
 
         JPanel cpuPanel = new JPanel();
         cpuPanel.setLayout(new GridBagLayout());
-        cpuPanel.add(new ChartPanel(systemCpu), sysConstraints);
-        cpuPanel.add(new ChartPanel(procCpu), procConstraints);
+        systemCpuChartPanel = new ChartPanel(systemCpu);
+        cpuPanel.add(systemCpuChartPanel, sysConstraints);
+        proCpuChartPanel = new ChartPanel(procCpu);
+        cpuPanel.add(proCpuChartPanel, procConstraints);
 
         add(cpuPanel, BorderLayout.CENTER);
 
