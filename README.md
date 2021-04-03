@@ -58,4 +58,5 @@ Devkits 采用 [MIT](https://choosealicense.com/licenses/mit/) 和 [Anti-996 Lic
 ## 感谢支持
 
 本项目采用Jetbrains IDEA开发，感谢Jetbrains对开源项目的免费支持，谢谢。
+
 ![https://jb.gg/OpenSource](./logo/jetbrains.svg)

@@ -59,4 +59,5 @@ Devkits is released under the [MIT](https://choosealicense.com/licenses/mit/) an
 ## Thanks
 
 This project is developed by JetBrains idea. Thank JetBrains for its free support for open source projects. 
+
 ![https://jb.gg/OpenSource](./logo/jetbrains.svg)
