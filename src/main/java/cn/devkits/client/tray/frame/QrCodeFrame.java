@@ -97,7 +97,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public QrCodeFrame() {
-        super("QR Code", (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
+        super(DKSystemUIUtil.getLocaleString("QR_CODE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
 
         initUI(getContentPane());
         initListener();
@@ -124,7 +124,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         } else {
             cameraPanel = new JPanel(new BorderLayout());
             Icon leftIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA, 16, new Color(50, 50, 50));
-            cameraPanel.add(new JLabel("No camera device be found！", leftIcon, SwingConstants.CENTER));
+            cameraPanel.add(new JLabel(DKSystemUIUtil.getLocaleString("NO_CAMERA_FOUND"), leftIcon, SwingConstants.CENTER));
         }
     }
 
@@ -137,9 +137,9 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         initCamePanel();
 
         this.decodePanel = new JTabbedPane();
-        decodePanel.addTab("Upload", initUploadPane());
-        decodePanel.addTab("Camera", cameraPanel);
-        decodePanel.addTab("Site", initSitePane());
+        decodePanel.addTab(DKSystemUIUtil.getLocaleString("QR_UPLOAD"), initUploadPane());
+        decodePanel.addTab(DKSystemUIUtil.getLocaleString("QR_CAMERA"), cameraPanel);
+        decodePanel.addTab(DKSystemUIUtil.getLocaleString("QR_SITE"), initSitePane());
 
         JTabbedPane codePanel = new JTabbedPane();
 
@@ -163,7 +163,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         topPanel.setLayout(springLayout);
 
         this.siteTextField = new JTextField(100);
-        this.siteBtn = new JButton("Start Decode");
+        this.siteBtn = new JButton(DKSystemUIUtil.getLocaleString("QR_START_DECODE"));
 
         topPanel.add(siteTextField);
         topPanel.add(siteBtn);
@@ -187,7 +187,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         this.uploadTextField = new JTextField(100);
         Icon uploadIcon = IconFontSwing.buildIcon(FontAwesome.UPLOAD, 16, new Color(50, 50, 50));
-        this.uploadBtn = new JButton("Upload", uploadIcon);
+        this.uploadBtn = new JButton(DKSystemUIUtil.getLocaleString("QR_START_UPLOAD"), uploadIcon);
 
         topPanel.add(uploadTextField);
         topPanel.add(uploadBtn);
@@ -427,6 +427,4 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         t.setDaemon(true);
         return t;
     }
-
-
 }
