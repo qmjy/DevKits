@@ -1,18 +1,15 @@
-/*
- * Copyright (c) 2019-2021 QMJY.CN All rights reserved.
- */
-
 package cn.devkits.client.action;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-import com.privatejgoodies.forms.factories.CC;
 import cn.devkits.client.util.DKSystemUIUtil;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.Color;
@@ -24,23 +21,28 @@ import jiconfont.swing.IconFontSwing;
 
 /**
  * <p>
- *
+ * Local File Server
  * </p>
  *
  * @author Shaofeng Liu
- * @since 2021/2/4
+ * @since 2021/9/6
  */
-public class HotKeySettingsAction extends BaseAction {
-    public HotKeySettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
+public class FileServerSettingsAction  extends BaseAction{
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileServerSettingsAction.class);
+
+    public FileServerSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
-        putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_HOTKEY"));
+
+
+        putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_FILE_SERVER"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.KEY, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_HOTKEY_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_FILE_SERVER_DESC"));
 
         registerPane();
     }
@@ -51,8 +53,7 @@ public class HotKeySettingsAction extends BaseAction {
                 "right:pref, 6dlu, 50dlu:grow, 6dlu, 30dlu"); // 5 columns; add rows later
 
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-        builder.append(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_HOTKEY_NEW_TASK_LAB"), new JTextField("Ctrl + T"), new JButton("清空"));
-        builder.append(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_HOTKEY_SCREENSHOT"), new JTextField("Ctrl + Alt + A"), new JButton("清空"));
+
         return builder.getPanel();
     }
 }

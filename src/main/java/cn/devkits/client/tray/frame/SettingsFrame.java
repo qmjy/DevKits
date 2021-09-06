@@ -8,6 +8,7 @@ import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 
 import cn.devkits.client.action.EmailSettingsAction;
+import cn.devkits.client.action.FileServerSettingsAction;
 import cn.devkits.client.action.HotKeySettingsAction;
 import cn.devkits.client.action.OtherSettingsAction;
 import cn.devkits.client.action.ThemeSettingsAction;
@@ -86,6 +87,7 @@ public class SettingsFrame extends DKAbstractFrame {
         // add standard components to the sysPane taskPane
 //        sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new EmailSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
+        sysPane.add(new FileServerSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new HotKeySettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new OtherSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
 
