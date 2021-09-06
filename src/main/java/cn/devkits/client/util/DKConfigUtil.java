@@ -75,7 +75,7 @@ public class DKConfigUtil {
         StringBuilder sb = new StringBuilder();
 
         sb.append(DKSystemUIUtil.getLocaleString("DEVKITS_DESC")).append("<br/><br/>");
-        sb.append(DKSystemUIUtil.getLocaleStringWithColon("AUTHOR") + " Shaofeng liu").append("<br/>");
+        sb.append(DKSystemUIUtil.getLocaleStringWithColon("AUTHOR") + " Shaofeng Liu").append("<br/>");
         sb.append(DKSystemUIUtil.getLocaleStringWithColon("HOMEPAGE") + " <a href='").append(model.getUrl()).append("'>");
         sb.append(model.getUrl()).append("</a>").append("<br/>");
         sb.append(DKSystemUIUtil.getLocaleStringWithColon("ISSUE") + " <a href='" + getIssueUri() + "'>" + getIssueUri() + "</a>");

@@ -26,30 +26,35 @@ import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.filechooser.FileFilter;
+
 import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
+
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
+
 import net.coobird.thumbnailator.Thumbnails;
 
 /**
- * 
  * 系统登录界面背景管理<br>
  * https://blogs.technet.microsoft.com/deploymentguys/2011/08/22/windows-7-background-customization/
- * 
+ *
  * @author Shaofeng Liu
  * @version 1.0.0
  * @time 2019年10月24日 下午9:41:50
  */
-public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameChosenable{
+public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameChosenable {
 
-    /** serialVersionUID */
+    /**
+     * serialVersionUID
+     */
     private static final long serialVersionUID = 950625064408939379L;
     // file path text
     private JTextField imgFilePathTextField;
@@ -58,10 +63,10 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
     private JButton cancelBtn;
 
     public LogonImageManageFrame() {
-        super("Logon Background Manager", 0.7f, 0.25f);
+        super(DKSystemUIUtil.getLocaleString("LOGON_BG_MNG"), 0.7f, 0.25f);
 
         initUI(getContentPane());
-        if ("Windows 7".equals(DKSystemUtil.getOsName())) {
+        if ("Windows 7".equalsIgnoreCase(DKSystemUtil.getOsName())) {
             initListener();
         }
     }
@@ -78,11 +83,11 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         SpringLayout layout = new SpringLayout();
         centerPanel.setLayout(layout);
 
-        JLabel comp = new JLabel("Choose a picture:");
+        JLabel comp = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LOGON_BG_CHOOSE_IMG"));
         this.imgFilePathTextField = new JTextField(38);
         imgFilePathTextField.setEditable(false);
 
-        this.browseBtn = new JButton("Browse...");
+        this.browseBtn = new JButton(DKSystemUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
 
         centerPanel.add(comp);
         centerPanel.add(imgFilePathTextField);
@@ -110,24 +115,23 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
     }
 
 
-
     private Component createButtonPanel(Container jRootPane) {
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
-        JLabel note = new JLabel("Note: The feature is only valid for Windows 7!");
+        JLabel note = new JLabel(DKSystemUIUtil.getLocaleString("LOGON_BG_NOTE"));
         note.setForeground(Color.RED);
         buttonPane.add(note);
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        this.applyBtn = new JButton("Apply");
+        this.applyBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
 
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        this.cancelBtn = new JButton("Cancel");
+        this.cancelBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CANCEL"));
         buttonPane.add(cancelBtn);
 
         return buttonPane;
@@ -135,13 +139,14 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
 
     @Override
     protected void initListener() {
-        FileFilter[] filters = new FileFilter[] {DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
+        FileFilter[] filters = new FileFilter[]{DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
                 DKSystemUIUtil.createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif")};
 
-        browseBtn.addActionListener(new BrowserActionListener(this, filters, "Background Image",false));
+        browseBtn.addActionListener(new BrowserActionListener(this, filters, "Background Image", false));
         applyBtn.addActionListener(new LogonImgManageListener(this));
         cancelBtn.addActionListener(e -> {
-            JButton btn = (JButton) e.getSource();;
+            JButton btn = (JButton) e.getSource();
+            ;
             Container parent = btn.getParent().getParent().getParent();
             if (parent instanceof LogonImageManageFrame) {
                 LogonImageManageFrame root = (LogonImageManageFrame) parent;
@@ -154,6 +159,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         this.dispose();
     }
 
+    @Override
     public void updateSelectFilePath(String absolutePath) {
         imgFilePathTextField.setText(absolutePath);
     }
@@ -175,10 +181,9 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
 
 
 /**
- * 
  * update windows logon background image registry
  * demo:https://www.rgagnon.com/javadetails/java-read-write-windows-registry-using-jna.html
- * 
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年10月24日 下午10:58:49
