@@ -10,9 +10,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 import cn.devkits.client.tray.filter.DKFilenameFilter;
-import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
+import cn.devkits.client.tray.frame.DuplicateFilesFrame;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,7 @@ import javax.swing.*;
 public class SearchFileThread extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchFileThread.class);
 
-    private LargeDuplicateFilesFrame frame;
+    private DuplicateFilesFrame frame;
     private long maxFileSize;
     private long minFileSize;
     private FilenameFilter filenameFilter;
@@ -37,7 +36,7 @@ public class SearchFileThread extends Thread {
     //文件大小、文件路径集
     private Map<Long, Set<String>> fileMaps = new HashMap<>();
 
-    public SearchFileThread(LargeDuplicateFilesFrame frame) {
+    public SearchFileThread(DuplicateFilesFrame frame) {
         this.frame = frame;
         this.maxFileSize = getFileSizeThreshold(frame, true);
         this.minFileSize = getFileSizeThreshold(frame, false);
@@ -55,7 +54,7 @@ public class SearchFileThread extends Thread {
                     recursiveSearch(file);
                 }
             } else {
-                frame.getStartCancelBtn().setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[0]);
+                frame.getStartCancelBtn().setText(DuplicateFilesFrame.BUTTONS_TEXT[0]);
                 return;
             }
         } else {
@@ -104,7 +103,7 @@ public class SearchFileThread extends Thread {
     }
 
 
-    private long getFileSizeThreshold(LargeDuplicateFilesFrame frame, boolean isMaxThreshold) {
+    private long getFileSizeThreshold(DuplicateFilesFrame frame, boolean isMaxThreshold) {
         long val = convertUnti2Val(frame);
         String minText = frame.getMinFileSizeInput().getText();
         String maxText = frame.getMaxFileSizeInput().getText();
@@ -130,7 +129,7 @@ public class SearchFileThread extends Thread {
         }
     }
 
-    private long convertUnti2Val(LargeDuplicateFilesFrame frame) {
+    private long convertUnti2Val(DuplicateFilesFrame frame) {
         String fileUnit = (String) frame.getFileSizeUnitComboBox().getSelectedItem();
         return DKFileUtil.convertUnti2Val(fileUnit);
     }

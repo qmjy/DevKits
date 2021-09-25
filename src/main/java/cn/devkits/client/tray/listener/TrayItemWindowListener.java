@@ -47,7 +47,7 @@ public class TrayItemWindowListener implements ActionListener {
                 frame = new CodeFormatFrame();
                 break;
             case LDF:
-                frame = new LargeDuplicateFilesFrame();
+                frame = new DuplicateFilesFrame();
                 break;
             case SCRCAPTURE:
                 DKSystemUtil.invokeLocalApp("QQSnapShot.exe");

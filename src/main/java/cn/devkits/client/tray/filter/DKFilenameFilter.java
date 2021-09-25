@@ -9,13 +9,13 @@ import java.io.FilenameFilter;
 import java.util.Locale;
 import javax.swing.JComboBox;
 import cn.devkits.client.DKConstants;
-import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
+import cn.devkits.client.tray.frame.DuplicateFilesFrame;
 
 public class DKFilenameFilter implements FilenameFilter {
 
     private JComboBox<String> fileTypeComboBox;
 
-    public DKFilenameFilter(LargeDuplicateFilesFrame frame) {
+    public DKFilenameFilter(DuplicateFilesFrame frame) {
         this.fileTypeComboBox = frame.getFileTypeComboBox();
     }
 

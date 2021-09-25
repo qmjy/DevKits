@@ -47,14 +47,16 @@ import java.util.concurrent.Executors;
  * @version 1.0.0
  * @time 2019年9月26日 下午9:34:49
  */
-public class LargeDuplicateFilesFrame extends DKAbstractFrame {
+public class DuplicateFilesFrame extends DKAbstractFrame {
 
-    public static final String[] BUTTONS_TEXT = {DKSystemUIUtil.getLocaleString("LARGE_DUP_INPUT_LAB_START_DETECT"), DKSystemUIUtil.getLocaleString("LARGE_DUP_INPUT_LAB_STOP_DETECT")};
+    public static final String[] BUTTONS_TEXT = {DKSystemUIUtil.getLocaleString("DUP_INPUT_LAB_START_DETECT"), DKSystemUIUtil.getLocaleString("DUP_INPUT_LAB_STOP_DETECT")};
 
     private static final long serialVersionUID = 6081895254576694963L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(LargeDuplicateFilesFrame.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DuplicateFilesFrame.class);
 
-    private static final String[] FILE_TYPE_UNITS = {"All", "Document", "Image", "Audio", "Video"};
+    private static final String[] FILE_TYPE_UNITS = {DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_ALL"),
+            DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_DOCUMENT"), DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_IMAGE"),
+            DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_AUDIO"), DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_VIDEO")};
     private static final String[] FILE_UNITS = {"Byte", "KB", "MB", "GB", "TB", "PB"};
 
     private static final int COMPONENT_MARGIN_TOP_BASE = 5;
@@ -86,8 +88,8 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     private ConcurrentHashMap<String, Set<String>> md5FilesMap = new ConcurrentHashMap<>();
 
-    public LargeDuplicateFilesFrame() {
-        super("Large Duplicate Files", 1.2f);
+    public DuplicateFilesFrame() {
+        super(DKSystemUIUtil.getLocaleString("DUP_WIN_TITLE"), 1.2f);
 
         initUI(getContentPane());
         initListener();
@@ -99,7 +101,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
         JSplitPane jSplitPane = new JSplitPane();
 
-        treeNode = new DefaultMutableTreeNode(DKSystemUIUtil.getLocaleString("LARGE_DUP_TREE_NODE_ROOT"));
+        treeNode = new DefaultMutableTreeNode(DKSystemUIUtil.getLocaleString("DUP_TREE_NODE_ROOT"));
         treeModel = new DefaultTreeModel(treeNode);
         tree = new JTree(treeModel);
         initPopupMenu();
@@ -118,7 +120,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         jSplitPane.setResizeWeight(0.3);
         rootContainer.add(jSplitPane, BorderLayout.CENTER);
 
-        statusLine = new JLabel(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_STATUS_LINE_READY"));
+        statusLine = new JLabel(DKSystemUIUtil.getLocaleString("DUP_FILE_STATUS_LINE_READY"));
         statusLine.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, 25));
         rootContainer.add(statusLine, BorderLayout.SOUTH);
 
@@ -131,7 +133,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         SpringLayout mgr = new SpringLayout();
         northRootPane.setLayout(mgr);
 
-        JLabel fileSearchPathLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LARGE_DUP_INPUT_LAB_PATH"), JLabel.LEFT);
+        JLabel fileSearchPathLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_PATH"), JLabel.LEFT);
         this.searchPath = new JTextField();
         searchPath.setColumns(15);
         searchPath.setText("Computer");
@@ -139,18 +141,18 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         this.browselBtn = new JButton(DKSystemUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
         browselBtn.setFocusPainted(false);
 
-        JLabel fileTypeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LARGE_DUP_INPUT_LAB_FILE_TYPE"), JLabel.RIGHT);
+        JLabel fileTypeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_FILE_TYPE"), JLabel.RIGHT);
         fileTypeComboBox = new JComboBox<String>(FILE_TYPE_UNITS);
         fileTypeComboBox.setLightWeightPopupEnabled(false);
 
-        JLabel minSizeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LARGE_DUP_INPUT_LAB_MIN"), JLabel.RIGHT);
+        JLabel minSizeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_MIN"), JLabel.RIGHT);
         minFileSizeInput = new JTextField(2);
         minFileSizeInput.setText("0");
 
-        JLabel maxSizeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LARGE_DUP_INPUT_LAB_MAX"), JLabel.RIGHT);
+        JLabel maxSizeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_MAX"), JLabel.RIGHT);
         maxFileSizeInput = new JTextField(2);
 
-        JLabel fileSizeUnit = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LARGE_DUP_INPUT_LAB_SIZE_UNIT"), JLabel.RIGHT);
+        JLabel fileSizeUnit = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_SIZE_UNIT"), JLabel.RIGHT);
         fileSizeUnitComboBox = new JComboBox<String>(FILE_UNITS);
         fileSizeUnitComboBox.setLightWeightPopupEnabled(false);
         // 默认选中MB单位
@@ -241,31 +243,37 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     private void initPopupMenu() {
         this.jtreeMenu = new JPopupMenu();
 
-        JMenuItem copyPath2Clipboard = new JMenuItem(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_MENU_COPY_PATH"));
+        JMenuItem copyPath2Clipboard = new JMenuItem(DKSystemUIUtil.getLocaleString("DUP_FILE_MENU_COPY_PATH"));
         copyPath2Clipboard.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKSystemUIUtil.setSystemClipboard(node.getUserObject().toString());
         });
         jtreeMenu.add(copyPath2Clipboard);
+        JMenuItem copyParentPath2Clipboard = new JMenuItem(DKSystemUIUtil.getLocaleString("DUP_FILE_MENU_COPY_PARENT_PATH"));
+        copyParentPath2Clipboard.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            DKSystemUIUtil.setSystemClipboard(new File(node.getUserObject().toString()).getParent());
+        });
+        jtreeMenu.add(copyParentPath2Clipboard);
         jtreeMenu.addSeparator();
-        JMenuItem openFolder = new JMenuItem(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_MENU_SHOW_IN_EXPLORER"));
+        JMenuItem openFolder = new JMenuItem(DKSystemUIUtil.getLocaleString("DUP_FILE_MENU_SHOW_IN_EXPLORER"));
         openFolder.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKFileUtil.openFolder(node.getUserObject().toString());
         });
         jtreeMenu.add(openFolder);
-        JMenuItem openFile = new JMenuItem(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_MENU_OPEN"));
+        JMenuItem openFile = new JMenuItem(DKSystemUIUtil.getLocaleString("DUP_FILE_MENU_OPEN"));
         openFile.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKFileUtil.openFile(node.getUserObject().toString());
         });
         jtreeMenu.add(openFile);
         jtreeMenu.addSeparator();
-        JMenuItem delete = new JMenuItem(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_MENU_DELETE"));
+        JMenuItem delete = new JMenuItem(DKSystemUIUtil.getLocaleString("DUP_FILE_MENU_DELETE"));
         delete.addActionListener(e -> {
             int deleteOption = JOptionPane.showConfirmDialog(this, DKSystemUIUtil.getLocaleString(
-                    "LARGE_DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSystemUIUtil.getLocaleString(
-                    "LARGE_DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.YES_NO_OPTION);
+                    "DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSystemUIUtil.getLocaleString(
+                    "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.YES_NO_OPTION);
             if (deleteOption == JOptionPane.YES_OPTION) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
                 if (node.getLevel() == 2) {//第三层叶子节点
@@ -275,13 +283,13 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
                         //TODO 文件删除收树刷新
                     } else {
                         JOptionPane.showMessageDialog(this, DKSystemUIUtil.getLocaleString(
-                                "LARGE_DUP_FILE_MENU_DEL_FAILED_CONTENT"), DKSystemUIUtil.getLocaleString(
-                                "LARGE_DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.ERROR_MESSAGE);
+                                "DUP_FILE_MENU_DEL_FAILED_CONTENT"), DKSystemUIUtil.getLocaleString(
+                                "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, DKSystemUIUtil.getLocaleString(
-                            "LARGE_DUP_FILE_MENU_DEL_DIALOG_WARNING_CONTENT"), DKSystemUIUtil.getLocaleString(
-                            "LARGE_DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.WARNING_MESSAGE);
+                            "DUP_FILE_MENU_DEL_DIALOG_WARNING_CONTENT"), DKSystemUIUtil.getLocaleString(
+                            "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -317,7 +325,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
             JFileChooser jfc = new JFileChooser();
             jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             jfc.setCurrentDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
-            jfc.setDialogTitle(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_DIALOG_TITLE_EXPORT"));
+            jfc.setDialogTitle(DKSystemUIUtil.getLocaleString("DUP_FILE_DIALOG_TITLE_EXPORT"));
             int i = jfc.showSaveDialog(this);
             if (i == JFileChooser.APPROVE_OPTION) {
                 File file = jfc.getSelectedFile();
@@ -443,7 +451,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
     public void searchComplete() {
         theadPool.shutdown();
-        updateStatusLineText(DKSystemUIUtil.getLocaleStringWithParam("LARGE_DUP_FILE_STATUS_LINE_RESULT", md5FilesMap.size()));
+        updateStatusLineText(DKSystemUIUtil.getLocaleStringWithParam("DUP_FILE_STATUS_LINE_RESULT", md5FilesMap.size()));
         startCancelBtn.setText(BUTTONS_TEXT[0]);
     }
 

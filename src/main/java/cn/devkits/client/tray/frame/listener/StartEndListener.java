@@ -4,7 +4,7 @@
 
 package cn.devkits.client.tray.frame.listener;
 
-import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
+import cn.devkits.client.tray.frame.DuplicateFilesFrame;
 import cn.devkits.client.tray.frame.asyn.SearchFileThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +25,9 @@ public class StartEndListener implements ActionListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StartEndListener.class);
 
-    private LargeDuplicateFilesFrame frame;
+    private DuplicateFilesFrame frame;
 
-    public StartEndListener(LargeDuplicateFilesFrame frame) {
+    public StartEndListener(DuplicateFilesFrame frame) {
         this.frame = frame;
     }
 
@@ -36,16 +36,16 @@ public class StartEndListener implements ActionListener {
         JButton btn = (JButton) e.getSource();
         ExecutorService threadPool = frame.getTheadPool();
 
-        if (LargeDuplicateFilesFrame.BUTTONS_TEXT[0].equals(e.getActionCommand())) {
+        if (DuplicateFilesFrame.BUTTONS_TEXT[0].equals(e.getActionCommand())) {
             if (threadPool.isShutdown()) {
                 frame.initDataModel();
             }
             new Thread(new SearchFileThread(frame)).start();
-            btn.setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[1]);
+            btn.setText(DuplicateFilesFrame.BUTTONS_TEXT[1]);
             frame.updateStatusLineText("Start to scanner File...");
         } else {
             threadPool.shutdownNow();
-            btn.setText(LargeDuplicateFilesFrame.BUTTONS_TEXT[0]);
+            btn.setText(DuplicateFilesFrame.BUTTONS_TEXT[0]);
             frame.updateStatusLineText("Scanner file canceled by user!");
         }
     }

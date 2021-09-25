@@ -225,7 +225,7 @@ public class AppStarter implements Runnable {
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SCRCAPTURE));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("LARGE_DUPLICATE_FILES"));
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("DUPLICATE_FILES"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LDF));
         toolsItem.add(menuItem);
 
