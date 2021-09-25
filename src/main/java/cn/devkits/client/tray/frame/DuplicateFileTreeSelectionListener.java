@@ -3,7 +3,6 @@ package cn.devkits.client.tray.frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.devkits.client.asyn.AppStarter;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKFileUtil;
 
@@ -23,7 +22,6 @@ import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -74,15 +72,7 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
                 }
             } else if (node.getLevel() == 2) {
                 rightPaneLayout.show(rightPane, rightPaneNames[1]);
-                String filePath = node.getUserObject().toString();
-                if (DKFileUtil.isImgFromExtension(filePath)) {
-                    try {
-                        BufferedImage myPicture = ImageIO.read(new File(filePath));
-                        previewLabel.setIcon(new ImageIcon(myPicture));
-                    } catch (IOException ioException) {
-                        LOGGER.error("Read image data failed: {}", filePath);
-                    }
-                }
+                updatePreview(node.getUserObject().toString());
             }
         }
     }
@@ -104,7 +94,21 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
         return previewPanel;
     }
 
-    private void updatePriview(File file) {
+    /**
+     * 更新文件预览
+     *
+     * @param filePath 文件路径
+     */
+    private void updatePreview(String filePath) {
+        //TODO 待完善其他预览信息展示
+        if (DKFileUtil.isImgFromExtension(filePath)) {
+            try {
+                BufferedImage myPicture = ImageIO.read(new File(filePath));
+                previewLabel.setIcon(new ImageIcon(myPicture));
+            } catch (IOException ioException) {
+                LOGGER.error("Read image data failed: {}", filePath);
+            }
+        }
     }
 
     private JPanel createSouthPanel() {
