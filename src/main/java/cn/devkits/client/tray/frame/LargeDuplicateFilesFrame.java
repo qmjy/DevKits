@@ -11,6 +11,7 @@ import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import com.google.common.collect.Lists;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -97,7 +98,7 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
 
         JSplitPane jSplitPane = new JSplitPane();
 
-        treeNode = new DefaultMutableTreeNode("Duplicate Files");
+        treeNode = new DefaultMutableTreeNode(DKSystemUIUtil.getLocaleString("LARGE_DUP_TREE_NODE_ROOT"));
         treeModel = new DefaultTreeModel(treeNode);
         tree = new JTree(treeModel);
         initPopupMenu();
@@ -128,12 +129,12 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
         SpringLayout mgr = new SpringLayout();
         northRootPane.setLayout(mgr);
 
-        JLabel fileSearchPathLbl = new JLabel("Search Path:", JLabel.LEFT);
+        JLabel fileSearchPathLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LARGE_DUP_INPUT_LAB_PATH"), JLabel.LEFT);
         this.searchPath = new JTextField();
         searchPath.setColumns(15);
         searchPath.setText("Computer");
 
-        JLabel fileTypeLabel = new JLabel("File Type: ", JLabel.RIGHT);
+        JLabel fileTypeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LARGE_DUP_INPUT_LAB_FILE_TYPE"), JLabel.RIGHT);
         fileTypeComboBox = new JComboBox<String>(FILE_TYPE_UNITS);
         fileTypeComboBox.setLightWeightPopupEnabled(false);
 
@@ -227,27 +228,27 @@ public class LargeDuplicateFilesFrame extends DKAbstractFrame {
     private void initPopupMenu() {
         this.jtreeMenu = new JPopupMenu();
 
-        JMenuItem copyPath2Clipboard = new JMenuItem("Copy Path");
+        JMenuItem copyPath2Clipboard = new JMenuItem(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_MENU_COPY_PATH"));
         copyPath2Clipboard.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKSystemUIUtil.setSystemClipboard(node.getUserObject().toString());
         });
         jtreeMenu.add(copyPath2Clipboard);
         jtreeMenu.addSeparator();
-        JMenuItem openFolder = new JMenuItem("Show in Explorer");
+        JMenuItem openFolder = new JMenuItem(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_MENU_SHOW_IN_EXPLORER"));
         openFolder.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKFileUtil.openFolder(node.getUserObject().toString());
         });
         jtreeMenu.add(openFolder);
-        JMenuItem openFile = new JMenuItem("Open");
+        JMenuItem openFile = new JMenuItem(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_MENU_OPEN"));
         openFile.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKFileUtil.openFile(node.getUserObject().toString());
         });
         jtreeMenu.add(openFile);
         jtreeMenu.addSeparator();
-        JMenuItem delete = new JMenuItem("Delete");
+        JMenuItem delete = new JMenuItem(DKSystemUIUtil.getLocaleString("LARGE_DUP_FILE_MENU_DELETE"));
         delete.addActionListener(e -> {
             int deleteOption = JOptionPane.showConfirmDialog(this, DKSystemUIUtil.getLocaleString(
                     "LARGE_DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSystemUIUtil.getLocaleString(
