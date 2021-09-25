@@ -58,6 +58,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
             DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_DOCUMENT"), DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_IMAGE"),
             DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_AUDIO"), DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_VIDEO")};
     private static final String[] FILE_UNITS = {"Byte", "KB", "MB", "GB", "TB", "PB"};
+    private static final String[] RIGHT_PANE_NAMES = {"LIST_PANE", "DETAIL_PANE"};
 
     private static final int COMPONENT_MARGIN_TOP_BASE = 5;
     private static final int COMPONENT_MARGIN_TOP_LABLE = 10;
@@ -71,7 +72,6 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
     private JTree tree = null;
     private JPopupMenu jtreeMenu = null;
-    private JTable table = new JTable();
     private JLabel statusLine = null;
     private JTextField searchPath;
     private JButton browselBtn;
@@ -81,6 +81,8 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
     private JComboBox<String> fileSizeUnitComboBox = null;
     private JButton startCancelBtn = null;
     private JButton exportBtn = null;
+    private JPanel rightPane;
+    private CardLayout rightPaneLayout;
     private ExecutorService theadPool = null;
 
     private DefaultMutableTreeNode treeNode = null;
@@ -113,9 +115,13 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         JScrollPane scrollPane = new JScrollPane(tree);
         jSplitPane.setLeftComponent(scrollPane);
 
-        // 列自适应
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        jSplitPane.setRightComponent(new JScrollPane(table));
+        rightPane = new JPanel();
+        rightPaneLayout = new CardLayout();
+        rightPane.setLayout(rightPaneLayout);
+
+        rightPane.add(new JScrollPane(), RIGHT_PANE_NAMES[0]);
+        rightPane.add(new JScrollPane(new JPanel()), RIGHT_PANE_NAMES[1]);
+        jSplitPane.setRightComponent(rightPane);
 
         jSplitPane.setResizeWeight(0.3);
         rootContainer.add(jSplitPane, BorderLayout.CENTER);
@@ -335,30 +341,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
         // 左侧树单选事件
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                JTree tree = (JTree) e.getSource();
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-
-                Set<String> filesSet = null;
-                if (node != null) {
-                    if (node.getLevel() == 0) {
-                        return;
-                    } else if (node.getLevel() == 1) {
-                        String md5 = node.getUserObject().toString();
-                        filesSet = md5FilesMap.get(md5);
-                    } else if (node.getLevel() == 2) {
-                        filesSet = new HashSet<String>();
-                        filesSet.add(node.getUserObject().toString());
-                    }
-                }
-
-                if (filesSet != null) {
-                    updateTableData(filesSet);
-                }
-            }
-        });
+        tree.addTreeSelectionListener(new DuplicateFileTreeSelectionListener(rightPane, rightPaneLayout, md5FilesMap, RIGHT_PANE_NAMES));
 
         // 叶子节点双击打开文件所在目录
         tree.addMouseListener(new MouseAdapter() {
@@ -440,11 +423,8 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
     public void initDataModel() {
         md5FilesMap.clear();
-
         treeNode.removeAllChildren();
         treeModel.reload();
-
-        table.setModel(new LargeDuplicateFilesTableModel());
 
         theadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
     }
@@ -462,10 +442,6 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
                 statusLine.setText(text);
             }
         });
-    }
-
-    public void updateTableData(Set<String> files) {
-        table.setModel(new LargeDuplicateFilesTableModel(files));
     }
 
     public void updateTreeData(String md5, String file) {

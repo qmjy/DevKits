@@ -10,6 +10,7 @@ import java.util.Locale;
 import javax.swing.JComboBox;
 import cn.devkits.client.DKConstants;
 import cn.devkits.client.tray.frame.DuplicateFilesFrame;
+import cn.devkits.client.util.DKSystemUIUtil;
 
 public class DKFilenameFilter implements FilenameFilter {
 
@@ -21,7 +22,6 @@ public class DKFilenameFilter implements FilenameFilter {
 
     @Override
     public boolean accept(File dir, String name) {
-
         File file = new File(dir, name);
         if (file.isDirectory()) {
             return true;
@@ -32,19 +32,18 @@ public class DKFilenameFilter implements FilenameFilter {
         }
 
         String fileType = (String) fileTypeComboBox.getSelectedItem();
-
-        if ("All".equals(fileType)) {
+        if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_ALL").equals(fileType)) {
             return true;
         } else {
             if (name.indexOf(".") > 0) {
                 String suffix = name.substring(name.lastIndexOf(".")).toLowerCase(Locale.getDefault());
-                if ("Document".equals(fileType)) {
+                if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_DOCUMENT").equals(fileType)) {
                     return DKConstants.FILE_TYPE_DOC.contains(suffix);
-                } else if ("Image".equals(fileType)) {
+                } else if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_IMAGE").equals(fileType)) {
                     return DKConstants.FILE_TYPE_IMG.contains(suffix);
-                } else if ("Audio".equals(fileType)) {
+                } else if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_AUDIO").equals(fileType)) {
                     return DKConstants.FILE_TYPE_AUDIO.contains(suffix);
-                } else if ("Video".equals(fileType)) {
+                } else if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_VIDEO").equals(fileType)) {
                     return DKConstants.FILE_TYPE_VEDIO.contains(suffix);
                 } else {
                     return false;

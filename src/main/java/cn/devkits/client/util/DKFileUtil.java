@@ -5,11 +5,14 @@
 package cn.devkits.client.util;
 
 import cn.devkits.client.App;
+import cn.devkits.client.DKConstants;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import oshi.util.FormatUtil;
 
 import javax.swing.*;
@@ -22,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -126,6 +130,18 @@ public final class DKFileUtil {
             IoUtils.closeQuietly(is);
         }
         return false;
+    }
+
+    /**
+     * 通过扩展名判断文件是否是图片
+     *
+     * @param fileName 文件名或文件路径
+     * @return 是否是图片
+     */
+    public static boolean isImgFromExtension(String fileName) {
+        String lowerCaseName = fileName.toLowerCase(Locale.getDefault());
+        String suffix = lowerCaseName.substring(lowerCaseName.lastIndexOf("."), lowerCaseName.length());
+        return DKConstants.FILE_TYPE_IMG.contains(suffix);
     }
 
     public static boolean openFolder(String filePath) {

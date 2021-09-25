@@ -104,9 +104,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         super("File Spliter", 0.7f, 0.55f);
 
         initUI(getContentPane());
-
         initListener();
-
         executor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
