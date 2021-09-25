@@ -12,6 +12,8 @@ import java.util.concurrent.ExecutorService;
 import cn.devkits.client.tray.filter.DKFilenameFilter;
 import cn.devkits.client.tray.frame.LargeDuplicateFilesFrame;
 import cn.devkits.client.util.DKFileUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +70,8 @@ public class SearchFileThread extends Thread {
     }
 
     private void recursiveSearch(File dirFile) {
-        ExecutorService theadPool = frame.getTheadPool(); // 窗口关闭以后，快速退出
+        // 窗口关闭以后，快速退出
+        ExecutorService theadPool = frame.getTheadPool();
         if (!theadPool.isShutdown()) {
             File[] listFiles = dirFile.listFiles(filenameFilter);
             if (listFiles != null) {
@@ -86,7 +89,6 @@ public class SearchFileThread extends Thread {
 
     private void filterFileAndSubmit(ExecutorService theadPool, File file) {
         if (file.length() < maxFileSize && file.length() > minFileSize) {
-
             Set<String> fileSets = fileMaps.get(file.length());
             if (fileSets == null) {
                 fileSets = new HashSet<>();
