@@ -45,7 +45,7 @@ public final class DKFileUtil {
      * @param file 待计算的文件
      * @return 文件的MD5
      */
-    public static Optional<String> getFileMd5(File file) {
+    public static Optional<String> getMd5OfFile(File file) {
         FileInputStream data = null;
         try {
             data = new FileInputStream(file);

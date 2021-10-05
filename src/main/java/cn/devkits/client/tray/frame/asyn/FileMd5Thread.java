@@ -6,6 +6,7 @@ package cn.devkits.client.tray.frame.asyn;
 
 import cn.devkits.client.tray.frame.DuplicateFilesFrame;
 import cn.devkits.client.util.DKFileUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ class FileMd5Thread extends Thread {
 
     @Override
     public void run() {
-        String fileMd5 = DKFileUtil.getFileMd5(file).get();
-        frame.updateTreeData(fileMd5, file.getAbsolutePath());
+        String fileMd5 = DKFileUtil.getMd5OfFile(file).get();
+        frame.updateTreeData(fileMd5.substring(8, 24), file.getAbsolutePath());
     }
 }

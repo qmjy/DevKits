@@ -3,6 +3,11 @@ package cn.devkits.client.tray.frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKFileUtil;
 
@@ -11,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -18,7 +24,11 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +50,7 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
     private final String[] rightPaneNames;
     private JTable table = new JTable();
     private JLabel previewLabel = new JLabel();
+    private JTabbedPane propertiesTabbedPane;
     private ConcurrentHashMap<String, Set<String>> md5FilesMap;
 
     public DuplicateFileTreeSelectionListener(JPanel rightPane, CardLayout rightPaneLayout, ConcurrentHashMap<String, Set<String>> md5FilesMap,
@@ -51,7 +62,7 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
 
         Component[] components = rightPane.getComponents();
         initTablePanel((JScrollPane) components[0]);
-        initDetailPanel((JScrollPane) components[1]);
+        initDetailPanel((JPanel) components[1]);
     }
 
     @Override
@@ -60,7 +71,6 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
         if (node != null) {
-            Component[] components = rightPane.getComponents();
             if (node.getLevel() == 0) {
                 return;
             } else if (node.getLevel() == 1) {
@@ -78,20 +88,27 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
     }
 
 
-    private void initDetailPanel(JScrollPane detailPanel) {
-        JPanel view = new JPanel();
-        view.setLayout(new BorderLayout());
+    private void initDetailPanel(JPanel detailPanel) {
+        detailPanel.setLayout(new BorderLayout());
 
-        view.add(createCenterPanel(), BorderLayout.CENTER);
-        view.add(createSouthPanel(), BorderLayout.SOUTH);
-
-        detailPanel.setViewportView(view);
+        detailPanel.add(createCenterPanel(), BorderLayout.CENTER);
+        detailPanel.add(createSouthPanel(), BorderLayout.SOUTH);
     }
 
     private JPanel createCenterPanel() {
-        JPanel previewPanel = new JPanel();
-        previewPanel.add(previewLabel);
-        return previewPanel;
+        JPanel previewPanelOfCenter = new JPanel();
+        previewPanelOfCenter.add(previewLabel);
+        return previewPanelOfCenter;
+    }
+
+    private JPanel createSouthPanel() {
+        JPanel previewPanelOfSouth = new JPanel();
+        previewPanelOfSouth.setLayout(new BorderLayout());
+        propertiesTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+        // 不显示选项卡上的焦点虚线边框
+        propertiesTabbedPane.setFocusable(false);
+        previewPanelOfSouth.add(propertiesTabbedPane, BorderLayout.CENTER);
+        return previewPanelOfSouth;
     }
 
     /**
@@ -100,6 +117,8 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
      * @param filePath 文件路径
      */
     private void updatePreview(String filePath) {
+        propertiesTabbedPane.removeAll();
+
         //TODO 待完善其他预览信息展示
         if (DKFileUtil.isImgFromExtension(filePath)) {
             try {
@@ -109,11 +128,29 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
                 LOGGER.error("Read image data failed: {}", filePath);
             }
         }
+
+        try {
+            Metadata metadata = ImageMetadataReader.readMetadata(new File(filePath));
+            for (Directory directory : metadata.getDirectories()) {
+                JPanel component = new JPanel();
+                component.setLayout(new FlowLayout());
+                propertiesTabbedPane.addTab(directory.getName(), component);
+                for (Tag tag : directory.getTags()) {
+//                    component.add(new JLabel(tag.getTagName() + "：" + tag.getDescription()));
+                }
+                if (directory.hasErrors()) {
+                    for (String error : directory.getErrors()) {
+                        LOGGER.error("ERROR: {0}", error);
+                    }
+                }
+            }
+        } catch (ImageProcessingException e) {
+            LOGGER.error("Read image meta data failed: {}", e.getMessage());
+        } catch (IOException e) {
+            LOGGER.error("Read image meta data failed: {}", e.getMessage());
+        }
     }
 
-    private JPanel createSouthPanel() {
-        return new JPanel();
-    }
 
     private void initTablePanel(JScrollPane tablePanel) {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);

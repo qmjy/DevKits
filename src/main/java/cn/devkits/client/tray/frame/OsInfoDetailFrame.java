@@ -88,7 +88,8 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_POWER_SOURCES"), new JPanel());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_PROCESSES"), new JPanel());
 
-        jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
+        // 不显示选项卡上的焦点虚线边框
+        jTabbedPane.setFocusable(false);
 
         rootContainer.add(jTabbedPane, BorderLayout.CENTER);
     }

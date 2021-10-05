@@ -37,6 +37,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 重复大文件检查<br>
@@ -120,13 +121,21 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         rightPane.setLayout(rightPaneLayout);
 
         rightPane.add(new JScrollPane(), RIGHT_PANE_NAMES[0]);
-        rightPane.add(new JScrollPane(new JPanel()), RIGHT_PANE_NAMES[1]);
+        rightPane.add(new JPanel(), RIGHT_PANE_NAMES[1]);
         jSplitPane.setRightComponent(rightPane);
 
         jSplitPane.setResizeWeight(0.3);
         rootContainer.add(jSplitPane, BorderLayout.CENTER);
 
-        statusLine = new JLabel(DKSystemUIUtil.getLocaleString("DUP_FILE_STATUS_LINE_READY"));
+        statusLine = new JLabel(DKSystemUIUtil.getLocaleString("DUP_FILE_STATUS_LINE_READY")) {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Dimension d = this.getSize();
+                g.setColor(Color.GRAY);
+                g.drawLine(0, 0, d.width, 0);
+            }
+        };
         statusLine.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, 25));
         rootContainer.add(statusLine, BorderLayout.SOUTH);
 
@@ -431,6 +440,13 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
     public void searchComplete() {
         theadPool.shutdown();
+        while (!theadPool.isTerminated()) {
+            try {
+                TimeUnit.MICROSECONDS.sleep(200);
+            } catch (InterruptedException e) {
+                LOGGER.error("Sleep error: {0}", e.getMessage());
+            }
+        }
         updateStatusLineText(DKSystemUIUtil.getLocaleStringWithParam("DUP_FILE_STATUS_LINE_RESULT", md5FilesMap.size()));
         startCancelBtn.setText(BUTTONS_TEXT[0]);
     }
