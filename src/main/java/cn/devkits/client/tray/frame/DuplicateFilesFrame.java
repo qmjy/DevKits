@@ -37,6 +37,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 重复大文件检查<br>
@@ -431,6 +432,13 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
     public void searchComplete() {
         theadPool.shutdown();
+        while (!theadPool.isTerminated()) {
+            try {
+                TimeUnit.MICROSECONDS.sleep(200);
+            } catch (InterruptedException e) {
+                LOGGER.error("Sleep error: {0}", e.getMessage());
+            }
+        }
         updateStatusLineText(DKSystemUIUtil.getLocaleStringWithParam("DUP_FILE_STATUS_LINE_RESULT", md5FilesMap.size()));
         startCancelBtn.setText(BUTTONS_TEXT[0]);
     }

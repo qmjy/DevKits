@@ -3,6 +3,11 @@ package cn.devkits.client.tray.frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKFileUtil;
 
@@ -18,7 +23,10 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +68,6 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
         if (node != null) {
-            Component[] components = rightPane.getComponents();
             if (node.getLevel() == 0) {
                 return;
             } else if (node.getLevel() == 1) {
@@ -89,9 +96,15 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
     }
 
     private JPanel createCenterPanel() {
-        JPanel previewPanel = new JPanel();
-        previewPanel.add(previewLabel);
-        return previewPanel;
+        JPanel previewPanelOfCenter = new JPanel();
+        previewPanelOfCenter.add(previewLabel);
+        return previewPanelOfCenter;
+    }
+
+    private JPanel createSouthPanel() {
+        JPanel previewPanelOfSouth = new JPanel();
+        previewPanelOfSouth.setBackground(Color.BLUE);
+        return previewPanelOfSouth;
     }
 
     /**
@@ -109,11 +122,28 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
                 LOGGER.error("Read image data failed: {}", filePath);
             }
         }
+
+        try {
+            Metadata metadata = ImageMetadataReader.readMetadata(new File(filePath));
+            for (Directory directory : metadata.getDirectories()) {
+                for (Tag tag : directory.getTags()) {
+                    //格式化输出[directory.getName()] - tag.getTagName() = tag.getDescription()
+                    System.out.format("[%s] - %s = %s\n",
+                            directory.getName(), tag.getTagName(), tag.getDescription());
+                }
+                if (directory.hasErrors()) {
+                    for (String error : directory.getErrors()) {
+                        LOGGER.error("ERROR: {0}", error);
+                    }
+                }
+            }
+        } catch (ImageProcessingException e) {
+            LOGGER.error("Read image meta data failed: {}", e.getMessage());
+        } catch (IOException e) {
+            LOGGER.error("Read image meta data failed: {}", e.getMessage());
+        }
     }
 
-    private JPanel createSouthPanel() {
-        return new JPanel();
-    }
 
     private void initTablePanel(JScrollPane tablePanel) {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
