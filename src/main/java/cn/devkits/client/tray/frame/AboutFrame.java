@@ -7,6 +7,7 @@ package cn.devkits.client.tray.frame;
 import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.maven.model.Dependency;
@@ -97,7 +98,8 @@ public class AboutFrame extends DKAbstractFrame {
     private Component loadOpenSourcePrj() {
         DefaultListModel listModel = new DefaultListModel();
         listModel.addElement("https://github.com/521xueweihan/GitHub520");
-//        listModel.addElement("https://github.com/XX-net/XX-Net");
+        listModel.addElement("https://github.com/XX-net/XX-Net");
+        listModel.addElement("https://github.com/chuiliu/the-pixel-art");
 
         JList list = new JList(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

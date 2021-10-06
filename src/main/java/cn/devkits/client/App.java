@@ -4,18 +4,21 @@
 
 package cn.devkits.client;
 
-import cn.devkits.client.asyn.AppStarter;
-import com.google.common.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.google.common.eventbus.EventBus;
+import cn.devkits.client.asyn.AppStarter;
+
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import java.awt.AWTException;
+import java.awt.SplashScreen;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.io.IOException;
+
 
 
 /**
@@ -37,8 +40,16 @@ public class App {
         if (SystemTray.isSupported()) {
             trayIcon = createTrayIcon();
             SwingUtilities.invokeLater(new AppStarter(trayIcon));
+            closeSplashScreen();
         } else {
             LOGGER.error("This system can not support tray function！");
+        }
+    }
+
+    private static void closeSplashScreen() {
+        final SplashScreen splash = SplashScreen.getSplashScreen();
+        if (splash != null) {
+            splash.close();
         }
     }
 

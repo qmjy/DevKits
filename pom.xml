@@ -246,6 +246,11 @@
                             <!-- 应用的main class -->
                             <mainClass>cn.devkits.client.App</mainClass>
                         </manifest>
+                        <!--https://www.cnblogs.com/scaventz/p/13938868.html-->
+                        <manifestEntries>
+                            <Application-Name>Devkits</Application-Name>
+                            <SplashScreen-Image>splash_screen.png</SplashScreen-Image>
+                        </manifestEntries>
                     </archive>
                     <!-- 过滤掉不希望包含在jar中的文件 -->
                     <excludes>
