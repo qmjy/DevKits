@@ -29,6 +29,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,8 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
     private final CardLayout rightPaneLayout;
     private final String[] rightPaneNames;
     private JTable table = new JTable();
+    private JPanel previewPanelOfCenter;
+    private JPanel previewPanelOfSouth;
     private JLabel previewLabel = new JLabel();
     private JTabbedPane propertiesTabbedPane;
     private ConcurrentHashMap<String, Set<String>> md5FilesMap;
@@ -96,13 +99,13 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
     }
 
     private JPanel createCenterPanel() {
-        JPanel previewPanelOfCenter = new JPanel();
+        this.previewPanelOfCenter = new JPanel();
         previewPanelOfCenter.add(previewLabel);
         return previewPanelOfCenter;
     }
 
     private JPanel createSouthPanel() {
-        JPanel previewPanelOfSouth = new JPanel();
+        this.previewPanelOfSouth = new JPanel();
         previewPanelOfSouth.setLayout(new BorderLayout());
         propertiesTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         // 不显示选项卡上的焦点虚线边框
@@ -118,12 +121,24 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
      */
     private void updatePreview(String filePath) {
         propertiesTabbedPane.removeAll();
+        Dimension parentContainerSize = previewPanelOfCenter.getParent().getSize();
+
+        int pWidth = (int) parentContainerSize.getWidth();
+        int pHeight = (int) parentContainerSize.getHeight();
+        int pHeightOfDot8 = (int) (parentContainerSize.getHeight() * 0.8);
+
+        previewPanelOfCenter.setPreferredSize(new Dimension(pWidth, pHeightOfDot8));
+        previewPanelOfSouth.setPreferredSize(new Dimension(pWidth, pHeight - pHeightOfDot8));
 
         //TODO 待完善其他预览信息展示
         if (DKFileUtil.isImgFromExtension(filePath)) {
             try {
                 BufferedImage myPicture = ImageIO.read(new File(filePath));
-                previewLabel.setIcon(new ImageIcon(myPicture));
+                ImageIcon image = new ImageIcon(myPicture);
+                Dimension sizeWithAspectRatio = DKFileUtil.getSizeWithAspectRatio(pWidth, pHeightOfDot8, image.getIconWidth(), image.getIconHeight());
+                Image img = image.getImage().getScaledInstance((int) sizeWithAspectRatio.getWidth(), (int) sizeWithAspectRatio.getHeight(), Image.SCALE_DEFAULT);
+                image.setImage(img);
+                previewLabel.setIcon(image);
             } catch (IOException ioException) {
                 LOGGER.error("Read image data failed: {}", filePath);
             }
@@ -133,10 +148,10 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
             Metadata metadata = ImageMetadataReader.readMetadata(new File(filePath));
             for (Directory directory : metadata.getDirectories()) {
                 JPanel component = new JPanel();
-                component.setLayout(new FlowLayout());
+                component.setLayout(new FlowLayout(FlowLayout.LEFT));
                 propertiesTabbedPane.addTab(directory.getName(), component);
                 for (Tag tag : directory.getTags()) {
-//                    component.add(new JLabel(tag.getTagName() + "：" + tag.getDescription()));
+                    component.add(new JLabel(tag.getTagName() + "：" + tag.getDescription()));
                 }
                 if (directory.hasErrors()) {
                     for (String error : directory.getErrors()) {

@@ -40,6 +40,42 @@ public final class DKFileUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     /**
+     * 等比缩放以适配父容器尺寸。如果新对象尺寸小于父容器，则直接返回对象尺寸
+     *
+     * @param parentWidth  父容器宽度
+     * @param parentHeight 父容器高度
+     * @param width        对象宽度
+     * @param height       对象高度
+     * @return 等比缩放后尺寸
+     */
+    public static Dimension getSizeWithAspectRatio(int parentWidth, int parentHeight, int width, int height) {
+        //对象尺寸小于父容器
+        if (width <= parentWidth && height <= parentHeight) {
+            return new Dimension(width, height);
+        } else {
+            //横图或正方形图
+            if (width >= height) {
+                for (int i = width - 1; i > 0; i--) {
+                    if (i <= parentWidth) {
+                        double scaleRatio = width * 1.0 / i;
+                        return new Dimension(i, (int) (height / scaleRatio));
+                    }
+                }
+            } else {
+                //竖图
+                for (int i = height - 1; i > 0; i--) {
+                    if (i <= parentHeight) {
+                        double scaleRatio = height * 1.0 / i;
+                        return new Dimension((int) (width / scaleRatio), i);
+                    }
+                }
+            }
+            return new Dimension(parentWidth, parentHeight);
+        }
+    }
+
+
+    /**
      * 计算文件的MD5
      *
      * @param file 待计算的文件
@@ -279,9 +315,6 @@ public final class DKFileUtil {
         // Icon icon = fsv.getSystemIcon(f);
         // ImageIcon icon1 = (ImageIcon) icon;
         // Image image = icon1.getImage();
-
         return FileSystemView.getFileSystemView().getSystemIcon(f);
     }
-
-
 }
