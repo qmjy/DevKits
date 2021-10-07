@@ -122,7 +122,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
         rightPane.add(new JScrollPane(), RIGHT_PANE_NAMES[0]);
         rightPane.add(new JPanel(), RIGHT_PANE_NAMES[1]);
-        jSplitPane.setRightComponent(rightPane);
+        jSplitPane.setRightComponent(new JScrollPane(rightPane));
 
         jSplitPane.setResizeWeight(0.3);
         rootContainer.add(jSplitPane, BorderLayout.CENTER);
