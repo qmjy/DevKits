@@ -37,7 +37,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 
-public class AppStarter implements Runnable {
+public class AppStarter extends BaseStarter implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppStarter.class);
     private final TrayIcon trayIcon;
 
@@ -120,22 +120,6 @@ public class AppStarter implements Runnable {
         return calendarPanel;
     }
 
-    /**
-     * more look and feel:<br>
-     * 1.http://www.javasoft.de/synthetica/screenshots/plain/ <br>
-     * 2.https://www.cnblogs.com/clarino/p/8668160.html
-     */
-    private void initLookAndFeel() {
-        // UIManager.getSystemLookAndFeelClassName() get system defualt;
-        String lookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-        try {
-            UIManager.setLookAndFeel(lookAndFeel);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
-            LOGGER.error("Init Look And Feel error:" + e1.getMessage());
-        } catch (UnsupportedLookAndFeelException e) {
-            LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
-        }
-    }
 
     private PopupMenu createTrayMenu(TrayIcon trayIcon) {
         PopupMenu popupMenu = new PopupMenu();

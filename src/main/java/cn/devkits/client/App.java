@@ -10,6 +10,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.google.common.eventbus.EventBus;
 import cn.devkits.client.asyn.AppStarter;
+import cn.devkits.client.asyn.CliStarter;
+import cn.devkits.client.camera.CameraFrame;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
@@ -18,7 +20,6 @@ import java.awt.SplashScreen;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.io.IOException;
-
 
 
 /**
@@ -34,16 +35,23 @@ public class App {
     private static EventBus eventBus = new EventBus("DevkitsEvents");
     private static TrayIcon trayIcon;
 
-    @SuppressWarnings("resource")
     public static void main(String[] args) {
-        context = new AnnotationConfigApplicationContext(AppSpringContext.class);
-        if (SystemTray.isSupported()) {
-            trayIcon = createTrayIcon();
-            SwingUtilities.invokeLater(new AppStarter(trayIcon));
-            closeSplashScreen();
+        if (args.length > 0) {
+            dispatchArgs(args);
         } else {
-            LOGGER.error("This system can not support tray function！");
+            context = new AnnotationConfigApplicationContext(AppSpringContext.class);
+            if (SystemTray.isSupported()) {
+                trayIcon = createTrayIcon();
+                SwingUtilities.invokeLater(new AppStarter(trayIcon));
+                closeSplashScreen();
+            } else {
+                LOGGER.error("This system can not support tray function！");
+            }
         }
+    }
+
+    private static void dispatchArgs(String[] args) {
+        SwingUtilities.invokeLater(new CliStarter(args));
     }
 
     private static void closeSplashScreen() {
