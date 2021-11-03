@@ -4,17 +4,6 @@
 
 package cn.devkits.client.asyn;
 
-import cn.devkits.client.App;
-import cn.devkits.client.DKConstants;
-import cn.devkits.client.service.EmailService;
-import cn.devkits.client.service.impl.TodoTaskServiceImpl;
-import cn.devkits.client.tray.model.EmailCfgModel;
-import cn.devkits.client.tray.model.TodoTaskModel;
-import cn.devkits.client.util.DKDateTimeUtil;
-import cn.devkits.client.util.DKNetworkUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
-import com.google.common.eventbus.Subscribe;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +15,14 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.config.TriggerTask;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
+
+import com.google.common.eventbus.Subscribe;
+import cn.devkits.client.App;
+import cn.devkits.client.DKConstants;
+import cn.devkits.client.service.EmailService;
+import cn.devkits.client.service.impl.TodoTaskServiceImpl;
+import cn.devkits.client.tray.model.TodoTaskModel;
+import cn.devkits.client.util.DKDateTimeUtil;
 
 import javax.swing.JOptionPane;
 import java.awt.TrayIcon;

@@ -7,6 +7,7 @@ package cn.devkits.client.tray.frame;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 
+import cn.devkits.client.action.CameraSettingsAction;
 import cn.devkits.client.action.EmailSettingsAction;
 import cn.devkits.client.action.FileServerSettingsAction;
 import cn.devkits.client.action.HotKeySettingsAction;
@@ -88,6 +89,7 @@ public class SettingsFrame extends DKAbstractFrame {
 //        sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new EmailSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new FileServerSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
+        sysPane.add(new CameraSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new HotKeySettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new OtherSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
 

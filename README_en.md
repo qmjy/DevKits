@@ -25,6 +25,7 @@ For to be a free programmer.
 - XML & JSON Format
 - Computer System Information Detection
 - Todo Reminder(Tray Message or Email)
+- Camera
 
 
 ## Runtime Version

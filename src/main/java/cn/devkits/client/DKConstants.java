@@ -39,7 +39,8 @@ public interface DKConstants {
             ".xlsb", ".xla", ".xlam", ".xll", ".xlw", "ppt", ".pot", ".pps", ".pptx", ".pptm", ".potx",
             ".potm", ".ppam", ".ppsx", ".sldx", ".sldm", ".pdf", ".txt", ".log");
 
-    HashSet<String> FILE_TYPE_IMG = Sets.newHashSet(".jpg", ".jpeg", ".gif", ".png", ".psd", ".ai", ".tiff", ".webp", ".bmp", ".ico", ".svg", ".heic");
+    HashSet<String> FILE_TYPE_IMG = Sets.newHashSet(".jpg", ".jpeg", ".gif", ".png", ".psd", ".ai",
+            ".tiff", ".webp", ".bmp", ".ico", ".svg", ".heic");
 
     HashSet<String> FILE_TYPE_AUDIO = Sets.newHashSet(".mp3", ".dvf", ".flac", ".m4a", ".m4b",
             ".m4p", ".mmf", ".nmf", ".nsf", ".msv", ".mpc", ".gsm", ".iklax", ".ivs", ".wma", ".wav",

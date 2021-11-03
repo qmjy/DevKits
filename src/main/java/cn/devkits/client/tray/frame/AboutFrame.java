@@ -81,11 +81,12 @@ public class AboutFrame extends DKAbstractFrame {
     private Component initTabContent() {
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("VERSION_INFO"), loadVersionDetail());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE_JAVA"), loadOpenSourceTable());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE_DEPENDENT"), loadOpenSourceTable());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE_PRJ"), loadOpenSourcePrj());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("LICENSE"), loadLicensePane());
 
-        jTabbedPane.setFocusable(false);// 不显示选项卡上的焦点虚线边框
+        // 不显示选项卡上的焦点虚线边框
+        jTabbedPane.setFocusable(false);
 
         return jTabbedPane;
     }

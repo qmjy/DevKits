@@ -4,6 +4,13 @@
 
 package cn.devkits.client.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
 import cn.devkits.client.mapper.EmailMapper;
 import cn.devkits.client.service.EmailService;
 import cn.devkits.client.tray.model.EmailCfgModel;
@@ -12,25 +19,12 @@ import cn.devkits.client.util.DKSystemUIUtil;
 
 import com.sun.istack.internal.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-
-import com.google.common.collect.Lists;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p>

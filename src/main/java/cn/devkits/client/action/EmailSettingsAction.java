@@ -12,8 +12,10 @@ import cn.devkits.client.util.DKSystemUIUtil;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,39 +86,36 @@ public class EmailSettingsAction extends BaseAction {
      */
     @Override
     protected Component drawCenterPanel() {
-        FormLayout layout = new FormLayout("right:max(15dlu;p):grow, 3dlu, 80dlu:grow, 3dlu, right:max(15dlu;p):grow, 3dlu, 45dlu:grow, 3dlu, right:max" +
-                "(15dlu;p):grow, 3dlu, 50dlu:grow",
-                "p, 2dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 10dlu, p, 2dlu, d");
-
-        layout.setRowGroups(new int[][]{{1, 9}});
-
+        FormLayout layout = new FormLayout(
+                "right:max(15dlu;p):grow, 4dlu, 80dlu:grow, 4dlu, right:max(15dlu;p):grow, 4dlu, 45dlu:grow, 4dlu, right:max(15dlu;p):grow, 4dlu, 50dlu:grow",
+                "p, 4dlu, p, 4dlu, p, 4dlu, p, 4dlu, p, 10dlu, p, 4dlu, d");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
 
         builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SEG_NEW"), cc.xyw(1, 1, 11));
 
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_SERVER"), cc.xy(1, 3));
+        builder.addLabel(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_SERVER"), cc.xy(1, 3));
         builder.add(smtpServers, cc.xy(3, 3));
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PORT"), cc.xy(5, 3));
+        builder.addLabel(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PORT"), cc.xy(5, 3));
         JTextField portComponent = new JTextField();
         portComponent.setText("25");
         builder.add(portComponent, cc.xy(7, 3));
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_TLS"), cc.xy(9, 3));
+        builder.addLabel(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_TLS"), cc.xy(9, 3));
         JRadioButton tlsComponent = new JRadioButton();
         builder.add(tlsComponent, cc.xy(11, 3));
 
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_MAIL"), cc.xy(1, 5));
+        builder.addLabel(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_MAIL"), cc.xy(1, 5));
         JTextField mailComponent = new JTextField();
         builder.add(mailComponent, cc.xy(3, 5));
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PWD"), cc.xy(5, 5));
+        builder.addLabel(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PWD"), cc.xy(5, 5));
         JPasswordField pwdComponent = new JPasswordField();
         builder.add(pwdComponent, cc.xy(7, 5));
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_ACCOUNT"), cc.xy(9, 5));
+        builder.addLabel(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_ACCOUNT"), cc.xy(9, 5));
         JTextField accountComponent = new JTextField();
         builder.add(accountComponent, cc.xy(11, 5));
 
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_EMAIL_LBL_DEFAULT"), cc.xy(1, 7));
+        builder.addLabel(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_DEFAULT"), cc.xy(1, 7));
         JCheckBox defaultSmtpServerComponent = new JCheckBox();
         builder.add(defaultSmtpServerComponent, cc.xy(3, 7));
 
