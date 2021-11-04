@@ -4,6 +4,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.devkits.client.mapper.BaseMapper;
 import cn.devkits.client.model.SysConfig;
 import cn.devkits.client.service.SysConfigService;
 
@@ -17,12 +18,15 @@ import java.util.UUID;
  */
 @Service
 public class InitializingBeanImpl implements InitializingBean {
+    @Autowired
+    private BaseMapper baseDao;
 
     @Autowired
     private SysConfigService sysConfigService;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
+        initDb();
         initUuid();
     }
 
@@ -34,5 +38,12 @@ public class InitializingBeanImpl implements InitializingBean {
             UUID uuid = UUID.randomUUID();
             sysConfigService.addSysConfig(new SysConfig(SysConfigService.SYS_CFG_UUID, uuid.toString()));
         }
+    }
+
+    public void initDb() {
+        baseDao.createClipboardTable();
+        baseDao.createSystemConfigTable();
+        baseDao.createTodoTaskTable();
+        baseDao.createEmailTable();
     }
 }
