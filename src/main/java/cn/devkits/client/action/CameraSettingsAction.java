@@ -27,7 +27,7 @@ public class CameraSettingsAction extends BaseAction {
 
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_CAMERA"));
 
-        Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA, 16, new Color(50, 50, 50));
+        Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA_RETRO, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);

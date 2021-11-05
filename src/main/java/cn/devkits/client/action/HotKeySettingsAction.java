@@ -36,7 +36,7 @@ public class HotKeySettingsAction extends BaseAction {
 
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_HOTKEY"));
 
-        Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.KEY, 16, new Color(50, 50, 50));
+        Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.KEYBOARD_O, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);

@@ -18,8 +18,10 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -30,12 +32,19 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -49,22 +58,6 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
 
 /**
  * 二维码
@@ -101,6 +94,15 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         initUI(getContentPane());
         initListener();
+
+        MenuBar mb = new MenuBar();
+        Menu fileMenu = new Menu(DKSystemUIUtil.getLocaleString("QR_MENUBAR_FILE"));
+        fileMenu.add(new MenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_DECODE")));
+        fileMenu.add(new MenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_ENCODE")));
+        fileMenu.addSeparator();
+        fileMenu.add(new MenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_QUIT")));
+        mb.add(fileMenu);
+        setMenuBar(mb);
 
         executor.execute(this);
     }
@@ -186,6 +188,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         topPanel.setLayout(springLayout);
 
         this.uploadTextField = new JTextField(100);
+        this.uploadTextField.setToolTipText("待识别文件或路径，输入后回车识别！");
         Icon uploadIcon = IconFontSwing.buildIcon(FontAwesome.UPLOAD, 16, new Color(50, 50, 50));
         this.uploadBtn = new JButton(DKSystemUIUtil.getLocaleString("QR_START_UPLOAD"), uploadIcon);
 
@@ -241,10 +244,19 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
             }
         });
 
+        uploadTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    callback();
+                }
+            }
+        });
+
         FileFilter[] filters = new FileFilter[]{DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
                 DKSystemUIUtil.createFileFilter("Portable Network Graphics", true, "png")};
 
-        uploadBtn.addActionListener(new BrowserActionListener(this, filters, "QR file", true));
+        uploadBtn.addActionListener(new BrowserActionListener(this, filters, "QR file", JFileChooser.FILES_AND_DIRECTORIES, true));
 
         siteBtn.addActionListener(new ActionListener() {
             @Override
@@ -311,27 +323,39 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
      */
     @Override
     public void callback() {
-        String text = uploadTextField.getText();
-        if (text != null && new File(text).isFile()) {
-
-            BufferedImage bufferedImage = null;
-            try {
-                bufferedImage = ImageIO.read(new File(text));
-                Optional<Result> decodeBufferedImage = decodeBufferedImage(bufferedImage);
-                if (decodeBufferedImage.isPresent()) {
-                    Result result = decodeBufferedImage.get();
-                    console.append("Decode With UTF-8. " + System.lineSeparator());
-                    console.append("Result：" + result.toString() + System.lineSeparator());
-                    console.append("QR Format Type：" + result.getBarcodeFormat() + System.lineSeparator());
-                    console.append("QR Text Content：" + result.getText() + System.lineSeparator() + System.lineSeparator());
+        String filePath = uploadTextField.getText();
+        if (filePath != null) {
+            File file = new File(filePath);
+            if (file.isDirectory()) {
+                File[] files = file.listFiles();
+                for (File f : files) {
+                    extractQrOfImg(f);
+                    console.append(System.lineSeparator());
                 }
-            } catch (IllegalArgumentException e) {
-                LOGGER.error("Input stream is null!");
-            } catch (IOException e1) {
-                LOGGER.error("Error occurs during reading file {}", text);
-            } finally {
-                bufferedImage.flush();
+            } else {
+                extractQrOfImg(file);
             }
+        }
+    }
+
+    private void extractQrOfImg(File f) {
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(f);
+            Optional<Result> decodeBufferedImage = decodeBufferedImage(bufferedImage);
+            if (decodeBufferedImage.isPresent()) {
+                Result result = decodeBufferedImage.get();
+                console.append("Decode With UTF-8. " + System.lineSeparator());
+                console.append("Result：" + result.toString() + System.lineSeparator());
+                console.append("QR Format Type：" + result.getBarcodeFormat() + System.lineSeparator());
+                console.append("QR Text Content：" + result.getText() + System.lineSeparator());
+            }
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Input stream is null!");
+        } catch (IOException e1) {
+            LOGGER.error("Error occurs during reading file {}", f.getAbsolutePath());
+        } finally {
+            bufferedImage.flush();
         }
     }
 
@@ -408,7 +432,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
                             JOptionPane.showMessageDialog(this, resultTxt + result.getText() + "</span></html>", "QR Recognize Result", JOptionPane.INFORMATION_MESSAGE);
                         }
-                    } catch (com.google.zxing.NotFoundException e) {
+                    } catch (NotFoundException e) {
                         LOGGER.info("Recognize QR Code from camera...");
                     }
                 }

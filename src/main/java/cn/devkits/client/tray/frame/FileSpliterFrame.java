@@ -15,8 +15,10 @@ import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -42,6 +44,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -55,21 +58,23 @@ import javax.swing.SpringLayout;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * 
  * 文件分割<br>
  * 1. Text file: fixed file size, line number, average file size<br>
  * 2. Excel File: sheet, line number
+ *
  * @author Shaofeng Liu
  * @version 1.0.1
  * @time 2020年2月10日 下午11:17:59
  */
 public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenable {
 
-    /** serialVersionUID */
+    /**
+     * serialVersionUID
+     */
     private static final long serialVersionUID = -6345009512566288941L;
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSpliterFrame.class);
-    private final String[] fileTypeItems = new String[] {"TXT File", "Excel File", "More Type..."};
-    private final String[] textFileSpliterParamTypes = new String[] {"Segments(Recommend)", "Fixed Lines", "Fixed Size (KB)"};
+    private final String[] fileTypeItems = new String[]{"TXT File", "Excel File", "More Type..."};
+    private final String[] textFileSpliterParamTypes = new String[]{"Segments(Recommend)", "Fixed Lines", "Fixed Size (KB)"};
     private final static Dimension hpad10 = new Dimension(10, 1);
     private final static Dimension vpad20 = new Dimension(1, 20);
     private final static Dimension vpad4 = new Dimension(1, 4);
@@ -83,11 +88,15 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
     private Map<JRadioButton, JTextField> mapping = new HashMap<JRadioButton, JTextField>();
 
-    /** text split start */
+    /**
+     * text split start
+     */
     private JRadioButton averageSizeBtn;
     private JRadioButton fixedLinesBtn;
     private JRadioButton fixedSizeBtn;
-    /** text split end */
+    /**
+     * text split end
+     */
 
     private String currentFileType = fileTypeItems[0];
     private JRadioButton current;
@@ -300,7 +309,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
             }
         });
 
-        browseBtn.addActionListener(new BrowserActionListener(this, new FileFilter[0], "Split File",false));
+        browseBtn.addActionListener(new BrowserActionListener(this, new FileFilter[0], "Split File", JFileChooser.FILES_ONLY, false));
         openResultBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -312,7 +321,8 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
             executor.shutdownNow();
 
             if (executor.isTerminated()) {
-                JButton btn = (JButton) e.getSource();;
+                JButton btn = (JButton) e.getSource();
+                ;
                 Container parent = btn.getParent().getParent().getParent();
                 if (parent instanceof FileSpliterFrame) {
                     FileSpliterFrame root = (FileSpliterFrame) parent;
@@ -391,8 +401,8 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
 
 /**
- * 
  * ApplyActionListener
+ *
  * @author Shaofeng Liu
  * @version 1.0.1
  * @time 2020年2月11日 上午12:01:33
@@ -430,6 +440,7 @@ class ApplyActionListener implements ActionListener {
 
 /**
  * 事件监听器
+ *
  * @author Shaofeng Liu
  * @version 1.0.1
  * @time 2020年2月13日 下午11:27:57

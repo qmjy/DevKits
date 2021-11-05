@@ -6,8 +6,10 @@ package cn.devkits.client.tray.frame.assist;
 
 import cn.devkits.client.component.FileChoosePreviewerComponent;
 import cn.devkits.client.tray.frame.DKFrameChosenable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFileChooser;
@@ -15,9 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * 
  * 浏览文件选择事件监听器
- * 
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年10月24日 下午10:09:27
@@ -28,31 +29,34 @@ public class BrowserActionListener implements ActionListener {
     private FileFilter[] filters;
     private boolean callback;
     private String title;
+    private int selectionMode;
 
     /**
      * constructor
-     * @param frame frame
-     * @param filters browse filter
-     * @param title dialog title
-     * @param callback callback or not
+     *
+     * @param frame         frame
+     * @param filters       browse filter
+     * @param title         dialog title
+     * @param selectionMode JFileChooser.FILES_ONLY | JFileChooser.DIRECTORIES_ONLY | JFileChooser.FILES_AND_DIRECTORIES
+     * @param callback      callback or not
      */
-    public BrowserActionListener(DKFrameChosenable frame, FileFilter[] filters,String title, boolean callback) {
+    public BrowserActionListener(DKFrameChosenable frame, FileFilter[] filters, String title, int selectionMode, boolean callback) {
         this.frame = frame;
         this.filters = filters;
         this.callback = callback;
-        this.title=title;
+        this.title = title;
+        this.selectionMode = selectionMode;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         JFileChooser jfc = new JFileChooser();
-        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jfc.setFileSelectionMode(selectionMode);
         jfc.setDialogTitle(title);
         jfc.setAccessory(new FileChoosePreviewerComponent(jfc));
-        createFilter(jfc);// 添加文件支持的类型
+        createFilter(jfc);
 
         int retval = jfc.showDialog(frame.getObj(), "OK");
-
         if (retval == JFileChooser.APPROVE_OPTION) {
             if (jfc.getSelectedFile() != null) {
                 frame.updateSelectFilePath(jfc.getSelectedFile().getAbsolutePath());
@@ -61,7 +65,7 @@ public class BrowserActionListener implements ActionListener {
                 frame.callback();
             }
         } else if (retval == JFileChooser.CANCEL_OPTION) {
-            LOGGER.info("User cancelled operation. No file was chosen.");
+            LOGGER.info("User cancelled operation, No file was chosen.");
         } else if (retval == JFileChooser.ERROR_OPTION) {
             JOptionPane.showMessageDialog(frame.getObj(), "An error occurred. No file was chosen.");
         } else {

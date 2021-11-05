@@ -18,6 +18,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -142,7 +143,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         FileFilter[] filters = new FileFilter[]{DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
                 DKSystemUIUtil.createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif")};
 
-        browseBtn.addActionListener(new BrowserActionListener(this, filters, "Background Image", false));
+        browseBtn.addActionListener(new BrowserActionListener(this, filters, "Background Image", JFileChooser.FILES_ONLY, false));
         applyBtn.addActionListener(new LogonImgManageListener(this));
         cancelBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();
