@@ -24,7 +24,6 @@ public class CameraSettingsAction extends BaseAction {
     public CameraSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
-
         putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_CAMERA"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA_RETRO, 16, new Color(50, 50, 50));
