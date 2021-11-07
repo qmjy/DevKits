@@ -12,6 +12,7 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import cn.devkits.client.DKConstants;
+import cn.devkits.client.camera.WebCameraFrame;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.MenuItemFactory;
 import cn.devkits.client.tray.frame.AboutFrame;
@@ -35,22 +36,27 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 
-public class AppStarter extends BaseStarter implements Runnable {
+public class AppStarter implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppStarter.class);
     private final TrayIcon trayIcon;
+    private final String[] args;
 
-    public AppStarter(TrayIcon trayIcon) {
+    public AppStarter(TrayIcon trayIcon, String[] args) {
         this.trayIcon = trayIcon;
+        this.args = args;
     }
-
 
     @Override
     public void run() {
-        initLookAndFeel();
-        initSystemTrayIcon();
-
-        initSystemHotKey();
         DKSystemUIUtil.regIcon();
+
+        if (args.length > 0) {
+            WebCameraFrame webCameraFrame = new WebCameraFrame();
+            webCameraFrame.setVisible(true);
+        } else {
+            initSystemTrayIcon();
+            initSystemHotKey();
+        }
     }
 
     private void initSystemHotKey() {

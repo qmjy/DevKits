@@ -10,11 +10,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.google.common.eventbus.EventBus;
 import cn.devkits.client.asyn.AppStarter;
-import cn.devkits.client.asyn.CliStarter;
-import cn.devkits.client.camera.CameraFrame;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.AWTException;
 import java.awt.SplashScreen;
 import java.awt.SystemTray;
@@ -36,30 +36,16 @@ public class App {
     private static TrayIcon trayIcon;
 
     public static void main(String[] args) {
-        if (args.length > 0) {
-            dispatchArgs(args);
+        initLookAndFeel();
+        context = new AnnotationConfigApplicationContext(AppSpringContext.class);
+        if (SystemTray.isSupported()) {
+            trayIcon = createTrayIcon();
+            SwingUtilities.invokeLater(new AppStarter(trayIcon, args));
         } else {
-            context = new AnnotationConfigApplicationContext(AppSpringContext.class);
-            if (SystemTray.isSupported()) {
-                trayIcon = createTrayIcon();
-                SwingUtilities.invokeLater(new AppStarter(trayIcon));
-                closeSplashScreen();
-            } else {
-                LOGGER.error("This system can not support tray function！");
-            }
+            LOGGER.error("This system can not support tray function！");
         }
     }
 
-    private static void dispatchArgs(String[] args) {
-        SwingUtilities.invokeLater(new CliStarter(args));
-    }
-
-    private static void closeSplashScreen() {
-        final SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            splash.close();
-        }
-    }
 
     private static TrayIcon createTrayIcon() {
         try {
@@ -80,6 +66,22 @@ public class App {
         return null;
     }
 
+    /**
+     * more look and feel:<br>
+     * 1.http://www.javasoft.de/synthetica/screenshots/plain/ <br>
+     * 2.https://www.cnblogs.com/clarino/p/8668160.html
+     */
+    private static void initLookAndFeel() {
+        // UIManager.getSystemLookAndFeelClassName() get system defualt;
+        String lookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+        try {
+            UIManager.setLookAndFeel(lookAndFeel);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+            LOGGER.error("Init Look And Feel error:" + e1.getMessage());
+        } catch (UnsupportedLookAndFeelException e) {
+            LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
+        }
+    }
 
     public static AnnotationConfigApplicationContext getContext() {
         return context;

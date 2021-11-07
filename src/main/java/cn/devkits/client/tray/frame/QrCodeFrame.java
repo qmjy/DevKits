@@ -94,17 +94,33 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         initUI(getContentPane());
         initListener();
-
-        MenuBar mb = new MenuBar();
-        Menu fileMenu = new Menu(DKSystemUIUtil.getLocaleString("QR_MENUBAR_FILE"));
-        fileMenu.add(new MenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_DECODE")));
-        fileMenu.add(new MenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_ENCODE")));
-        fileMenu.addSeparator();
-        fileMenu.add(new MenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_QUIT")));
-        mb.add(fileMenu);
-        setMenuBar(mb);
+        initMenuaBr();
 
         executor.execute(this);
+    }
+
+    private void initMenuaBr() {
+        JMenuBar mb = new JMenuBar();
+        JMenu fileMenu = new JMenu(DKSystemUIUtil.getLocaleString("COMMON_MENU_FILE"));
+
+        JMenuItem decodeMenuItem = new JMenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
+        Icon qrcodeIcon = IconFontSwing.buildIcon(FontAwesome.QRCODE, 16, new Color(50, 50, 50));
+        decodeMenuItem.setIcon(qrcodeIcon);
+        fileMenu.add(decodeMenuItem);
+
+        fileMenu.add(new JMenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_ENCODE")));
+        fileMenu.addSeparator();
+
+        Icon quitIcon = IconFontSwing.buildIcon(FontAwesome.SIGN_OUT, 16, new Color(50, 50, 50));
+        JMenuItem quitMenuItem = new JMenuItem(DKSystemUIUtil.getLocaleString("COMMON_MENU_QUIT"));
+        quitMenuItem.setIcon(quitIcon);
+        quitMenuItem.addActionListener(e -> {
+            this.setVisible(false);
+        });
+        fileMenu.add(quitMenuItem);
+
+        mb.add(fileMenu);
+        setJMenuBar(mb);
     }
 
 
