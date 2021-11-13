@@ -67,7 +67,7 @@ public final class DKSystemUtil {
         if (Desktop.isDesktopSupported()) {
             try {
                 if (!DKSystemUtil.isDevelopMode()) {
-                    Desktop.getDesktop().open(new File("./" + appName));
+                    Desktop.getDesktop().open(new File("" + appName));
                 } else {
                     String filePath = TrayItemWindowListener.class.getClassLoader().getResource("").getPath() + appName;
                     Desktop.getDesktop().open(new File(filePath));
@@ -77,6 +77,20 @@ public final class DKSystemUtil {
             } catch (IOException e) {
                 LOGGER.error("Invoke file '{}' failed: {}", appName, e.getMessage());
             }
+        }
+    }
+
+
+    /**
+     * 获取程序运行根目录
+     *
+     * @return 文件运行更目录
+     */
+    public static String getRootFolder() {
+        if (!DKSystemUtil.isDevelopMode()) {
+            return new File("").getAbsolutePath();
+        } else {
+            return TrayItemWindowListener.class.getClassLoader().getResource("").getPath();
         }
     }
 

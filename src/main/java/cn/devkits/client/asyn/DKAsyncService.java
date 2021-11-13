@@ -44,33 +44,32 @@ public class DKAsyncService {
      */
     @Scheduled(cron = "0/1 * * * * ? ")
     public void hello() {
-        Optional<Transferable> transferable = getTransferable();
-        if (transferable.isPresent()) {
-            Transferable contents = transferable.get();
-            try {
-                if (contents.isDataFlavorSupported(DataFlavor.allHtmlFlavor)) {
-                    String ret = (String) contents.getTransferData(DataFlavor.allHtmlFlavor);
-                } else if (contents.isDataFlavorSupported(DataFlavor.fragmentHtmlFlavor)) {
-                } else if (contents.isDataFlavorSupported(DataFlavor.selectionHtmlFlavor)) {
-                } else if (contents.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-                    Image img = (Image) contents.getTransferData(DataFlavor.imageFlavor);
-                } else if (contents.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {// 拷贝了本地文件
-                    Object transferData = contents.getTransferData(DataFlavor.javaFileListFlavor);
-                    if (transferData instanceof List<?>) {
-                        List<String> fileLists = (List<String>) transferData;
-                        service.insert(new ClipboardModel(fileLists.toString(), ClipboardModel.CLIPBOARD_CONTENT_TYPE_FILES, DKDateTimeUtil.currentTimeStr()));
-                    }
-                } else if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                    String ret = (String) contents.getTransferData(DataFlavor.stringFlavor);
-                    service.insert(new ClipboardModel(ret, ClipboardModel.CLIPBOARD_CONTENT_TYPE_STR, DKDateTimeUtil.currentTimeStr()));
-                } else {
-
-                }
-            } catch (Exception e) {
-                LOGGER.error(e.getMessage());
-            }
-        }
-
+//        Optional<Transferable> transferable = getTransferable();
+//        if (transferable.isPresent()) {
+//            Transferable contents = transferable.get();
+//            try {
+//                if (contents.isDataFlavorSupported(DataFlavor.allHtmlFlavor)) {
+//                    String ret = (String) contents.getTransferData(DataFlavor.allHtmlFlavor);
+//                } else if (contents.isDataFlavorSupported(DataFlavor.fragmentHtmlFlavor)) {
+//                } else if (contents.isDataFlavorSupported(DataFlavor.selectionHtmlFlavor)) {
+//                } else if (contents.isDataFlavorSupported(DataFlavor.imageFlavor)) {
+//                    Image img = (Image) contents.getTransferData(DataFlavor.imageFlavor);
+//                } else if (contents.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {// 拷贝了本地文件
+//                    Object transferData = contents.getTransferData(DataFlavor.javaFileListFlavor);
+//                    if (transferData instanceof List<?>) {
+//                        List<String> fileLists = (List<String>) transferData;
+//                        service.insert(new ClipboardModel(fileLists.toString(), ClipboardModel.CLIPBOARD_CONTENT_TYPE_FILES, DKDateTimeUtil.currentTimeStr()));
+//                    }
+//                } else if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+//                    String ret = (String) contents.getTransferData(DataFlavor.stringFlavor);
+//                    service.insert(new ClipboardModel(ret, ClipboardModel.CLIPBOARD_CONTENT_TYPE_STR, DKDateTimeUtil.currentTimeStr()));
+//                } else {
+//
+//                }
+//            } catch (Exception e) {
+//                LOGGER.error(e.getMessage());
+//            }
+//        }
     }
 
     private Optional<Transferable> getTransferable() {
