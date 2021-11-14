@@ -80,17 +80,19 @@ public class SystemRegisterAction extends BaseAction {
         } else {
             uninstallCamera();
         }
-        
-        if(enableQrRecognize.isSelected()){
+
+        if (enableQrRecognize.isSelected()) {
             installQrRecognize();
-        }else{
+        } else {
             unInstallQrRecognize();
         }
     }
 
     private void installQrRecognize() {
-        if(DKSystemUtil.isWindows()){
-            WinRegisterUtil.getInstance().regQrCodeSubCommand();
+        unInstallQrRecognize();
+        if (DKSystemUtil.isWindows()) {
+            WinRegisterUtil instance = WinRegisterUtil.getInstance();
+            instance.regQrCodeSubCommand();
         }
     }
 

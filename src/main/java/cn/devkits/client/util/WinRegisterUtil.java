@@ -20,8 +20,9 @@ public final class WinRegisterUtil {
     private static WinRegisterUtil INSTANCE = new WinRegisterUtil();
 
     private static final String SHELL_BASE_PATH = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CommandStore\\shell";
-    private static final String SHELL_COMMAND_DK_QR = "Devkits.QR\\command";
-    private static final String SHELL_COMMAND_DK_BAR = "Devkits.BAR\\command";
+    private static final String SHELL_COMMAND_DK_QR = "Devkits.QR";
+    private static final String SHELL_COMMAND_DK_QR_CMD = "Devkits.QR\\command";
+    private static final String SHELL_COMMAND_DK_BAR_CMD = "Devkits.BAR\\command";
 
     private WinRegisterUtil() {
     }
@@ -32,19 +33,20 @@ public final class WinRegisterUtil {
 
 
     public void regQrCodeSubCommand() {
-        boolean result = createRegistryItem(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH, SHELL_COMMAND_DK_QR);
-        if (result) {
+        if (createRegistryItem(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH, SHELL_COMMAND_DK_QR_CMD)) {
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH + "\\" + SHELL_COMMAND_DK_QR, "", "二维码识别");
+
             String rootFolder = DKSystemUtil.getRootFolder();
             String version = DKConfigUtil.getInstance().getVersion();
             String javaCmd = "java -jar " + rootFolder + "\\devkits-" + version + ".jar -decode --qr %1";
-            Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH + "\\" + SHELL_COMMAND_DK_QR, "", javaCmd);
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH + "\\" + SHELL_COMMAND_DK_QR_CMD, "", javaCmd);
         } else {
             LOGGER.error("Create registry sub item failed of {}", "Devkits.QR");
         }
     }
 
     private void regBarCodeSubCommand() {
-        boolean result = createRegistryItem(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH, SHELL_COMMAND_DK_BAR);
+        boolean result = createRegistryItem(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH, SHELL_COMMAND_DK_BAR_CMD);
         if (result) {
             System.out.println();
         } else {
