@@ -18,10 +18,8 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
-
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -60,7 +58,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * 二维码
+ * 编解码应用：二维码、条形码
  *
  * @author shaofeng liu
  * @version 1.0.0
@@ -74,15 +72,21 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
     private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeFrame.class);
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
 
-    private JTabbedPane decodePanel;
+    //整体布局
+    private Container jRootPane;
+    private CardLayout cardLayout;
 
+    //编码控件
+    private JTabbedPane encodePanel;
+
+    //解码控件
+    private JTabbedPane decodePanel;
     private JTextField uploadTextField;
     private JButton uploadBtn;
+    private JLabel imgPreviewLabel;
     private JTextArea console;
-
     private JPanel cameraPanel;
     private Webcam webcam;
-
     private JTextField siteTextField;
     private JButton siteBtn;
     private JTextArea siteConsole;
@@ -103,12 +107,21 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         JMenuBar mb = new JMenuBar();
         JMenu fileMenu = new JMenu(DKSystemUIUtil.getLocaleString("COMMON_MENU_FILE"));
 
-        JMenuItem decodeMenuItem = new JMenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
+        String decodeName = DKSystemUIUtil.getLocaleString("QR_MENUITEM_DECODE");
+        JMenuItem decodeMenuItem = new JMenuItem(decodeName);
         Icon qrcodeIcon = IconFontSwing.buildIcon(FontAwesome.QRCODE, 16, new Color(50, 50, 50));
         decodeMenuItem.setIcon(qrcodeIcon);
+        decodeMenuItem.addActionListener(e -> {
+            switchPane(decodeName);
+        });
         fileMenu.add(decodeMenuItem);
 
-        fileMenu.add(new JMenuItem(DKSystemUIUtil.getLocaleString("QR_MENUITEM_ENCODE")));
+        String encodeName = DKSystemUIUtil.getLocaleString("QR_MENUITEM_ENCODE");
+        JMenuItem encodeMenuItem = new JMenuItem(encodeName);
+        fileMenu.add(encodeMenuItem);
+        encodeMenuItem.addActionListener(e -> {
+            switchPane(encodeName);
+        });
         fileMenu.addSeparator();
 
         Icon quitIcon = IconFontSwing.buildIcon(FontAwesome.SIGN_OUT, 16, new Color(50, 50, 50));
@@ -121,6 +134,15 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         mb.add(fileMenu);
         setJMenuBar(mb);
+    }
+
+    /**
+     * 编码解码切换
+     *
+     * @param paneName 容器名称
+     */
+    private void switchPane(String paneName) {
+        cardLayout.show(jRootPane, paneName);
     }
 
 
@@ -149,7 +171,8 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
     @Override
     protected void initUI(Container jRootPane) {
-        CardLayout cardLayout = new CardLayout();
+        this.cardLayout = new CardLayout();
+        this.jRootPane = jRootPane;
         jRootPane.setLayout(cardLayout);
 
         initCamePanel();
@@ -159,17 +182,18 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         decodePanel.addTab(DKSystemUIUtil.getLocaleString("QR_CAMERA"), cameraPanel);
         decodePanel.addTab(DKSystemUIUtil.getLocaleString("QR_SITE"), initSitePane());
 
-        JTabbedPane codePanel = new JTabbedPane();
+        this.encodePanel = new JTabbedPane();
 
-        codePanel.addTab("Text", new JLabel());
-        codePanel.addTab("URL", new JLabel());
-        codePanel.addTab("Profile", new JLabel());
+        encodePanel.addTab("Text", new JLabel());
+        encodePanel.addTab("URL", new JLabel());
+        encodePanel.addTab("Profile", new JLabel());
 
+        // 不显示选项卡上的焦点虚线边框
         decodePanel.setFocusable(false);
-        codePanel.setFocusable(false);// 不显示选项卡上的焦点虚线边框
+        encodePanel.setFocusable(false);
 
-        jRootPane.add(decodePanel);
-        // jRootPane.add(codePanel);
+        jRootPane.add(decodePanel, DKSystemUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
+        jRootPane.add(encodePanel, DKSystemUIUtil.getLocaleString("QR_MENUITEM_ENCODE"));
     }
 
     private Component initSitePane() {
@@ -215,8 +239,19 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         jPanel.add(BorderLayout.PAGE_START, topPanel);
         this.console = new JTextArea();
-        JScrollPane jScrollPane = new JScrollPane(console);
-        jPanel.add(BorderLayout.CENTER, jScrollPane);
+
+        Box horizontalBox = Box.createHorizontalBox();
+
+        JPanel imagePreviewPane = new JPanel();
+        imagePreviewPane.setBorder(BorderFactory.createTitledBorder("图片预览窗口"));
+        imagePreviewPane.setPreferredSize(new Dimension((int) (CAMERA_DIMENSION.getWidth() * 0.4), (int) CAMERA_DIMENSION.getHeight()));
+        imgPreviewLabel = new JLabel("图片预览区");
+        imagePreviewPane.add(imgPreviewLabel);
+
+        horizontalBox.add(imagePreviewPane);
+        horizontalBox.add(console);
+
+        jPanel.add(BorderLayout.CENTER, horizontalBox);
 
         return jPanel;
     }
@@ -355,6 +390,8 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
     }
 
     private void extractQrOfImg(File f) {
+        imgPreviewLabel.setIcon(new ImageIcon(f.getAbsolutePath()));
+
         BufferedImage bufferedImage = null;
         try {
             bufferedImage = ImageIO.read(f);
