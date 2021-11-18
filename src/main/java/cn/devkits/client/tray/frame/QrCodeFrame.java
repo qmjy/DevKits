@@ -40,8 +40,17 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -217,6 +226,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         jPanel.add(BorderLayout.PAGE_START, topPanel);
         this.siteConsole = new JTextArea();
+        siteConsole.setLineWrap(true);
         jPanel.add(BorderLayout.CENTER, siteConsole);
 
         return jPanel;
@@ -242,6 +252,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         jPanel.add(BorderLayout.PAGE_START, topPanel);
         this.console = new JTextArea();
+        this.console.setLineWrap(true);
 
         Box horizontalBox = Box.createHorizontalBox();
 
@@ -257,6 +268,31 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         horizontalBox.add(comp);
 
         jPanel.add(BorderLayout.CENTER, horizontalBox);
+
+        DropTarget dropTarget = new DropTarget(jPanel, DnDConstants.ACTION_COPY_OR_MOVE, new DropTargetAdapter() {
+            @Override
+            public void drop(DropTargetDropEvent dtde) {
+                boolean isAccept = false;
+
+                if (dtde.isDataFlavorSupported(DataFlavor.imageFlavor)) {
+                    dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+                    try {
+                        Image image = (Image) dtde.getTransferable().getTransferData(DataFlavor.imageFlavor);
+                        isAccept = true;
+                        System.out.println();
+                    } catch (UnsupportedFlavorException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // 如果此次拖拽的数据是被接受的, 则必须设置拖拽完成（否则可能会看到拖拽目标返回原位置, 造成视觉上以为是不支持拖拽的错误效果）
+                if (isAccept) {
+                    dtde.dropComplete(true);
+                }
+            }
+        }, true);
 
         return jPanel;
     }
