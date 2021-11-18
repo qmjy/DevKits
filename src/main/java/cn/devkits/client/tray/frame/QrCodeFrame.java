@@ -5,6 +5,7 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
+import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
 import com.github.sarxos.webcam.Webcam;
@@ -18,8 +19,10 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -94,7 +97,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public QrCodeFrame() {
-        super(DKSystemUIUtil.getLocaleString("QR_CODE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
+        super(DKSystemUIUtil.getLocaleString("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
 
         initUI(getContentPane());
         initListener();
@@ -228,7 +231,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         topPanel.setLayout(springLayout);
 
         this.uploadTextField = new JTextField(100);
-        this.uploadTextField.setToolTipText("待识别文件或路径，输入后回车识别！");
+        this.uploadTextField.setToolTipText(DKSystemUIUtil.getLocaleString("CODEC_IMG_INPUT_TIPS"));
         Icon uploadIcon = IconFontSwing.buildIcon(FontAwesome.UPLOAD, 16, new Color(50, 50, 50));
         this.uploadBtn = new JButton(DKSystemUIUtil.getLocaleString("QR_START_UPLOAD"), uploadIcon);
 
@@ -243,13 +246,15 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         Box horizontalBox = Box.createHorizontalBox();
 
         JPanel imagePreviewPane = new JPanel();
-        imagePreviewPane.setBorder(BorderFactory.createTitledBorder("图片预览窗口"));
+        imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSystemUIUtil.getLocaleString("CODEC_IMG_PREVIEW_AREA")));
         imagePreviewPane.setPreferredSize(new Dimension((int) (CAMERA_DIMENSION.getWidth() * 0.4), (int) CAMERA_DIMENSION.getHeight()));
-        imgPreviewLabel = new JLabel("图片预览区");
+        imgPreviewLabel = new JLabel();
         imagePreviewPane.add(imgPreviewLabel);
 
         horizontalBox.add(imagePreviewPane);
-        horizontalBox.add(console);
+        JScrollPane comp = new JScrollPane(console);
+        comp.setPreferredSize(new Dimension((int) (CAMERA_DIMENSION.getWidth() * 0.6), (int) CAMERA_DIMENSION.getHeight()));
+        horizontalBox.add(comp);
 
         jPanel.add(BorderLayout.CENTER, horizontalBox);
 
@@ -390,15 +395,13 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
     }
 
     private void extractQrOfImg(File f) {
-        imgPreviewLabel.setIcon(new ImageIcon(f.getAbsolutePath()));
-
         BufferedImage bufferedImage = null;
         try {
             bufferedImage = ImageIO.read(f);
+            showPreviewImg(bufferedImage);
             Optional<Result> decodeBufferedImage = decodeBufferedImage(bufferedImage);
             if (decodeBufferedImage.isPresent()) {
                 Result result = decodeBufferedImage.get();
-                console.append("Decode With UTF-8. " + System.lineSeparator());
                 console.append("Result：" + result.toString() + System.lineSeparator());
                 console.append("QR Format Type：" + result.getBarcodeFormat() + System.lineSeparator());
                 console.append("QR Text Content：" + result.getText() + System.lineSeparator());
@@ -410,6 +413,18 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         } finally {
             bufferedImage.flush();
         }
+    }
+
+    private void showPreviewImg(BufferedImage bufferedImage) {
+        Dimension size = imgPreviewLabel.getParent().getSize();
+
+        ImageIcon image = new ImageIcon(bufferedImage);
+        Dimension adaptSize = DKFileUtil.getSizeWithAspectRatio((int) (size.getWidth() * 0.9), (int) (size.getHeight() * 0.9), image.getIconWidth(),
+                image.getIconHeight());
+        Image img = image.getImage().getScaledInstance((int) adaptSize.getWidth(), (int) adaptSize.getHeight(), Image.SCALE_DEFAULT);
+        image.setImage(img);
+        imgPreviewLabel.setText("");
+        imgPreviewLabel.setIcon(image);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

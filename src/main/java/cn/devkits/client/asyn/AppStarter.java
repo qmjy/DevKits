@@ -229,7 +229,7 @@ public class AppStarter implements Runnable {
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILEEXPLORER));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("QR_CODE"));
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("IMG_CODEC"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.QR));
         toolsItem.add(menuItem);
 
