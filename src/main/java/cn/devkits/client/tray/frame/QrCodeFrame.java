@@ -63,6 +63,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -259,7 +260,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
         JPanel imagePreviewPane = new JPanel();
         imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSystemUIUtil.getLocaleString("CODEC_IMG_PREVIEW_AREA")));
         imagePreviewPane.setPreferredSize(new Dimension((int) (CAMERA_DIMENSION.getWidth() * 0.4), (int) CAMERA_DIMENSION.getHeight()));
-        imgPreviewLabel = new JLabel();
+        imgPreviewLabel = new JLabel(DKSystemUIUtil.getLocaleString("CODEC_IMG_PREVIEW_DROP_TARGET_MSG"));
         imagePreviewPane.add(imgPreviewLabel);
 
         horizontalBox.add(imagePreviewPane);
@@ -269,31 +270,26 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
         jPanel.add(BorderLayout.CENTER, horizontalBox);
 
-        DropTarget dropTarget = new DropTarget(jPanel, DnDConstants.ACTION_COPY_OR_MOVE, new DropTargetAdapter() {
+        new DropTarget(imagePreviewPane, DnDConstants.ACTION_COPY_OR_MOVE, new DropTargetAdapter() {
             @Override
             public void drop(DropTargetDropEvent dtde) {
-                boolean isAccept = false;
-
-                if (dtde.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-                    dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-                    try {
-                        Image image = (Image) dtde.getTransferable().getTransferData(DataFlavor.imageFlavor);
-                        isAccept = true;
-                        System.out.println();
-                    } catch (UnsupportedFlavorException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                try {
+                    if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+                        java.util.List<File> list = (List<File>) (dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
+                        for (File file : list) {
+                            uploadTextField.setText(file.getAbsolutePath());
+                            extractQrOfImg(file);
+                            dtde.dropComplete(true);
+                        }
+                    } else {
+                        dtde.rejectDrop();
                     }
-                }
-
-                // 如果此次拖拽的数据是被接受的, 则必须设置拖拽完成（否则可能会看到拖拽目标返回原位置, 造成视觉上以为是不支持拖拽的错误效果）
-                if (isAccept) {
-                    dtde.dropComplete(true);
+                } catch (Exception e) {
+                    LOGGER.info("DropTargetDropEvent exception：{}", e.getMessage());
                 }
             }
-        }, true);
-
+        });
         return jPanel;
     }
 
