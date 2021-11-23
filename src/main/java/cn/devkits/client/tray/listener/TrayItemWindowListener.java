@@ -65,7 +65,7 @@ public class TrayItemWindowListener implements ActionListener {
                 frame = new TodoListFrame();
                 break;
             case QR:
-                frame = new QrCodeFrame();
+                frame = new CodecFrame();
                 break;
             case FILESPLITER:
                 frame = new FileSpliterFrame();

@@ -76,22 +76,28 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
         this.jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard(si.getHardware(), si.getOperatingSystem()));
-        jTabbedPane.addTab("CPU", new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MEMORY"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DISK"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_SENSORS"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DISPLAYS"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_NETWORK"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_SOUNDCARDS"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_USB_DEVICES"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_POWER_SOURCES"), new JPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_PROCESSES"), new JPanel());
+        jTabbedPane.addTab("CPU", getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MEMORY"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DISK"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_SENSORS"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DISPLAYS"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_NETWORK"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_SOUNDCARDS"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_USB_DEVICES"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_POWER_SOURCES"), getPanel());
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_PROCESSES"), getPanel());
 
         // 不显示选项卡上的焦点虚线边框
         jTabbedPane.setFocusable(false);
 
         rootContainer.add(jTabbedPane, BorderLayout.CENTER);
+    }
+
+    private JPanel getPanel() {
+        JPanel jPanel = new JPanel();
+        jPanel.setLayout(new BorderLayout());
+        return jPanel;
     }
 
     private void createToolbarBtns(JToolBar toolBar) {
@@ -119,43 +125,44 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
                 JTabbedPane pane = (JTabbedPane) e.getSource();
                 int tabIndex = pane.getSelectedIndex();
                 JPanel container = (JPanel) pane.getSelectedComponent();
-                if (container.getComponents().length > 0) {// 面板上已经有组件承载内容显示，无需刷新
+                // 面板上已经有组件承载内容显示，无需刷新
+                if (container.getComponents().length > 0) {
                     return;
                 }
                 SystemInfo si = new SystemInfo();
                 switch (tabIndex) {
                     case 1:
-                        container.add(new ProcessorPanel(si));
+                        container.add(new ProcessorPanel(si), BorderLayout.CENTER);
                         break;
                     case 2:
-                        container.add(initMainboard());
+                        container.add(initMainboard(), BorderLayout.CENTER);
                         break;
                     case 3:
-                        container.add(new MemoryPanel(si));
+                        container.add(new MemoryPanel(si), BorderLayout.CENTER);
                         break;
                     case 4:
-                        container.add(new FileStorePanel(si));
+                        container.add(new FileStorePanel(si), BorderLayout.CENTER);
                         break;
                     case 5:
-                        container.add(initSensors(OsInfoDetailFrame.this.si.getHardware()));
+                        container.add(initSensors(si.getHardware()), BorderLayout.CENTER);
                         break;
                     case 6:
-                        container.add(initDisplay(OsInfoDetailFrame.this.si.getHardware()));
+                        container.add(initDisplay(si.getHardware()), BorderLayout.CENTER);
                         break;
                     case 7:
-                        container.add(initNetwork(OsInfoDetailFrame.this.si.getHardware(), OsInfoDetailFrame.this.si.getOperatingSystem()));
+                        container.add(initNetwork(si.getHardware(), OsInfoDetailFrame.this.si.getOperatingSystem()), BorderLayout.CENTER);
                         break;
                     case 8:
-                        container.add(initSoundCards(OsInfoDetailFrame.this.si.getHardware()));
+                        container.add(initSoundCards(si.getHardware()), BorderLayout.CENTER);
                         break;
                     case 9:
-                        container.add(initUsb(OsInfoDetailFrame.this.si.getHardware()));
+                        container.add(initUsb(si.getHardware()), BorderLayout.CENTER);
                         break;
                     case 10:
-                        container.add(initPower(OsInfoDetailFrame.this.si.getHardware()));
+                        container.add(initPower(si.getHardware()), BorderLayout.CENTER);
                         break;
                     case 11:
-                        container.add(new ProcessPanel(si));
+                        container.add(new ProcessPanel(si), BorderLayout.CENTER);
                         break;
                     default:
                         break;
