@@ -43,14 +43,10 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -77,12 +73,12 @@ import java.util.concurrent.ThreadFactory;
  * @version 1.0.0
  * @time 2019年12月19日 下午10:18:50
  */
-public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameChosenable, ThreadFactory {
+public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChosenable, ThreadFactory {
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = -4030282787993924346L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeFrame.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CodecFrame.class);
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
 
     //整体布局
@@ -106,7 +102,7 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
 
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
-    public QrCodeFrame() {
+    public CodecFrame() {
         super(DKSystemUIUtil.getLocaleString("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
 
         initUI(getContentPane());
@@ -432,12 +428,15 @@ public class QrCodeFrame extends DKAbstractFrame implements Runnable, DKFrameCho
             bufferedImage = ImageIO.read(f);
             showPreviewImg(bufferedImage);
             Optional<Result> decodeBufferedImage = decodeBufferedImage(bufferedImage);
+            console.append(DKSystemUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_NAME") + f.getName() + System.lineSeparator());
             if (decodeBufferedImage.isPresent()) {
                 Result result = decodeBufferedImage.get();
-                console.append("Result：" + result.toString() + System.lineSeparator());
-                console.append("QR Format Type：" + result.getBarcodeFormat() + System.lineSeparator());
-                console.append("QR Text Content：" + result.getText() + System.lineSeparator());
+                console.append(DKSystemUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_TYPE") + result.getBarcodeFormat() + System.lineSeparator());
+                console.append(DKSystemUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_CONTENT") + result.getText() + System.lineSeparator());
+            } else {
+                console.append(DKSystemUIUtil.getLocaleString("CODEC_IMG_CONSOLE_CAN_NOT_RECOGNIZED") + System.lineSeparator());
             }
+            console.append(System.lineSeparator());
         } catch (IllegalArgumentException e) {
             LOGGER.error("Input stream is null!");
         } catch (IOException e1) {
