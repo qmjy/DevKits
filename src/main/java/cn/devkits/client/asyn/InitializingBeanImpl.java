@@ -1,15 +1,26 @@
 package cn.devkits.client.asyn;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.devkits.client.App;
 import cn.devkits.client.mapper.BaseMapper;
 import cn.devkits.client.model.SysConfig;
 import cn.devkits.client.service.SysConfigService;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 程序启动后执行
@@ -18,6 +29,7 @@ import java.util.UUID;
  */
 @Service
 public class InitializingBeanImpl implements InitializingBean {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InitializingBeanImpl.class);
     @Autowired
     private BaseMapper baseDao;
 
@@ -28,6 +40,12 @@ public class InitializingBeanImpl implements InitializingBean {
     public void afterPropertiesSet() {
         initDb();
         initUuid();
+
+        updateTrayIcon();
+    }
+
+    private void updateTrayIcon() {
+        new Thread(new TrayIconUpdateThread()).start();
     }
 
     private void initUuid() {
@@ -45,5 +63,34 @@ public class InitializingBeanImpl implements InitializingBean {
         baseDao.createSystemConfigTable();
         baseDao.createTodoTaskTable();
         baseDao.createEmailTable();
+    }
+
+    class TrayIconUpdateThread extends Thread {
+        private final Logger LOGGER = LoggerFactory.getLogger(TrayIconUpdateThread.class);
+
+        public TrayIconUpdateThread() {
+            super("DK-Tray-Icon-Update-Thread");
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                Image image1 = Toolkit.getDefaultToolkit().getImage("assets\\trayicon\\dark_cat_0.png");
+
+                URL resource = App.class.getClassLoader().getResource("dark_cat_0.png");
+                Image image = new ImageIcon(resource).getImage();
+                TrayIcon trayIcon = App.getTrayIcon();
+                if (trayIcon != null) {
+//                    trayIcon.getImage().flush();
+                    trayIcon.setImage(image);
+                    trayIcon.getImage().flush();
+                }
+                try {
+                    TimeUnit.MILLISECONDS.sleep(100);
+                } catch (InterruptedException e) {
+                    LOGGER.error("DK-Tray-Icon-Update-Thread Sleep failed!");
+                }
+            }
+        }
     }
 }
