@@ -11,12 +11,9 @@ import cn.devkits.client.mapper.BaseMapper;
 import cn.devkits.client.model.SysConfig;
 import cn.devkits.client.service.SysConfigService;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
@@ -75,15 +72,11 @@ public class InitializingBeanImpl implements InitializingBean {
         @Override
         public void run() {
             while (true) {
-                Image image1 = Toolkit.getDefaultToolkit().getImage("assets\\trayicon\\dark_cat_0.png");
-
-                URL resource = App.class.getClassLoader().getResource("dark_cat_0.png");
+                URL resource = App.class.getClassLoader().getResource("assets\\trayico\\dark_cat_0.png");
                 Image image = new ImageIcon(resource).getImage();
                 TrayIcon trayIcon = App.getTrayIcon();
                 if (trayIcon != null) {
-//                    trayIcon.getImage().flush();
                     trayIcon.setImage(image);
-                    trayIcon.getImage().flush();
                 }
                 try {
                     TimeUnit.MILLISECONDS.sleep(100);
