@@ -148,7 +148,7 @@ public class EmailServiceImpl implements EmailService {
         } else if (tos.indexOf(",") > 0) {
             return tos.split(",");
         } else {
-            return new String[0];
+            return new String[]{tos};
         }
     }
 
