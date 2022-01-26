@@ -5,8 +5,10 @@
 package cn.devkits.client.util;
 
 import cn.devkits.client.App;
+
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,6 +129,19 @@ public final class DKSystemUIUtil {
         return new Rectangle((int) ((screenSize.width - width) / 2), (int) ((screenSize.height - height) / 2), (int) width, (int) height);
     }
 
+    public static void setLookAndFeel(String lookAndFeelName) {
+        try {
+            UIManager.setLookAndFeel(lookAndFeelName);
+            Window[] windows = Frame.getWindows();
+            for (Window win : windows) {
+                SwingUtilities.updateComponentTreeUI(win);
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+            LOGGER.error("Init Look And Feel error:" + e1.getMessage());
+        } catch (UnsupportedLookAndFeelException e) {
+            LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
+        }
+    }
 
     /**
      * 表格头列自适应

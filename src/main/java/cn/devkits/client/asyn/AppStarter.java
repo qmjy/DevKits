@@ -127,10 +127,12 @@ public class AppStarter implements Runnable {
 
     private PopupMenu createTrayMenu(TrayIcon trayIcon) {
         PopupMenu popupMenu = new PopupMenu();
-
-        popupMenu.add(initNetworkMenu());// 网络工具
-        popupMenu.add(initDevMenu()); // 开发工具
-        popupMenu.add(initComputerMenu());// 系统
+        // 网络工具
+        popupMenu.add(initNetworkMenu());
+        // 开发工具
+        popupMenu.add(initDevMenu());
+        // 系统
+        popupMenu.add(initComputerMenu());
 
         popupMenu.addSeparator();
         MenuItem settings = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("SETTINGS"));

@@ -20,6 +20,8 @@ public interface SysConfigService {
      * 系统唯一UUID
      */
     public static final String SYS_CFG_UUID = "SYS_CFG_UUID";
+    public static final String SYS_CFG_HOT_KEY_NEW_TASK = "SYS_CFG_HOT_KEY_NEW_TASK";
+    public static final String SYS_CFG_HOT_KEY_SCREEN_SHOT = "SYS_CFG_HOT_KEY_SCREEN_SHOT";
 
     /**
      * 添加系统配置

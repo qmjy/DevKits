@@ -10,6 +10,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.google.common.eventbus.EventBus;
 import cn.devkits.client.asyn.AppStarter;
+import cn.devkits.client.util.DKSystemUIUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
@@ -74,13 +75,7 @@ public class App {
     private static void initLookAndFeel() {
         // UIManager.getSystemLookAndFeelClassName() get system defualt;
         String lookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-        try {
-            UIManager.setLookAndFeel(lookAndFeel);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
-            LOGGER.error("Init Look And Feel error:" + e1.getMessage());
-        } catch (UnsupportedLookAndFeelException e) {
-            LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
-        }
+        DKSystemUIUtil.setLookAndFeel(lookAndFeel);
     }
 
     public static AnnotationConfigApplicationContext getContext() {

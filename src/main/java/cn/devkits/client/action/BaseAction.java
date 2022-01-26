@@ -17,7 +17,10 @@ import java.awt.event.ActionEvent;
 public abstract class BaseAction extends AbstractAction {
     protected Frame frame;
     protected final JPanel cardLayoutRootPanel;
+    protected JButton applyBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
+    protected JButton closeBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
     private JPanel rightPanel = new JPanel();
+
 
     public BaseAction(Frame frame, JPanel cardLayoutRootPanel) {
         this.frame = frame;
@@ -48,7 +51,6 @@ public abstract class BaseAction extends AbstractAction {
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        JButton applyBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
         applyBtn.addActionListener(e -> {
             doApply(e);
         });
@@ -56,7 +58,6 @@ public abstract class BaseAction extends AbstractAction {
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton closeBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
         closeBtn.addActionListener(e -> {
             doClose(e);
         });
