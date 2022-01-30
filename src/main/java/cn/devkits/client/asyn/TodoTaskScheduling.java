@@ -109,7 +109,7 @@ class TodoThread implements Runnable {
                 .append("<p>")
                 .append(content)
                 .append("</p>")
-                .append("<p style='padding:0;font-size:12px;line-height:18px;color:#888 !important;'><br/><br/><br/>蛋壳需求反馈：")
+                .append("<p style='padding:0;font-size:12px;line-height:18px;color:#888 !important;'><br/><br/><br/>改进意见：")
                 .append("<a href='https://github.com/qmjy/DevKits/issues/new' blank='_target' style='color:#555;'>github</a>")
                 .append(" | ")
                 .append("<a href='http://toolcloud.huawei.com/toolmall/tooldetails/46718d31406842deb0e969a715377c93' blank='_target' style='color:#555;'>toolcloud</a>")

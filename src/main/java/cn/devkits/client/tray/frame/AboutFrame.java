@@ -82,7 +82,6 @@ public class AboutFrame extends DKAbstractFrame {
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("VERSION_INFO"), loadVersionDetail());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE_DEPENDENT"), loadOpenSourceTable());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE_PRJ"), loadOpenSourcePrj());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("LICENSE"), loadLicensePane());
 
         // 不显示选项卡上的焦点虚线边框
@@ -91,39 +90,7 @@ public class AboutFrame extends DKAbstractFrame {
         return jTabbedPane;
     }
 
-    /**
-     * 其他开源项目
-     *
-     * @return 其他开源项目
-     */
-    private Component loadOpenSourcePrj() {
-        DefaultListModel listModel = new DefaultListModel();
-        listModel.addElement("https://github.com/521xueweihan/GitHub520");
-        listModel.addElement("https://github.com/XX-net/XX-Net");
-        listModel.addElement("https://github.com/chuiliu/the-pixel-art");
 
-        JList list = new JList(listModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int index = list.locationToIndex(e.getPoint());
-                    String url = (String) list.getModel().getElementAt(index);
-                    try {
-                        DKSystemUIUtil.browseURL(new URI(url));
-                    } catch (URISyntaxException e1) {
-                        LOGGER.error("Open URL '{}' failed: {}", url, e1.getMessage());
-                    }
-                }
-            }
-        });
-        list.setToolTipText(DKSystemUIUtil.getLocaleString("DB_CLICK_TOOLTIPS"));
-        JScrollPane listScrollPane = new JScrollPane(list);
-
-        return listScrollPane;
-    }
 
     private Component loadLicensePane() {
         JEditorPane jEditorPane = new JEditorPane();

@@ -5,8 +5,12 @@
 package cn.devkits.client.util;
 
 import cn.devkits.client.App;
+
+import com.sun.jna.platform.DesktopWindow;
+import com.sun.jna.platform.WindowUtils;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +29,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -127,6 +132,19 @@ public final class DKSystemUIUtil {
         return new Rectangle((int) ((screenSize.width - width) / 2), (int) ((screenSize.height - height) / 2), (int) width, (int) height);
     }
 
+    public static void setLookAndFeel(String lookAndFeelName) {
+        try {
+            UIManager.setLookAndFeel(lookAndFeelName);
+            Window[] windows = Frame.getWindows();
+            for (Window win : windows) {
+                SwingUtilities.updateComponentTreeUI(win);
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+            LOGGER.error("Init Look And Feel error:" + e1.getMessage());
+        } catch (UnsupportedLookAndFeelException e) {
+            LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
+        }
+    }
 
     /**
      * 表格头列自适应
@@ -257,6 +275,15 @@ public final class DKSystemUIUtil {
         Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
         Transferable tText = new StringSelection(content);
         clip.setContents(tText, null);
+    }
+
+    /**
+     * 获取当前操作系统中所有可视窗口
+     *
+     * @return 操作系统的所有可视窗口
+     */
+    public List<DesktopWindow> getAllWindowsOfSystem() {
+        return WindowUtils.getAllWindows(true);
     }
 
     /**

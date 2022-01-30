@@ -7,6 +7,7 @@ package cn.devkits.client.tray.frame;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 
+import cn.devkits.client.App;
 import cn.devkits.client.action.SystemRegisterAction;
 import cn.devkits.client.action.EmailSettingsAction;
 import cn.devkits.client.action.FileServerSettingsAction;
@@ -30,6 +31,9 @@ import java.awt.event.WindowEvent;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
+/**
+ * 系统设置对话框
+ */
 public class SettingsFrame extends DKAbstractFrame {
 
     private JSplitPane jSplitPane;
