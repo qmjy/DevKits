@@ -4,32 +4,19 @@
 
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.action.*;
+import cn.devkits.client.util.DKSystemUIUtil;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 
-import cn.devkits.client.App;
-import cn.devkits.client.action.SystemRegisterAction;
-import cn.devkits.client.action.EmailSettingsAction;
-import cn.devkits.client.action.FileServerSettingsAction;
-import cn.devkits.client.action.HotKeySettingsAction;
-import cn.devkits.client.action.OtherSettingsAction;
-import cn.devkits.client.action.ThemeSettingsAction;
-import cn.devkits.client.util.DKSystemUIUtil;
-
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 
 /**
  * 系统设置对话框

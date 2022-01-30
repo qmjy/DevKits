@@ -4,46 +4,26 @@
 
 package cn.devkits.client.tray.frame;
 
-import cn.devkits.client.component.osinfo.FileStorePanel;
-import cn.devkits.client.component.osinfo.MemoryPanel;
-import cn.devkits.client.component.osinfo.ProcessPanel;
-import cn.devkits.client.component.osinfo.ProcessorPanel;
+import cn.devkits.client.component.osinfo.*;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import oshi.SystemInfo;
+import oshi.hardware.*;
+import oshi.software.os.OperatingSystem;
+import oshi.util.EdidUtil;
+import oshi.util.FormatUtil;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.time.Instant;
 import java.util.List;
-
-import oshi.SystemInfo;
-import oshi.hardware.ComputerSystem;
-import oshi.hardware.Display;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.NetworkIF;
-import oshi.hardware.PowerSource;
-import oshi.hardware.Sensors;
-import oshi.hardware.SoundCard;
-import oshi.hardware.UsbDevice;
-import oshi.software.os.NetworkParams;
-import oshi.software.os.OperatingSystem;
-import oshi.util.FormatUtil;
 
 /**
  * 当前计算机软硬件信息展示
@@ -75,7 +55,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         add(toolBar, BorderLayout.PAGE_START);
 
         this.jTabbedPane = new JTabbedPane();
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard(si.getHardware(), si.getOperatingSystem()));
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard(si));
         jTabbedPane.addTab("CPU", getPanel());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), getPanel());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MEMORY"), getPanel());
@@ -150,7 +130,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
                         container.add(initDisplay(si.getHardware()), BorderLayout.CENTER);
                         break;
                     case 7:
-                        container.add(initNetwork(si.getHardware(), OsInfoDetailFrame.this.si.getOperatingSystem()), BorderLayout.CENTER);
+                        container.add(new InterfacePanel(si), BorderLayout.CENTER);
                         break;
                     case 8:
                         container.add(initSoundCards(si.getHardware()), BorderLayout.CENTER);
@@ -169,27 +149,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
                 }
             }
         });
-    }
-
-    private Component initNetwork(HardwareAbstractionLayer hal, OperatingSystem os) {
-        List<NetworkIF> networkIFs = hal.getNetworkIFs();
-
-        StringBuilder sb = new StringBuilder("<html><body>Network Interfaces:<br>");
-
-        if (networkIFs.size() == 0) {
-            sb.append(" Unknown");
-        }
-        for (NetworkIF net : networkIFs) {
-            sb.append("<br> ").append(net.toString());
-        }
-
-        NetworkParams networkParams = os.getNetworkParams();
-
-        sb.append("<br>Network parameters:<br> " + networkParams.toString());
-
-        sb.append("</body></html>");
-
-        return new JLabel(sb.toString());
     }
 
 
@@ -235,7 +194,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         }
 
         JTree jTree = new JTree(root);
-
         TreeNode rootNode = (TreeNode) jTree.getModel().getRoot();
         DKSystemUIUtil.expandAll(jTree, new TreePath(rootNode), true);
 
@@ -290,45 +248,104 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         return new JLabel(sb.toString());
     }
 
-    private JComponent initDashboard(HardwareAbstractionLayer hal, OperatingSystem os) {
-        StringBuilder sb = new StringBuilder("<html><body>");
-        sb.append(String.valueOf(os));
-        sb.append("<br><br>");
+    private JPanel initDashboard(SystemInfo si) {
+        JPanel osFullPanel = new JPanel();
+        osFullPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        osFullPanel.setLayout(new BoxLayout(osFullPanel, BoxLayout.Y_AXIS));
 
-        sb.append("Booted: " + Instant.ofEpochSecond(os.getSystemBootTime()));
-        sb.append("<br>");
-        sb.append("Uptime: " + FormatUtil.formatElapsedSecs(os.getSystemUptime()));
-        sb.append("<br><br>");
+        String osStr = "Operating System";
+        JPanel osPanel = new JPanel(new BorderLayout());
+        osPanel.setBorder(BorderFactory.createTitledBorder(osStr));
+        String osInfoPrefix = getOsInfoPrefix(osStr, si);
+        JLabel osArea = new JLabel(wrapHtmlTag(osInfoPrefix + "0"));
+        osPanel.add(osArea);
 
-        ComputerSystem computerSystem = hal.getComputerSystem();
-        computerSystem.getManufacturer();
+        osFullPanel.add(osPanel);
 
-        sb.append("system: " + computerSystem.toString());
-        sb.append("<br>");
-        sb.append("firmware: " + computerSystem.getFirmware().toString());
-        sb.append("<br>");
-        sb.append("baseboard: " + computerSystem.getBaseboard().toString());
-        sb.append("<br>");
+        // Update up time every second
+        Timer timer = new Timer(Config.REFRESH_FAST, e -> osArea.setText(updateOsData(osInfoPrefix, si)));
+        timer.start();
 
-        sb.append("OS Family: " + os.getFamily().intern());
-        sb.append("<br>");
-        sb.append("Bitness : " + os.getBitness());
-        sb.append("<br>");
-        sb.append("Manufacturer : " + os.getManufacturer());
-        sb.append("<br>");
-        sb.append("Process Running: " + os.getProcessCount());
-        sb.append("<br>");
-        sb.append("Threads  Running: " + os.getThreadCount());
-        sb.append("<br><br>");
 
-        sb.append("Running with" + (os.isElevated() ? "" : "out") + " elevated permissions.");
-        sb.append("</body></html>");
+        JPanel processorPanel = new JPanel(new BorderLayout());
+        processorPanel.setBorder(BorderFactory.createTitledBorder("Processor"));
+        processorPanel.add(new JLabel(wrapHtmlTag(getProc(si))));
 
-        JPanel jPanel = new JPanel(new GridLayout());
-        jPanel.add(new JLabel(sb.toString()));
+        osFullPanel.add(processorPanel);
 
-        JScrollPane jScrollPane = new JScrollPane();
-        jScrollPane.setViewportView(jPanel);
-        return jScrollPane;
+
+        JPanel displayPanel = new JPanel(new BorderLayout());
+        displayPanel.setBorder(BorderFactory.createTitledBorder("Display(s)"));
+        displayPanel.add(new JLabel(getDisplay(si)));
+
+        osFullPanel.add(displayPanel);
+
+
+        JPanel hwPanel = new JPanel(new BorderLayout());
+        hwPanel.setBorder(BorderFactory.createTitledBorder("Hardware Information"));
+        hwPanel.add(new JLabel(getHw(si)));
+
+        osFullPanel.add(hwPanel);
+
+        return osFullPanel;
+    }
+
+    private String wrapHtmlTag(String text) {
+        return "<HTML>" + text + "</HTML>";
+    }
+
+    private String updateOsData(String osInfoPrefix, SystemInfo si) {
+        return wrapHtmlTag(osInfoPrefix + FormatUtil.formatElapsedSecs(si.getOperatingSystem().getSystemUptime()));
+    }
+
+    private static String getHw(SystemInfo si) {
+        StringBuilder sb = new StringBuilder();
+        ComputerSystem computerSystem = si.getHardware().getComputerSystem();
+        //TODO need format data
+        return computerSystem.toString();
+    }
+
+    private static String getDisplay(SystemInfo si) {
+        StringBuilder sb = new StringBuilder();
+        List<Display> displays = si.getHardware().getDisplays();
+        if (displays.isEmpty()) {
+            sb.append("None detected.");
+        } else {
+            int i = 0;
+            for (Display display : displays) {
+                byte[] edid = display.getEdid();
+                byte[][] desc = EdidUtil.getDescriptors(edid);
+                String name = "Display " + i;
+                for (byte[] b : desc) {
+                    if (EdidUtil.getDescriptorType(b) == 0xfc) {
+                        name = EdidUtil.getDescriptorText(b);
+                    }
+                }
+                if (i++ > 0) {
+                    sb.append(System.getProperty("line.separator"));
+                }
+                sb.append(name).append(": ");
+                int hSize = EdidUtil.getHcm(edid);
+                int vSize = EdidUtil.getVcm(edid);
+                sb.append(String.format("%d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54, vSize / 2.54));
+            }
+        }
+        return sb.toString();
+    }
+
+    private static String getProc(SystemInfo si) {
+        StringBuilder sb = new StringBuilder();
+        CentralProcessor proc = si.getHardware().getProcessor();
+        sb.append(proc.toString());
+
+        return sb.toString().replaceAll("\\n", "<BR/>");
+    }
+
+    private String getOsInfoPrefix(String osStr, SystemInfo si) {
+        StringBuilder sb = new StringBuilder(osStr);
+        OperatingSystem os = si.getOperatingSystem();
+        sb.append(": ").append(os).append("<BR/>").append("<BR/>").append("Booted: ")
+                .append(Instant.ofEpochSecond(os.getSystemBootTime())).append("<BR/>").append("Uptime: ");
+        return sb.toString();
     }
 }

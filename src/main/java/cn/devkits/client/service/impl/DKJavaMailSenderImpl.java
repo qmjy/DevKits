@@ -5,8 +5,8 @@
 package cn.devkits.client.service.impl;
 
 import cn.devkits.client.tray.model.EmailCfgModel;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.util.StringUtils;
 
 /**
  * <p>

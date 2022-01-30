@@ -60,6 +60,7 @@ public class ProcessorPanel extends JPanel { // NOSONAR squid:S110
 
     public ProcessorPanel(SystemInfo si) {
         super();
+        setLayout(new BorderLayout());
         CentralProcessor cpu = si.getHardware().getProcessor();
         oldTicks = new long[TickType.values().length];
         oldProcTicks = new long[cpu.getLogicalProcessorCount()][TickType.values().length];

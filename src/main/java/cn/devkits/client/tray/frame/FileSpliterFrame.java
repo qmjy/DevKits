@@ -319,16 +319,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         applyBtn.addActionListener(new ApplyActionListener(this));
         closeBtn.addActionListener(e -> {
             executor.shutdownNow();
-
-            if (executor.isTerminated()) {
-                JButton btn = (JButton) e.getSource();
-                ;
-                Container parent = btn.getParent().getParent().getParent();
-                if (parent instanceof FileSpliterFrame) {
-                    FileSpliterFrame root = (FileSpliterFrame) parent;
-                    root.dispose();
-                }
-            }
+            this.dispose();
         });
     }
 

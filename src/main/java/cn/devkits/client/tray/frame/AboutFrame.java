@@ -7,7 +7,6 @@ package cn.devkits.client.tray.frame;
 import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.maven.model.Dependency;
@@ -15,20 +14,16 @@ import org.apache.maven.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * About Dialog
@@ -160,18 +155,13 @@ public class AboutFrame extends DKAbstractFrame {
         String[] existingFamilyNames = null; // installed fonts
         String fontName = null; // font we'll use
 
-        // Search for all installed font families. The first
-        // call may take a while on some systems with hundreds of
-        // installed fonts, so if possible execute it in idle time,
-        // and certainly not in a place that delays painting of
+        // Search for all installed font families. The first call may take a while on some systems with hundreds of
+        // installed fonts, so if possible execute it in idle time, and certainly not in a place that delays painting of
         // the UI (for example, when bringing up a menu).
         //
-        // In systems with malformed fonts, this code might cause
-        // serious problems; use the latest JRE in this case. (You'll
-        // see the same problems if you use Swing's HTML support or
-        // anything else that searches for all fonts.) If this call
-        // causes problems for you under the latest JRE, please let
-        // us know.
+        // In systems with malformed fonts, this code might cause serious problems; use the latest JRE in this case. (You'll
+        // see the same problems if you use Swing's HTML support or anything else that searches for all fonts.) If this call
+        // causes problems for you under the latest JRE, please let us know.
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         if (ge != null) {
             existingFamilyNames = ge.getAvailableFontFamilyNames();

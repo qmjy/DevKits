@@ -5,12 +5,10 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.tray.frame.listener.StartEndListener;
-import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import com.google.common.collect.Lists;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -18,8 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.SpringLayout.Constraints;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;

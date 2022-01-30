@@ -4,10 +4,8 @@
 
 package cn.devkits.client.tray.frame;
 
+import javax.swing.*;
 import java.awt.*;
-import javax.swing.JButton;
-import javax.swing.JRootPane;
-import javax.swing.JSplitPane;
 
 public class FileExplorersFrame extends DKAbstractFrame {
 

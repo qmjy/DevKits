@@ -6,9 +6,8 @@ package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.util.DKSystemUIUtil;
 
+import javax.swing.*;
 import java.awt.*;
-import javax.swing.JFrame;
-import javax.swing.JRootPane;
 
 public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
     private static final long serialVersionUID = 6346125541327870409L;

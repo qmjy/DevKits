@@ -63,6 +63,8 @@ public class MemoryPanel extends JPanel { // NOSONAR squid:S110
 
     public MemoryPanel(SystemInfo si) {
         super();
+        setLayout(new BorderLayout());
+        setBackground(Color.BLUE);
         init(si.getHardware().getMemory());
     }
 
@@ -78,14 +80,25 @@ public class MemoryPanel extends JPanel { // NOSONAR squid:S110
         physMem.setSubtitles(Collections.singletonList(new TextTitle(updatePhysTitle(memory))));
         virtMem.setSubtitles(Collections.singletonList(new TextTitle(updateVirtTitle(memory))));
 
+        GridBagConstraints pmConstraints = new GridBagConstraints();
+        pmConstraints.weightx = 1d;
+        pmConstraints.weighty = 1d;
+        pmConstraints.fill = GridBagConstraints.BOTH;
+        GridBagConstraints vmConstraints = (GridBagConstraints) pmConstraints.clone();
+        vmConstraints.gridx = 1;
+        GridBagConstraints textConstraints = new GridBagConstraints();
+        textConstraints.gridy = 1;
+        textConstraints.gridwidth = 2;
+        textConstraints.fill = GridBagConstraints.BOTH;
+
         JPanel memoryPanel = new JPanel();
-        memoryPanel.setLayout(new BorderLayout());
-        memoryPanel.add(new ChartPanel(physMem), BorderLayout.WEST);
-        memoryPanel.add(new ChartPanel(virtMem), BorderLayout.EAST);
+        memoryPanel.setLayout(new GridBagLayout());
+        memoryPanel.add(new ChartPanel(physMem), pmConstraints);
+        memoryPanel.add(new ChartPanel(virtMem), vmConstraints);
 
         JTextArea textArea = new JTextArea(60, 20);
         textArea.setText(updateMemoryText(memory));
-        memoryPanel.add(textArea, BorderLayout.SOUTH);
+        memoryPanel.add(textArea, textConstraints);
 
         add(memoryPanel, BorderLayout.CENTER);
 

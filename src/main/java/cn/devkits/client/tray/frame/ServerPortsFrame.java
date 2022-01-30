@@ -4,36 +4,25 @@
 
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.tray.model.SocketReachableModel;
+import cn.devkits.client.util.DKNetworkUtil;
+import cn.devkits.client.util.DKStringUtil;
+import cn.devkits.client.util.DKSystemUIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
-import cn.devkits.client.util.DKSystemUIUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import cn.devkits.client.tray.model.SocketReachableModel;
-import cn.devkits.client.util.DKNetworkUtil;
-import cn.devkits.client.util.DKStringUtil;
 
 /**
  * 端口检查
