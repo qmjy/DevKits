@@ -137,7 +137,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
                         container.add(new ProcessorPanel(si), BorderLayout.CENTER);
                         break;
                     case 2:
-                        container.add(initMainboard(), BorderLayout.CENTER);
+                        container.add(new JPanel(), BorderLayout.CENTER);
                         break;
                     case 3:
                         container.add(new MemoryPanel(si), BorderLayout.CENTER);
@@ -173,12 +173,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         });
     }
 
-
-    private Component initMainboard() {
-        return new JPanel();
-    }
-
-
     private Component initSensors(HardwareAbstractionLayer hal) {
         Sensors sensors = hal.getSensors();
 
@@ -201,7 +195,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
             for (int i = 0; i < displays.size(); i++) {
                 JPanel processorPanel = new JPanel(new BorderLayout());
                 processorPanel.setBorder(BorderFactory.createTitledBorder("Display: " + i));
-                processorPanel.add(new JLabel(wrapDisplayDetailInfo(displays.get(i), i)));
+                processorPanel.add(new JLabel(wrapHtmlTag(wrapDisplayDetailInfo(displays.get(i), i))));
 
                 osFullPanel.add(processorPanel);
             }
@@ -307,7 +301,8 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     }
 
     private String wrapHtmlTag(String text) {
-        return "<HTML>" + text + "</HTML>";
+        String s = text.replaceAll("\\n", "<BR/>");
+        return "<HTML>" + s + "</HTML>";
     }
 
     private String updateOsData(String osInfoPrefix, SystemInfo si) {
@@ -325,7 +320,8 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         StringBuilder sb = new StringBuilder();
         byte[] edId = display.getEdid();
         String name = formatDisplayName(edId, index);
-        sb.append(name).append(": ").append(formatDisplaySize(edId));
+        sb.append(name).append(": ").append(formatDisplaySize(edId)).append("<BR/>")
+                .append(display.toString());
         return sb.toString();
     }
 
