@@ -4,26 +4,48 @@
 
 package cn.devkits.client.tray.frame;
 
-import cn.devkits.client.component.osinfo.*;
+import cn.devkits.client.component.osinfo.Config;
+import cn.devkits.client.component.osinfo.FileStorePanel;
+import cn.devkits.client.component.osinfo.InterfacePanel;
+import cn.devkits.client.component.osinfo.MemoryPanel;
+import cn.devkits.client.component.osinfo.ProcessPanel;
+import cn.devkits.client.component.osinfo.ProcessorPanel;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import oshi.SystemInfo;
-import oshi.hardware.*;
-import oshi.software.os.OperatingSystem;
-import oshi.util.EdidUtil;
-import oshi.util.FormatUtil;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.JTree;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.time.Instant;
 import java.util.List;
+
+import oshi.SystemInfo;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.ComputerSystem;
+import oshi.hardware.Display;
+import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.PowerSource;
+import oshi.hardware.Sensors;
+import oshi.hardware.SoundCard;
+import oshi.hardware.UsbDevice;
+import oshi.software.os.OperatingSystem;
+import oshi.util.EdidUtil;
+import oshi.util.FormatUtil;
 
 /**
  * 当前计算机软硬件信息展示
@@ -127,7 +149,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
                         container.add(initSensors(si.getHardware()), BorderLayout.CENTER);
                         break;
                     case 6:
-                        container.add(initDisplay(si.getHardware()), BorderLayout.CENTER);
+                        container.add(initDisplay(si), BorderLayout.CENTER);
                         break;
                     case 7:
                         container.add(new InterfacePanel(si), BorderLayout.CENTER);
@@ -161,29 +183,32 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         Sensors sensors = hal.getSensors();
 
         StringBuilder sb = new StringBuilder("<html><body>Sensors: <br>");
-
         sb.append(sensors.toString()).append("<br>");
-
         sb.append("</body></html>");
 
         return new JLabel(sb.toString());
     }
 
-    private Component initDisplay(HardwareAbstractionLayer hal) {
-        List<Display> displays = hal.getDisplays();
+    private Component initDisplay(SystemInfo si) {
+        JPanel osFullPanel = new JPanel();
+        osFullPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        osFullPanel.setLayout(new BoxLayout(osFullPanel, BoxLayout.Y_AXIS));
 
-        StringBuilder sb = new StringBuilder("<html><body>Displays: <br>");
+        List<Display> displays = si.getHardware().getDisplays();
+        if (displays.isEmpty()) {
+            osFullPanel.add(new JLabel("None detected!"));
+        } else {
+            for (int i = 0; i < displays.size(); i++) {
+                JPanel processorPanel = new JPanel(new BorderLayout());
+                processorPanel.setBorder(BorderFactory.createTitledBorder("Display: " + i));
+                processorPanel.add(new JLabel(wrapDisplayDetailInfo(displays.get(i), i)));
 
-        int i = 0;
-        for (Display display : displays) {
-            sb.append(" Display " + i + ":").append("<br>");
-            sb.append(String.valueOf(display));
-            i++;
+                osFullPanel.add(processorPanel);
+            }
         }
 
-        sb.append("</body></html>");
+        return osFullPanel;
 
-        return new JLabel(sb.toString());
     }
 
     private Component initUsb(HardwareAbstractionLayer hal) {
@@ -225,7 +250,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         StringBuilder sb = new StringBuilder("<html><body>Sound Cards: <br>");
 
         for (SoundCard card : soundCards) {
-            sb.append(" " + String.valueOf(card)).append("<br>");
+            sb.append(" " + card).append("<br>");
         }
         sb.append("</body></html>");
 
@@ -266,20 +291,11 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         Timer timer = new Timer(Config.REFRESH_FAST, e -> osArea.setText(updateOsData(osInfoPrefix, si)));
         timer.start();
 
-
         JPanel processorPanel = new JPanel(new BorderLayout());
         processorPanel.setBorder(BorderFactory.createTitledBorder("Processor"));
         processorPanel.add(new JLabel(wrapHtmlTag(getProc(si))));
 
         osFullPanel.add(processorPanel);
-
-
-        JPanel displayPanel = new JPanel(new BorderLayout());
-        displayPanel.setBorder(BorderFactory.createTitledBorder("Display(s)"));
-        displayPanel.add(new JLabel(getDisplay(si)));
-
-        osFullPanel.add(displayPanel);
-
 
         JPanel hwPanel = new JPanel(new BorderLayout());
         hwPanel.setBorder(BorderFactory.createTitledBorder("Hardware Information"));
@@ -305,29 +321,43 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         return computerSystem.toString();
     }
 
-    private static String getDisplay(SystemInfo si) {
+    private String wrapDisplayDetailInfo(Display display, int index) {
+        StringBuilder sb = new StringBuilder();
+        byte[] edId = display.getEdid();
+        String name = formatDisplayName(edId, index);
+        sb.append(name).append(": ").append(formatDisplaySize(edId));
+        return sb.toString();
+    }
+
+    private String formatDisplayName(byte[] edid, int index) {
+        byte[][] desc = EdidUtil.getDescriptors(edid);
+        String name = "Display " + index;
+        for (byte[] b : desc) {
+            if (EdidUtil.getDescriptorType(b) == 0xfc) {
+                name = EdidUtil.getDescriptorText(b);
+            }
+        }
+        return name;
+    }
+
+    private String formatDisplaySize(byte[] edid) {
+        int hSize = EdidUtil.getHcm(edid);
+        int vSize = EdidUtil.getVcm(edid);
+        return String.format("%d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54, vSize / 2.54);
+    }
+
+
+    private String getDisplay(SystemInfo si) {
         StringBuilder sb = new StringBuilder();
         List<Display> displays = si.getHardware().getDisplays();
         if (displays.isEmpty()) {
             sb.append("None detected.");
         } else {
-            int i = 0;
-            for (Display display : displays) {
-                byte[] edid = display.getEdid();
-                byte[][] desc = EdidUtil.getDescriptors(edid);
-                String name = "Display " + i;
-                for (byte[] b : desc) {
-                    if (EdidUtil.getDescriptorType(b) == 0xfc) {
-                        name = EdidUtil.getDescriptorText(b);
-                    }
-                }
+            for (int i = 0; i < displays.size(); i++) {
                 if (i++ > 0) {
                     sb.append(System.getProperty("line.separator"));
                 }
-                sb.append(name).append(": ");
-                int hSize = EdidUtil.getHcm(edid);
-                int vSize = EdidUtil.getVcm(edid);
-                sb.append(String.format("%d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54, vSize / 2.54));
+                sb.append(wrapDisplayDetailInfo(displays.get(i), i));
             }
         }
         return sb.toString();
@@ -344,7 +374,8 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private String getOsInfoPrefix(String osStr, SystemInfo si) {
         StringBuilder sb = new StringBuilder(osStr);
         OperatingSystem os = si.getOperatingSystem();
-        sb.append(": ").append(os).append("<BR/>").append("<BR/>").append("Booted: ")
+        sb.append(": ").append(os).append("<BR/>")
+                .append("UUID: ").append(DKSystemUtil.getComputerIdentifier()).append("<BR/><BR/>").append("Booted: ")
                 .append(Instant.ofEpochSecond(os.getSystemBootTime())).append("<BR/>").append("Uptime: ");
         return sb.toString();
     }

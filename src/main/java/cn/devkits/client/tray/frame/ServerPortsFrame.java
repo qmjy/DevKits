@@ -74,7 +74,6 @@ public class ServerPortsFrame extends DKAbstractFrame {
 
         jRootPane.add(northPane, BorderLayout.NORTH);
         jRootPane.add(scrollPane, BorderLayout.CENTER);
-
     }
 
     private void createSearchBtn(final JPanel northPanel) {
