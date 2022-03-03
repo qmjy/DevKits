@@ -194,6 +194,7 @@ public class AppStarter implements Runnable {
         Menu sysInfoItem = new Menu(DKSystemUIUtil.getLocaleString("SYS_INFO"), false);
 
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.USER_NAME);
+        MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.PC_NAME);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.OS_NAME);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.OS_ARCH);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.CPU_INF);

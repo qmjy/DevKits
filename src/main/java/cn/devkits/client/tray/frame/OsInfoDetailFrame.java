@@ -283,7 +283,10 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         osFullPanel.add(osPanel);
 
         // Update up time every second
-        Timer timer = new Timer(Config.REFRESH_FAST, e -> osArea.setText(updateOsData(osInfoPrefix, si)));
+        Timer timer = new Timer(Config.REFRESH_FAST, e -> {
+            long systemUptime = si.getOperatingSystem().getSystemUptime();
+            osArea.setText(wrapHtmlTag(osInfoPrefix + FormatUtil.formatElapsedSecs(systemUptime)));
+        });
         timer.start();
 
         JPanel processorPanel = new JPanel(new BorderLayout());
@@ -304,10 +307,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private String wrapHtmlTag(String text) {
         String s = text.replaceAll("\\n", "<BR/>");
         return "<HTML>" + s + "</HTML>";
-    }
-
-    private String updateOsData(String osInfoPrefix, SystemInfo si) {
-        return wrapHtmlTag(osInfoPrefix + FormatUtil.formatElapsedSecs(si.getOperatingSystem().getSystemUptime()));
     }
 
     private static String getHw(SystemInfo si) {

@@ -8,6 +8,7 @@ import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKNetworkUtil;
 import cn.devkits.client.util.DKSystemUIUtil;
 import cn.devkits.client.util.DKSystemUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,13 @@ public class MenuItemFactory {
                 menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("USER_NAME") + userName);
                 menuItem.addActionListener(e -> {
                     DKSystemUIUtil.setSystemClipboard(userName);
+                });
+                break;
+            case PC_NAME:
+                String pcName = System.getenv().get("COMPUTERNAME");
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("PC_NAME") + pcName);
+                menuItem.addActionListener(e -> {
+                    DKSystemUIUtil.setSystemClipboard(pcName);
                 });
                 break;
             case OS_NAME:
