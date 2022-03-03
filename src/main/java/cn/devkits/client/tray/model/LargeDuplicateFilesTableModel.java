@@ -19,7 +19,7 @@ public class LargeDuplicateFilesTableModel extends AbstractTableModel {
 
     private Set<String> files;
     private String[] names = {DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_FILE_NAME"),
-            DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_FILE_PATH"), DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_FILE_SIZE"),
+            DKSystemUIUtil.getLocaleString("COMMON_LABEL_FILE_PATH"), DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_FILE_SIZE"),
             DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_CREATE_TIME"), DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_MODIFY_TIME")};
 
     public LargeDuplicateFilesTableModel() {

@@ -7,11 +7,14 @@ package cn.devkits.client.tray.pattern;
 import cn.devkits.client.tray.model.FileSpliterModel;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
+import cn.devkits.client.util.IoUtils;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +26,7 @@ import javax.swing.JRadioButton;
 
 /**
  * 文本文件切割策略实现
+ *
  * @author Shaofeng Liu
  * @version 1.0.1
  * @time 2020年2月14日 下午12:08:29
@@ -65,8 +69,9 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
         String splitFileName = splitModel.getFile().getName();
 
         long start = System.currentTimeMillis();
+        LineIterator lineIterator = null;
         try {
-            LineIterator lineIterator = FileUtils.lineIterator(splitModel.getFile());
+            lineIterator = FileUtils.lineIterator(splitModel.getFile());
 
             int fileIndex = 1, lineIndex = 0;
             String outputFolderPath = splitModel.getOutputFolderPath();
@@ -78,7 +83,8 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
                 buffer.add(nextLine);
                 lineIndex++;
 
-                if (buffer.size() == BUFFER_LINE_NUM) {// 避免用户设置行数过大导致内存溢出
+                // 避免用户设置行数过大导致内存溢出
+                if (buffer.size() == BUFFER_LINE_NUM) {
                     flushFileData(segmentFile, buffer);
                 }
 
@@ -94,8 +100,11 @@ public class TextFileSpliterStrategyImpl extends TextFileSpliterStrategy impleme
         } catch (IOException e) {
             LOGGER.error("Split file with {} lines occured an error!", line);
             splitModel.addMsg("Split file with " + line + " lines occured an error!");
+        } finally {
+            if (lineIterator != null) {
+                IoUtils.closeQuietly(lineIterator);
+            }
         }
-
         splitModel.addMsg("Total time:" + (System.currentTimeMillis() - start));
         splitModel.finishSplit();
     }

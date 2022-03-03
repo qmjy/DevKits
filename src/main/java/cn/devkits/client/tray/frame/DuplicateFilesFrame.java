@@ -152,7 +152,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         this.browselBtn = new JButton(DKSystemUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
         browselBtn.setFocusPainted(false);
 
-        JLabel fileTypeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_FILE_TYPE"), JLabel.RIGHT);
+        JLabel fileTypeLabel = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("COMMON_LABEL_FILE_TYPE"), JLabel.RIGHT);
         fileTypeComboBox = new JComboBox<String>(FILE_TYPE_UNITS);
         fileTypeComboBox.setLightWeightPopupEnabled(false);
 

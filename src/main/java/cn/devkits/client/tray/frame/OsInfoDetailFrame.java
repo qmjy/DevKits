@@ -58,7 +58,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 6295111163819170866L;
     private JTabbedPane jTabbedPane;
-    private SystemInfo si = new SystemInfo();
 
     public OsInfoDetailFrame() {
         super(DKSystemUIUtil.getLocaleString("SYS_INFO_TITLE"), 0.9f);
@@ -77,7 +76,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         add(toolBar, BorderLayout.PAGE_START);
 
         this.jTabbedPane = new JTabbedPane();
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard(si));
+        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard());
         jTabbedPane.addTab("CPU", getPanel());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), getPanel());
         jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MEMORY"), getPanel());
@@ -131,7 +130,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
                 if (container.getComponents().length > 0) {
                     return;
                 }
-                SystemInfo si = new SystemInfo();
+                SystemInfo si = DKSystemUtil.getSystemInfo();
                 switch (tabIndex) {
                     case 1:
                         container.add(new ProcessorPanel(si), BorderLayout.CENTER);
@@ -267,7 +266,9 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         return new JLabel(sb.toString());
     }
 
-    private JPanel initDashboard(SystemInfo si) {
+    private JPanel initDashboard() {
+        SystemInfo si = DKSystemUtil.getSystemInfo();
+
         JPanel osFullPanel = new JPanel();
         osFullPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         osFullPanel.setLayout(new BoxLayout(osFullPanel, BoxLayout.Y_AXIS));

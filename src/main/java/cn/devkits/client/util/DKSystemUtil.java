@@ -57,6 +57,15 @@ public final class DKSystemUtil {
     }
 
     /**
+     * 获取系统信息对象
+     *
+     * @return 系统信息对象
+     */
+    public static SystemInfo getSystemInfo() {
+        return SYSTEM_INFO;
+    }
+
+    /**
      * open local application
      *
      * @param appName the application name need to open
@@ -235,8 +244,8 @@ public final class DKSystemUtil {
      * @return CPU information
      */
     public static String getCpuInfo() {
-
-        return "";
+        CentralProcessor processor = SYSTEM_INFO.getHardware().getProcessor();
+        return processor.getProcessorIdentifier().getName();
     }
 
     public static void sleep(int i) {
@@ -269,13 +278,12 @@ public final class DKSystemUtil {
      * total processor count.
      *
      * @return A string containing four hyphen-delimited fields representing the
-     *         processor; the first 3 are 32-bit hexadecimal values and the last one
-     *         is an integer value.
+     * processor; the first 3 are 32-bit hexadecimal values and the last one
+     * is an integer value.
      */
     public static String getComputerIdentifier() {
-        SystemInfo systemInfo = new SystemInfo();
-        OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
-        HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
+        OperatingSystem operatingSystem = SYSTEM_INFO.getOperatingSystem();
+        HardwareAbstractionLayer hardwareAbstractionLayer = SYSTEM_INFO.getHardware();
         CentralProcessor centralProcessor = hardwareAbstractionLayer.getProcessor();
         ComputerSystem computerSystem = hardwareAbstractionLayer.getComputerSystem();
 
