@@ -38,7 +38,7 @@ import oshi.util.FormatUtil;
  * @version 1.0.0
  * @time 2019年10月20日 下午9:37:03
  */
-public final class DKSystemUtil {
+public class DKSystemUtil {
 
     /**
      * windows 安全命令
@@ -53,7 +53,7 @@ public final class DKSystemUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUtil.class);
     private static final SystemInfo SYSTEM_INFO = new SystemInfo();
 
-    private DKSystemUtil() {
+    public DKSystemUtil() {
     }
 
     /**
