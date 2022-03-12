@@ -98,12 +98,12 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
 
         initUI(getContentPane());
         initListener();
-        initMenuaBr();
+        initMenuBr();
 
         executor.execute(this);
     }
 
-    private void initMenuaBr() {
+    private void initMenuBr() {
         JMenuBar mb = new JMenuBar();
         JMenu fileMenu = new JMenu(DKSystemUIUtil.getLocaleString("COMMON_MENU_FILE"));
 

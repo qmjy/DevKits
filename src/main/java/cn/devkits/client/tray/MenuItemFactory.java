@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class MenuItemFactory {
 
@@ -25,7 +26,10 @@ public class MenuItemFactory {
                 menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("SERVER_PORT_DETECT"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SERVER_PORT));
                 break;
-
+            case WIFI:
+                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("SSID_MANAGEMENT"));
+                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.WIFI));
+                break;
             default:
                 break;
         }
@@ -93,21 +97,28 @@ public class MenuItemFactory {
                 });
                 break;
             case IP:
-                String internetIp = DKNetworkUtil.getIp().get();
-
-                menuItem = new MenuItem(itemType.toString() + ": " + internetIp);
-                menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(internetIp);
-                });
-                break;
+                Optional<String> ip = DKNetworkUtil.getIp();
+                if (ip.isPresent()) {
+                    String internetIp = ip.get();
+                    menuItem = new MenuItem(itemType.toString() + ": " + internetIp);
+                    menuItem.addActionListener(e -> {
+                        DKSystemUIUtil.setSystemClipboard(internetIp);
+                    });
+                    break;
+                }
+                return;
             case MAC:
-                String mac = DKNetworkUtil.getMacAddress().get();
+                Optional<String> macAddress = DKNetworkUtil.getMacAddress();
+                if (macAddress.isPresent()) {
+                    String mac = macAddress.get();
 
-                menuItem = new MenuItem(itemType.toString() + ": " + mac);
-                menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(mac);
-                });
-                break;
+                    menuItem = new MenuItem(itemType.toString() + ": " + mac);
+                    menuItem.addActionListener(e -> {
+                        DKSystemUIUtil.setSystemClipboard(mac);
+                    });
+                    break;
+                }
+                return;
             default:
                 break;
         }

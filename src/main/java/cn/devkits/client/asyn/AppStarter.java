@@ -165,6 +165,7 @@ public class AppStarter implements Runnable {
     private MenuItem initNetworkMenu() {
         Menu networkMenu = new Menu(DKSystemUIUtil.getLocaleString("NETWORK_TOOLS"));
         MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.SERVER_PORT);
+        MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.WIFI);
         return networkMenu;
     }
 
@@ -240,7 +241,7 @@ public class AppStarter implements Runnable {
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.HOSTS));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_SPLITER"));
+        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_SPLITTER"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILESPLITER));
         toolsItem.add(menuItem);
 

@@ -18,13 +18,13 @@ public class WinSystemUtilTest {
 
     @Test
     public void testGetWifiNamesOfConnected() {
-        List<String> wifiNamesOfConnected = winSystemUtil.getWifiNamesOfConnected();
+        List<String> wifiNamesOfConnected = winSystemUtil.getSsidNamesOfConnected();
         assertTrue(wifiNamesOfConnected.size() >= 0);
     }
 
     @Test
     public void testGetPwdOfWifi() {
-        String dd = winSystemUtil.getPwdOfWifi("dd");
+        String dd = winSystemUtil.getPwdOfSsid("dd");
         if (dd != null) {
             assertTrue("liu891231".equals(dd));
         }

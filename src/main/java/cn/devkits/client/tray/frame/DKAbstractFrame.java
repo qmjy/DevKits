@@ -5,10 +5,16 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSystemUtil;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * 基础Frame,为所有Frame提供基础公共能力
+ *
+ * @author Shaofeng Liu
+ */
 public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
     private static final long serialVersionUID = 6346125541327870409L;
 
@@ -16,6 +22,8 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
     protected int currentWidth = 0;
     protected int currentHeight = 0;
+
+    protected DKSystemUtil currentSystemUtil = DKSystemUtil.getCurrentSystemUtil();
 
     protected DKAbstractFrame() {
 

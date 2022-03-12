@@ -27,6 +27,7 @@ For to be a free programmer.
 - Todo Reminder(Tray Message or Email)
 - Camera
 - The system tray supports displaying CPU utilization in animation
+- WIFI management
 
 
 ## Runtime Version

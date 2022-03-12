@@ -4,6 +4,14 @@
 
 package cn.devkits.client.util;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.bridj.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +25,13 @@ import javax.sound.sampled.Clip;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +50,7 @@ import oshi.util.FormatUtil;
  * @version 1.0.0
  * @time 2019年10月20日 下午9:37:03
  */
-public class DKSystemUtil {
+public abstract class DKSystemUtil {
 
     /**
      * windows 安全命令
@@ -53,8 +65,33 @@ public class DKSystemUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUtil.class);
     private static final SystemInfo SYSTEM_INFO = new SystemInfo();
 
+    /**
+     * default constructor
+     */
     public DKSystemUtil() {
     }
+
+    /**
+     * 获取当前连接的wifi详情
+     *
+     * @return wifi 详情
+     */
+    public abstract Map<String, String> getCurrentSsid();
+
+    /**
+     * 获取当前连接的WIFI信息
+     *
+     * @return 当前连接的wifi详情
+     */
+    public abstract List<String> getSsidNamesOfConnected();
+
+    /**
+     * 获取指定wifi名称的密码
+     *
+     * @param wifiName wifi name
+     * @return wifi 密码
+     */
+    public abstract String getPwdOfSsid(String wifiName);
 
     /**
      * 获取系统信息对象
@@ -64,6 +101,49 @@ public class DKSystemUtil {
     public static SystemInfo getSystemInfo() {
         return SYSTEM_INFO;
     }
+
+    /**
+     * 获取当前操作系统对应的系统助手
+     *
+     * @return 适合当前操作系统的助手接口
+     */
+    public static DKSystemUtil getCurrentSystemUtil() {
+        if (isWindows()) {
+            return new WinSystemUtil();
+        }
+        //TODO
+        return null;
+    }
+
+
+    /**
+     * 生成二维码
+     *
+     * @param text   二维码内容
+     * @param width  二维码图片宽度
+     * @param height 二维码图片高度
+     * @return 二维码图片缓冲流
+     */
+    public static BufferedImage generateQrImg(String text, int width, int height) {
+        HashMap hashMap = new HashMap();
+        // 设置二维码字符编码
+        hashMap.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        // 设置二维码纠错等级
+        hashMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+        // 设置二维码边距
+        hashMap.put(EncodeHintType.MARGIN, 2);
+
+        try {
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height, hashMap);
+            MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(0xFF000001, 0xFFFFFFFF);
+            BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix, matrixToImageConfig);
+            return bufferedImage;
+        } catch (WriterException e) {
+            LOGGER.error("Generate QR file failed...");
+        }
+        return null;
+    }
+
 
     /**
      * open local application

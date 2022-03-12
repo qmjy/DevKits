@@ -43,6 +43,9 @@ public class TrayItemWindowListener implements ActionListener {
             case SERVER_PORT:
                 frame = new ServerPortsFrame();
                 break;
+            case WIFI:
+                frame = new WifiManagementFrame();
+                break;
             case CODE_FORMAT:
                 frame = new CodeFormatFrame();
                 break;

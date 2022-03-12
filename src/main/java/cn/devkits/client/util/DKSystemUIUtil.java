@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
@@ -66,6 +68,39 @@ public final class DKSystemUIUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUIUtil.class);
 
+
+    /**
+     * 创建绿色文本的的label
+     *
+     * @param text 待设定的文本内容
+     * @return 绿色文本的Label
+     */
+    public static JLabel createLabelWithGreenText(String text) {
+        return createLabelWithText(text, new Color(0, 200, 0));
+    }
+
+    /**
+     * 创建红色文本的的label
+     *
+     * @param text 待设定的文本内容
+     * @return 红色文本的Label
+     */
+    public static JLabel createLabelWithRedText(String text) {
+        return createLabelWithText(text, new Color(200, 0, 0));
+    }
+
+    /**
+     * 创建指定颜色文本的的label
+     *
+     * @param text 待设定的文本内容
+     * @return 指定颜色文本的Label
+     */
+    public static JLabel createLabelWithText(String text, Color color) {
+        JLabel jLabel = new JLabel(text);
+        jLabel.setForeground(color);
+        jLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        return jLabel;
+    }
 
     /**
      * 获取系统默认语言字符
@@ -276,6 +311,7 @@ public final class DKSystemUIUtil {
         Transferable tText = new StringSelection(content);
         clip.setContents(tText, null);
     }
+
 
     /**
      * 获取当前操作系统中所有可视窗口
