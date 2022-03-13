@@ -72,6 +72,13 @@ public abstract class DKSystemUtil {
     }
 
     /**
+     * 获取当前可用SSID列表
+     *
+     * @return 当前可用SSID列表
+     */
+    public abstract Map<String, Map<String, String>> getAvailableSsids();
+
+    /**
      * 获取当前连接的wifi详情
      *
      * @return wifi 详情

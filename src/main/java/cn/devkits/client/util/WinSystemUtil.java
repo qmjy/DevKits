@@ -25,6 +25,29 @@ public class WinSystemUtil extends DKSystemUtil {
         super();
     }
 
+    @Override
+    public Map<String, Map<String, String>> getAvailableSsids() {
+        Map<String, Map<String, String>> stringMapMap = new HashMap<>();
+        List<String> wifiDetails = executeWinCmd("netsh wlan show network mode=Bssid");
+        String key = null;
+        Map<String, String> values = new HashMap<>();
+        //跳过前面4行无用数据
+        for (int i = 4; i < wifiDetails.size(); i++) {
+            String line = wifiDetails.get(i);
+            if (line.trim().length() == 0) {
+                stringMapMap.put(key, values);
+                values = new HashMap<>();
+                continue;
+            }
+            String[] split = line.split(": ");
+            if (line.trim().startsWith("SSID ")) {
+                key = split.length > 1 ? split[1].trim() : "隐藏的网络";
+            } else {
+                values.put(split[0].trim(), split[1].trim());
+            }
+        }
+        return stringMapMap;
+    }
 
     /**
      * 获取当前连接的Wifi信息

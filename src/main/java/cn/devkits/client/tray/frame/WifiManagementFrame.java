@@ -8,9 +8,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 
 /**
  * WIFI管理窗口
@@ -27,6 +26,9 @@ public class WifiManagementFrame extends DKAbstractFrame {
     private JLabel currentPwd = new JLabel("N/A");
     private JLabel currentOnline = new JLabel("N/A");
     private JLabel currentQr = new JLabel();
+
+    private List<String> connectedSsids = null;
+    private Map<String, Map<String, String>> availableSsids = null;
 
     /**
      * 构造方法
@@ -69,7 +71,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
         builder.add(currentName, cc.xy(3, 3));
         builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_PWD"), cc.xy(1, 5));
         builder.add(currentPwd, cc.xy(3, 5));
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_ONLINE"), cc.xy(1, 7));
+        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_SIGNAL"), cc.xy(1, 7));
         builder.add(currentOnline, cc.xy(3, 7));
 
         builder.addSeparator(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_DETAIL_QR"), cc.xyw(1, 9, 4));
@@ -88,7 +90,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
             currentName.setText(ssid);
             String pwd = currentSystemUtil.getPwdOfSsid(ssid);
             currentPwd.setText(pwd);
-            currentOnline.setText("Yes");
+            currentOnline.setText(currentSsid.get("信号"));
             currentQr.setIcon(generateQrImg(ssid, pwd));
 
             StringBuilder sb = new StringBuilder("【当前WIFI】");
@@ -104,9 +106,9 @@ public class WifiManagementFrame extends DKAbstractFrame {
     private Component createWifiListPane(float width) {
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new BorderLayout());
-        jPanel.setBorder(BorderFactory.createTitledBorder(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_ONCE_CONNECTED_LABEL")));
+        jPanel.setBorder(BorderFactory.createTitledBorder(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_SSID_LIST_LABEL")));
 
-        view = new JList<>(getSsidList());
+        view = new JList<String>(getSsidList());
         jPanel.add(new JScrollPane(view), BorderLayout.CENTER);
 
         jPanel.setPreferredSize(new Dimension((int) (getWidth() * width), (int) getHeight()));
@@ -114,8 +116,20 @@ public class WifiManagementFrame extends DKAbstractFrame {
     }
 
     private Vector<String> getSsidList() {
-        List<String> wifiNamesOfConnected = currentSystemUtil.getSsidNamesOfConnected();
-        return new Vector<>(wifiNamesOfConnected);
+        connectedSsids = currentSystemUtil.getSsidNamesOfConnected();
+        availableSsids = currentSystemUtil.getAvailableSsids();
+
+        List<String> objects = new ArrayList<>();
+        objects.addAll(connectedSsids);
+
+        Iterator<String> iterator = availableSsids.keySet().iterator();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            if (objects.contains(next)) {
+                objects.add(next);
+            }
+        }
+        return new Vector<>(objects);
     }
 
     @Override
@@ -126,17 +140,29 @@ public class WifiManagementFrame extends DKAbstractFrame {
                 currentName.setText(selectedValue);
                 String pwd = currentSystemUtil.getPwdOfSsid(selectedValue);
                 currentPwd.setText(pwd);
-                currentOnline.setText("N/A");
+                currentOnline.setText(getSignalOfSsid(selectedValue));
                 currentQr.setIcon(generateQrImg(selectedValue, pwd));
             }
         });
     }
 
+    private String getSignalOfSsid(String ssid) {
+        if (availableSsids.containsKey(ssid)) {
+            return availableSsids.get(ssid).get("信号");
+        } else {
+            return "0%";
+        }
+    }
+
     private ImageIcon generateQrImg(String name, String pwd) {
-        //https://blog.csdn.net/jeffasd/article/details/50129621
-        String qrTxt = "WIFI:T:WPA;S:" + name + ";P:" + pwd + ";;";
-        int qrWidth = (int) (getWidth() * PANE_WIDTH_R * 0.75);
-        BufferedImage bufferedImage = currentSystemUtil.generateQrImg(qrTxt, qrWidth, qrWidth);
-        return new ImageIcon(bufferedImage);
+        if (connectedSsids.contains(name)) {
+            //https://blog.csdn.net/jeffasd/article/details/50129621
+            String qrTxt = "WIFI:T:WPA;S:" + name + ";P:" + pwd + ";;";
+            int qrWidth = (int) (getWidth() * PANE_WIDTH_R * 0.75);
+            BufferedImage bufferedImage = currentSystemUtil.generateQrImg(qrTxt, qrWidth, qrWidth);
+            return new ImageIcon(bufferedImage);
+        } else {
+            return null;
+        }
     }
 }
