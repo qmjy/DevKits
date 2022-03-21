@@ -1,6 +1,7 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSystemUtil;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -93,7 +94,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
             currentOnline.setText(currentSsid.get("信号"));
             currentQr.setIcon(generateQrImg(ssid, pwd));
 
-            StringBuilder sb = new StringBuilder("【当前WIFI】");
+            StringBuilder sb = new StringBuilder();
             sb.append("SSID").append(": ").append(ssid).append("  |  ");
             sb.append("物理地址").append(": ").append(currentSsid.get("物理地址")).append("  |  ");
             sb.append("信号").append(": ").append(currentSsid.get("信号")).append("  |  ");
@@ -159,7 +160,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
             //https://blog.csdn.net/jeffasd/article/details/50129621
             String qrTxt = "WIFI:T:WPA;S:" + name + ";P:" + pwd + ";;";
             int qrWidth = (int) (getWidth() * PANE_WIDTH_R * 0.75);
-            BufferedImage bufferedImage = currentSystemUtil.generateQrImg(qrTxt, qrWidth, qrWidth);
+            BufferedImage bufferedImage = DKSystemUtil.generateQrImg(qrTxt, qrWidth, qrWidth);
             return new ImageIcon(bufferedImage);
         } else {
             return null;
