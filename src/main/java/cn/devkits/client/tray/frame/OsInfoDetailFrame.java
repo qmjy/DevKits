@@ -10,8 +10,8 @@ import cn.devkits.client.component.osinfo.InterfacePanel;
 import cn.devkits.client.component.osinfo.MemoryPanel;
 import cn.devkits.client.component.osinfo.ProcessPanel;
 import cn.devkits.client.component.osinfo.ProcessorPanel;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -60,7 +60,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private JTabbedPane jTabbedPane;
 
     public OsInfoDetailFrame() {
-        super(DKSystemUIUtil.getLocaleString("SYS_INFO_TITLE"), 0.9f);
+        super(DKSysUIUtil.getLocaleString("SYS_INFO_TITLE"), 0.9f);
 
         initUI(getContentPane());
         initListener();
@@ -76,18 +76,18 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         add(toolBar, BorderLayout.PAGE_START);
 
         this.jTabbedPane = new JTabbedPane();
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard());
         jTabbedPane.addTab("CPU", getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_MEMORY"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DISK"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_SENSORS"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_DISPLAYS"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_NETWORK"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_SOUNDCARDS"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_USB_DEVICES"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_POWER_SOURCES"), getPanel());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("SYS_INFO_TAB_PROCESSES"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_MEMORY"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_DISK"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_SENSORS"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_DISPLAYS"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_NETWORK"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_SOUNDCARDS"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_USB_DEVICES"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_POWER_SOURCES"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_PROCESSES"), getPanel());
 
         // 不显示选项卡上的焦点虚线边框
         jTabbedPane.setFocusable(false);
@@ -102,17 +102,17 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     }
 
     private void createToolbarBtns(JToolBar toolBar) {
-        JButton systemBtn = new JButton(DKSystemUIUtil.getLocaleString("SYS_INFO_TOOL_BAR_SYS"));
+        JButton systemBtn = new JButton(DKSysUIUtil.getLocaleString("SYS_INFO_TOOL_BAR_SYS"));
         systemBtn.setFocusable(false);
         systemBtn.addActionListener(e -> {
-            DKSystemUtil.openSystemInfoClient("msinfo32");
+            DKSysUtil.openSystemInfoClient("msinfo32");
         });
         toolBar.add(systemBtn);
 
-        JButton dxBtn = new JButton(DKSystemUIUtil.getLocaleString("SYS_INFO_TOOL_BAR_DX"));
+        JButton dxBtn = new JButton(DKSysUIUtil.getLocaleString("SYS_INFO_TOOL_BAR_DX"));
         dxBtn.setFocusable(false);
         dxBtn.addActionListener(e -> {
-            DKSystemUtil.openSystemInfoClient("dxdiag");
+            DKSysUtil.openSystemInfoClient("dxdiag");
         });
         toolBar.add(dxBtn);
     }
@@ -130,7 +130,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
                 if (container.getComponents().length > 0) {
                     return;
                 }
-                SystemInfo si = DKSystemUtil.getSystemInfo();
+                SystemInfo si = DKSysUtil.getSystemInfo();
                 switch (tabIndex) {
                     case 1:
                         container.add(new ProcessorPanel(si), BorderLayout.CENTER);
@@ -213,7 +213,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
         JTree jTree = new JTree(root);
         TreeNode rootNode = (TreeNode) jTree.getModel().getRoot();
-        DKSystemUIUtil.expandAll(jTree, new TreePath(rootNode), true);
+        DKSysUIUtil.expandAll(jTree, new TreePath(rootNode), true);
 
         return jTree;
     }
@@ -267,7 +267,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     }
 
     private JPanel initDashboard() {
-        SystemInfo si = DKSystemUtil.getSystemInfo();
+        SystemInfo si = DKSysUtil.getSystemInfo();
 
         JPanel osFullPanel = new JPanel();
         osFullPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -371,7 +371,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         StringBuilder sb = new StringBuilder(osStr);
         OperatingSystem os = si.getOperatingSystem();
         sb.append(": ").append(os).append("<BR/>")
-                .append("UUID: ").append(DKSystemUtil.getComputerIdentifier()).append("<BR/><BR/>").append("Booted: ")
+                .append("UUID: ").append(DKSysUtil.getComputerIdentifier()).append("<BR/><BR/>").append("Booted: ")
                 .append(Instant.ofEpochSecond(os.getSystemBootTime())).append("<BR/>").append("Uptime: ");
         return sb.toString();
     }

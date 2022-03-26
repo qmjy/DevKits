@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 import cn.devkits.client.mapper.ClipboardMapper;
-import cn.devkits.client.model.ClipboardModel;
+import cn.devkits.client.dto.ClipboardModel;
 import cn.devkits.client.service.ClipboardService;
 
 @Service

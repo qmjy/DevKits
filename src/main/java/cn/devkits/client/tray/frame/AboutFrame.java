@@ -5,8 +5,8 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.util.DKConfigUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.maven.model.Dependency;
@@ -36,11 +36,11 @@ public class AboutFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 3737746590178589617L;
     private static final Logger LOGGER = LoggerFactory.getLogger(AboutFrame.class);
-    private JLabel name = new JLabel(DKSystemUIUtil.getLocaleString("APP_LOGO"));
+    private JLabel name = new JLabel(DKSysUIUtil.getLocaleString("APP_LOGO"));
     private JLabel version = null;
 
     public AboutFrame() {
-        super(DKSystemUIUtil.getLocaleString("ABOUT_APP"), 0.7f, 0.6f);
+        super(DKSysUIUtil.getLocaleString("ABOUT_APP"), 0.7f, 0.6f);
 
         initUI(getContentPane());
         initListener();
@@ -50,7 +50,7 @@ public class AboutFrame extends DKAbstractFrame {
     protected void initUI(Container jRootPane) {
         name.setFont(getAFont());
 
-        version = new JLabel(DKSystemUIUtil.getLocaleString("VERSION") + DKConfigUtil.getInstance().getPomInfo().getVersion());
+        version = new JLabel(DKSysUIUtil.getLocaleString("VERSION") + DKConfigUtil.getInstance().getPomInfo().getVersion());
         version.setLabelFor(name);
 
         // Create the panel we'll return and set up the layout.
@@ -75,9 +75,9 @@ public class AboutFrame extends DKAbstractFrame {
 
     private Component initTabContent() {
         JTabbedPane jTabbedPane = new JTabbedPane();
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("VERSION_INFO"), loadVersionDetail());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("OPEN_SOURCE_DEPENDENT"), loadOpenSourceTable());
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("LICENSE"), loadLicensePane());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("VERSION_INFO"), loadVersionDetail());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("OPEN_SOURCE_DEPENDENT"), loadOpenSourceTable());
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("LICENSE"), loadLicensePane());
 
         // 不显示选项卡上的焦点虚线边框
         jTabbedPane.setFocusable(false);
@@ -99,7 +99,7 @@ public class AboutFrame extends DKAbstractFrame {
     }
 
     private String loadLicenseContent() {
-        File licenseFile = DKSystemUtil.isDevelopMode() ? new File("LICENSE") : new File("../LICENSE");
+        File licenseFile = DKSysUtil.isDevelopMode() ? new File("LICENSE") : new File("../LICENSE");
         StringBuilder sb = new StringBuilder();
         try {
             LineIterator lineIterator = FileUtils.lineIterator(licenseFile);
@@ -123,7 +123,7 @@ public class AboutFrame extends DKAbstractFrame {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 try {
                     URI uri = e.getURL().toURI();
-                    boolean browseURL = DKSystemUIUtil.browseURL(uri);
+                    boolean browseURL = DKSysUIUtil.browseURL(uri);
                     if (!browseURL) {
                         JOptionPane.showMessageDialog(this, "Open URL with system browser failed: " + uri, "Browse URL Failed", JOptionPane.ERROR_MESSAGE);
                     }
@@ -140,7 +140,7 @@ public class AboutFrame extends DKAbstractFrame {
         Model pomInfo = DKConfigUtil.getInstance().getPomInfo();
 
         JTable jTable = new JTable(new OpenSourceTableModel(pomInfo));
-        DKSystemUIUtil.fitTableColumns(jTable);
+        DKSysUIUtil.fitTableColumns(jTable);
 
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setViewportView(jTable);

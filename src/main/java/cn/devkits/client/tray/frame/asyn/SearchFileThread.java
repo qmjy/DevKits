@@ -77,7 +77,10 @@ public class SearchFileThread extends Thread {
                 for (File file : listFiles) {
                     frame.updateStatusLineText("Scanning: " + file.getAbsolutePath());
                     if (file.isDirectory()) {
-                        recursiveSearch(file);
+                        //以点开始的目录则跳过，例如：.git、.svn等
+                        if (!file.getName().startsWith(".")) {
+                            recursiveSearch(file);
+                        }
                     } else {
                         filterFileAndSubmit(theadPool, file);
                     }

@@ -5,7 +5,7 @@
 package cn.devkits.client.service;
 
 import java.util.List;
-import cn.devkits.client.model.ClipboardModel;
+import cn.devkits.client.dto.ClipboardModel;
 
 /**
  * 

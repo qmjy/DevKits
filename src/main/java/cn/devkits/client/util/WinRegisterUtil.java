@@ -36,7 +36,7 @@ public final class WinRegisterUtil {
         if (createRegistryItem(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH, SHELL_COMMAND_DK_QR_CMD)) {
             Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH + "\\" + SHELL_COMMAND_DK_QR, "", "二维码识别");
 
-            String rootFolder = DKSystemUtil.getRootFolder();
+            String rootFolder = DKSysUtil.getRootFolder();
             String version = DKConfigUtil.getInstance().getVersion();
             String javaCmd = "java -jar " + rootFolder + "\\devkits-" + version + ".jar -decode --qr %1";
             Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, SHELL_BASE_PATH + "\\" + SHELL_COMMAND_DK_QR_CMD, "", javaCmd);

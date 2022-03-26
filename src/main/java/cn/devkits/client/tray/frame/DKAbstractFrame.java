@@ -4,8 +4,8 @@
 
 package cn.devkits.client.tray.frame;
 
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
     protected int currentWidth = 0;
     protected int currentHeight = 0;
 
-    protected DKSystemUtil currentSystemUtil = DKSystemUtil.getCurrentSystemUtil();
+    protected DKSysUtil currentSystemUtil = DKSysUtil.getCurrentSystemUtil();
 
     protected DKAbstractFrame() {
 
@@ -60,7 +60,7 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      */
     protected DKAbstractFrame(String title, int width, int height) {
         super(title);
-        this.setBounds(DKSystemUIUtil.getCenter(width, height));
+        this.setBounds(DKSysUIUtil.getCenter(width, height));
     }
 
     /**

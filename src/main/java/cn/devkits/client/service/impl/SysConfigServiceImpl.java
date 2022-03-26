@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.devkits.client.mapper.SysConfigMapper;
-import cn.devkits.client.model.SysConfig;
+import cn.devkits.client.dto.SysConfig;
 import cn.devkits.client.service.SysConfigService;
 
 import java.util.List;

@@ -15,7 +15,7 @@ import cn.devkits.client.mapper.EmailMapper;
 import cn.devkits.client.service.EmailService;
 import cn.devkits.client.tray.model.EmailCfgModel;
 import cn.devkits.client.util.DKStringUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 
 import com.sun.istack.internal.NotNull;
 
@@ -67,7 +67,7 @@ public class EmailServiceImpl implements EmailService {
             dkJavaMailSender.testConnection();
             resultMap.put(true, "");
         } catch (MessagingException e) {
-            resultMap.put(false, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_ERROR_AUTHFAILED"));
+            resultMap.put(false, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_ERROR_AUTHFAILED"));
         }
         return resultMap;
     }

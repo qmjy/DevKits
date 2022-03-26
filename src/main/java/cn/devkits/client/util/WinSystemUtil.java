@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Shaofeng Liu
  * @Date 2022/03/10
  */
-public class WinSystemUtil extends DKSystemUtil {
+public class WinSystemUtil extends DKSysUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(WinSystemUtil.class);
 
     public WinSystemUtil() {

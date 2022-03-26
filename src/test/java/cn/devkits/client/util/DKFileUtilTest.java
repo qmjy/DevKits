@@ -9,7 +9,7 @@ import org.junit.Test;
 public class DKFileUtilTest {
     @Test
     public void testIsTextFile() {
-        if (DKSystemUtil.isWindows()) {
+        if (DKSysUtil.isWindows()) {
             File file = new File("C:\\Windows\\System32\\drivers\\etc\\hosts");
             assertTrue(DKFileUtil.isTextFile(file));
         } else {
@@ -20,13 +20,13 @@ public class DKFileUtilTest {
     @Test
     public void testIsImg() {
         String file = this.getClass().getResource("/logo.png").getFile().toString();
-        assertTrue(DKFileUtil.isImg(new File(file)));
+        assertTrue(DKFileUtil.isRealImg(new File(file)));
     }
 
 
     @Test
     public void testFormatBytes() {
-        if (DKSystemUtil.isWindows()) {
+        if (DKSysUtil.isWindows()) {
             assertEquals("1 KB", DKFileUtil.formatBytes(1024));
         } else {
             assertEquals("1 KiB", DKFileUtil.formatBytes(1024));

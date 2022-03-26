@@ -1,7 +1,7 @@
 package cn.devkits.client.tray.frame;
 
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -35,7 +35,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
      * 构造方法
      */
     public WifiManagementFrame() {
-        super(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_FRAME_TITLE"), 0.7f);
+        super(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_FRAME_TITLE"), 0.7f);
 
         initUI(getContentPane());
         initListener();
@@ -56,7 +56,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
     private Component createDetailPane(float width) {
         JPanel imagePreviewPane = new JPanel();
         imagePreviewPane.setLayout(new BorderLayout());
-        imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_DETAIL_INFO_TITLE")));
+        imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_DETAIL_INFO_TITLE")));
         imagePreviewPane.setPreferredSize(new Dimension((int) (getWidth() * width), getHeight()));
 
         FormLayout layout = new FormLayout(
@@ -66,16 +66,16 @@ public class WifiManagementFrame extends DKAbstractFrame {
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
 
-        builder.addSeparator(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_DETAIL_INFO"), cc.xyw(1, 1, 4));
+        builder.addSeparator(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_DETAIL_INFO"), cc.xyw(1, 1, 4));
 
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_NAME"), cc.xy(1, 3));
+        builder.addLabel(DKSysUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_NAME"), cc.xy(1, 3));
         builder.add(currentName, cc.xy(3, 3));
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_PWD"), cc.xy(1, 5));
+        builder.addLabel(DKSysUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_PWD"), cc.xy(1, 5));
         builder.add(currentPwd, cc.xy(3, 5));
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_SIGNAL"), cc.xy(1, 7));
+        builder.addLabel(DKSysUIUtil.getLocaleStringWithColon("SSID_MANAGEMENT_DETAIL_SSID_SIGNAL"), cc.xy(1, 7));
         builder.add(currentOnline, cc.xy(3, 7));
 
-        builder.addSeparator(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_DETAIL_QR"), cc.xyw(1, 9, 4));
+        builder.addSeparator(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_DETAIL_QR"), cc.xyw(1, 9, 4));
         builder.add(currentQr, cc.xyw(1, 11, 4));
 
         imagePreviewPane.add(builder.getPanel());
@@ -85,7 +85,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
     private Component createBottomPane() {
         Map<String, String> currentSsid = currentSystemUtil.getCurrentSsid();
         if (currentSsid.isEmpty()) {
-            return DKSystemUIUtil.createLabelWithRedText(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_NO_NETWORK"));
+            return DKSysUIUtil.createLabelWithRedText(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_NO_NETWORK"));
         } else {
             String ssid = currentSsid.get("SSID");
             currentName.setText(ssid);
@@ -100,16 +100,16 @@ public class WifiManagementFrame extends DKAbstractFrame {
             sb.append("信号").append(": ").append(currentSsid.get("信号")).append("  |  ");
             sb.append("传输速率 (Mbps)").append(": ").append(currentSsid.get("传输速率 (Mbps)"));
 
-            return DKSystemUIUtil.createLabelWithGreenText(sb.toString());
+            return DKSysUIUtil.createLabelWithGreenText(sb.toString());
         }
     }
 
     private Component createWifiListPane(float width) {
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new BorderLayout());
-        jPanel.setBorder(BorderFactory.createTitledBorder(DKSystemUIUtil.getLocaleString("SSID_MANAGEMENT_SSID_LIST_LABEL")));
+        jPanel.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_SSID_LIST_LABEL")));
 
-        view = new JList<String>(getSsidList());
+        view = new JList<>(getSsidList());
         jPanel.add(new JScrollPane(view), BorderLayout.CENTER);
 
         jPanel.setPreferredSize(new Dimension((int) (getWidth() * width), (int) getHeight()));
@@ -160,7 +160,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
             //https://blog.csdn.net/jeffasd/article/details/50129621
             String qrTxt = "WIFI:T:WPA;S:" + name + ";P:" + pwd + ";;";
             int qrWidth = (int) (getWidth() * PANE_WIDTH_R * 0.75);
-            BufferedImage bufferedImage = DKSystemUtil.generateQrImg(qrTxt, qrWidth, qrWidth);
+            BufferedImage bufferedImage = DKSysUtil.generateQrImg(qrTxt, qrWidth, qrWidth);
             return new ImageIcon(bufferedImage);
         } else {
             return null;

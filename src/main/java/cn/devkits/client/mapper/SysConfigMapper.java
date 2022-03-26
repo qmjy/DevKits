@@ -1,6 +1,6 @@
 package cn.devkits.client.mapper;
 
-import cn.devkits.client.model.SysConfig;
+import cn.devkits.client.dto.SysConfig;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

@@ -25,6 +25,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -38,6 +40,10 @@ import java.util.Optional;
 public final class DKFileUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+
+    public FileSystemView getFileSysView() {
+        return FileSystemView.getFileSystemView();
+    }
 
     /**
      * 等比缩放以适配父容器尺寸。如果新对象尺寸小于父容器，则直接返回对象尺寸
@@ -147,7 +153,7 @@ public final class DKFileUtil {
      * @param f the file need to check
      * @return is file or not
      */
-    public static boolean isImg(File f) {
+    public static boolean isRealImg(File f) {
         InputStream is = null;
         try {
             is = new BufferedInputStream(new FileInputStream(f));
@@ -176,8 +182,78 @@ public final class DKFileUtil {
      */
     public static boolean isImgFromExtension(String fileName) {
         String lowerCaseName = fileName.toLowerCase(Locale.getDefault());
-        String suffix = lowerCaseName.substring(lowerCaseName.lastIndexOf("."), lowerCaseName.length());
+        String suffix = lowerCaseName.substring(lowerCaseName.lastIndexOf("."));
         return DKConstants.FILE_TYPE_IMG.contains(suffix);
+    }
+
+    /**
+     * 通过扩展名判断文件是否是图片
+     *
+     * @param file 文件名
+     * @return 是否是图片
+     */
+    public static boolean isImgFromExtension(File file) {
+        return isImgFromExtension(file.getName());
+    }
+
+    /**
+     * 从文件中过滤出图片文件
+     *
+     * @param files 待过滤的文件集
+     * @return 过滤后的图片文件
+     */
+    public static List<File> filterImgsFromFiles(File[] files) {
+        ArrayList<File> objects = new ArrayList<>();
+        for (File file : files) {
+            if (isImgFromExtension(file)) {
+                objects.add(file);
+            }
+        }
+        return objects;
+    }
+
+    /**
+     * 过滤文件夹下的所有图片文件
+     *
+     * @param dirFile 待过滤的文件夹
+     * @return 所有图片文件
+     */
+    public static List<File> filterImgsFromDir(File dirFile) {
+        List<File> objects = new ArrayList<File>();
+        if (dirFile.isDirectory()) {
+            File[] files = dirFile.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return isImgFromExtension(name);
+                }
+            });
+            for (File file : files) {
+                objects.add(file);
+            }
+        }
+        return objects;
+    }
+
+    /**
+     * 过滤文件夹下的所有图片文件，并存放到指定的容器中去
+     *
+     * @param dirFile 待过滤的文件夹
+     * @param objects 存放结果的容器
+     */
+    public static void filterImgsFromDir(File dirFile, List<File> objects) {
+        if (objects != null) {
+            if (dirFile.isDirectory()) {
+                File[] files = dirFile.listFiles(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String name) {
+                        return isImgFromExtension(name);
+                    }
+                });
+                for (File file : files) {
+                    objects.add(file);
+                }
+            }
+        }
     }
 
     public static boolean openFolder(String filePath) {
@@ -249,7 +325,7 @@ public final class DKFileUtil {
      * @param f the file need to open with system editor
      */
     public static void openTextFile(File f) {
-        if (DKSystemUtil.isWindows()) {
+        if (DKSysUtil.isWindows()) {
             try {
                 ProcessBuilder pb = new ProcessBuilder("notepad", f.getAbsolutePath());
                 pb.start();
@@ -270,7 +346,7 @@ public final class DKFileUtil {
      */
     public static String formatBytes(long bytes) {
         String formatBytes = FormatUtil.formatBytes(bytes);
-        if (DKSystemUtil.isWindows()) {
+        if (DKSysUtil.isWindows()) {
             return formatBytes.replace("i", "");
         }
         return formatBytes;

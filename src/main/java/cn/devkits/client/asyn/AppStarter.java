@@ -19,8 +19,8 @@ import cn.devkits.client.tray.frame.AboutFrame;
 import cn.devkits.client.tray.frame.NewTodoTaskFrame;
 import cn.devkits.client.tray.frame.SettingsFrame;
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 
 import javax.swing.JDialog;
 import javax.swing.border.LineBorder;
@@ -48,7 +48,7 @@ public class AppStarter implements Runnable {
 
     @Override
     public void run() {
-        DKSystemUIUtil.regIcon();
+        DKSysUIUtil.regIcon();
 
         if (args.length > 0) {
             WebCameraFrame webCameraFrame = new WebCameraFrame();
@@ -68,7 +68,7 @@ public class AppStarter implements Runnable {
             public void onHotKey(int identifier) {
                 switch (identifier) {
                     case DKConstants.DK_HOTKEY_SCR_CAP:
-                        DKSystemUtil.invokeLocalApp("QQSnapShot.exe");
+                        DKSysUtil.invokeLocalApp("QQSnapShot.exe");
                         break;
                     case DKConstants.DK_HOTKEY_NEW_TODO:
                         new NewTodoTaskFrame(null).setVisible(true);
@@ -100,7 +100,7 @@ public class AppStarter implements Runnable {
         Container calendarPane = createCalendarPane();
 
         JDialog jDialog = new JDialog();
-        jDialog.setTitle(DKSystemUIUtil.getLocaleString("CALENDAR_DIALOG_TITLE"));
+        jDialog.setTitle(DKSysUIUtil.getLocaleString("CALENDAR_DIALOG_TITLE"));
         jDialog.setResizable(false);
         jDialog.setContentPane(calendarPane);
         jDialog.pack();
@@ -135,13 +135,13 @@ public class AppStarter implements Runnable {
         popupMenu.add(initComputerMenu());
 
         popupMenu.addSeparator();
-        MenuItem settings = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("SETTINGS"));
+        MenuItem settings = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("SETTINGS"));
         settings.addActionListener(e -> {
             new SettingsFrame().setVisible(true);
         });
         popupMenu.add(settings);
 
-        MenuItem mi = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("ABOUT"));
+        MenuItem mi = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("ABOUT"));
         mi.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -150,7 +150,7 @@ public class AppStarter implements Runnable {
         });
         popupMenu.add(mi);
         popupMenu.addSeparator();
-        MenuItem quit = new MenuItem(DKSystemUIUtil.getLocaleString("EXIT"));
+        MenuItem quit = new MenuItem(DKSysUIUtil.getLocaleString("EXIT"));
         quit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -163,25 +163,25 @@ public class AppStarter implements Runnable {
     }
 
     private MenuItem initNetworkMenu() {
-        Menu networkMenu = new Menu(DKSystemUIUtil.getLocaleString("NETWORK_TOOLS"));
+        Menu networkMenu = new Menu(DKSysUIUtil.getLocaleString("NETWORK_TOOLS"));
         MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.SERVER_PORT);
         MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.WIFI);
         return networkMenu;
     }
 
     private Menu initDevMenu() {
-        Menu devMenu = new Menu(DKSystemUIUtil.getLocaleString("DEV_TOOLS"));
+        Menu devMenu = new Menu(DKSysUIUtil.getLocaleString("DEV_TOOLS"));
 
-        MenuItem menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODEC"));
+        MenuItem menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("CODEC"));
         menuItem.setEnabled(false);
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODEC));
         devMenu.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("CODE_FORMAT"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("CODE_FORMAT"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
         devMenu.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("ENV_VAR"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("ENV_VAR"));
         menuItem.setEnabled(false);
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CODE_FORMAT));
         devMenu.add(menuItem);
@@ -190,9 +190,9 @@ public class AppStarter implements Runnable {
     }
 
     private Menu initComputerMenu() {
-        Menu computerItem = new Menu(DKSystemUIUtil.getLocaleString("COMPUTER"), false);
+        Menu computerItem = new Menu(DKSysUIUtil.getLocaleString("COMPUTER"), false);
 
-        Menu sysInfoItem = new Menu(DKSystemUIUtil.getLocaleString("SYS_INFO"), false);
+        Menu sysInfoItem = new Menu(DKSysUIUtil.getLocaleString("SYS_INFO"), false);
 
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.USER_NAME);
         MenuItemFactory.createClipboardItem(sysInfoItem, MenuItemEnum.PC_NAME);
@@ -207,42 +207,46 @@ public class AppStarter implements Runnable {
 
         computerItem.add(sysInfoItem);
 
-        Menu toolsItem = new Menu(DKSystemUIUtil.getLocaleString("TOOLS"), false);
+        Menu toolsItem = new Menu(DKSysUIUtil.getLocaleString("TOOLS"), false);
 
-        MenuItem menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("WASTE_CLEAN"));
+        MenuItem menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("WASTE_CLEAN"));
         menuItem.setEnabled(false);
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleString("SCREENSHOTS"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleString("SCREENSHOTS"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SCRCAPTURE));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("DUPLICATE_FILES"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("DUPLICATE_FILES"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LDF));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("TODO_LIST"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("TODO_LIST"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.TODOS));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("LOGON_IMAGE"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("LOGON_IMAGE"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LOGONUI));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_EXPLORERS"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("FILE_EXPLORERS"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILEEXPLORER));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("IMG_CODEC"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("IMG_CODEC"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.QR));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleString("HOSTS"));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleString("HOSTS"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.HOSTS));
         toolsItem.add(menuItem);
 
-        menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("FILE_SPLITTER"));
-        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILESPLITER));
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("FILE_SPLITTER"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILESPLITTER));
+        toolsItem.add(menuItem);
+
+        menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("IMG_PROCESSING"));
+        menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.IMG_PROCESSING));
         toolsItem.add(menuItem);
 
         computerItem.add(toolsItem);

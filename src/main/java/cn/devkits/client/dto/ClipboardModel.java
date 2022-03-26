@@ -2,7 +2,7 @@
  * Copyright (c) 2019-2020 QMJY.CN All rights reserved.
  */
 
-package cn.devkits.client.model;
+package cn.devkits.client.dto;
 
 public class ClipboardModel {
 

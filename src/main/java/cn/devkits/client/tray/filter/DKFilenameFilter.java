@@ -10,7 +10,7 @@ import java.util.Locale;
 import javax.swing.JComboBox;
 import cn.devkits.client.DKConstants;
 import cn.devkits.client.tray.frame.DuplicateFilesFrame;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 
 public class DKFilenameFilter implements FilenameFilter {
 
@@ -32,18 +32,18 @@ public class DKFilenameFilter implements FilenameFilter {
         }
 
         String fileType = (String) fileTypeComboBox.getSelectedItem();
-        if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_ALL").equals(fileType)) {
+        if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_ALL").equals(fileType)) {
             return true;
         } else {
             if (name.indexOf(".") > 0) {
                 String suffix = name.substring(name.lastIndexOf(".")).toLowerCase(Locale.getDefault());
-                if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_DOCUMENT").equals(fileType)) {
+                if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_DOCUMENT").equals(fileType)) {
                     return DKConstants.FILE_TYPE_DOC.contains(suffix);
-                } else if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_IMAGE").equals(fileType)) {
+                } else if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_IMAGE").equals(fileType)) {
                     return DKConstants.FILE_TYPE_IMG.contains(suffix);
-                } else if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_AUDIO").equals(fileType)) {
+                } else if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_AUDIO").equals(fileType)) {
                     return DKConstants.FILE_TYPE_AUDIO.contains(suffix);
-                } else if (DKSystemUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_VIDEO").equals(fileType)) {
+                } else if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_VIDEO").equals(fileType)) {
                     return DKConstants.FILE_TYPE_VEDIO.contains(suffix);
                 } else {
                     return false;

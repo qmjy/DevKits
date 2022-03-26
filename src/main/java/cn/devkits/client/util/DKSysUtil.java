@@ -22,6 +22,7 @@ import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -50,7 +51,7 @@ import oshi.util.FormatUtil;
  * @version 1.0.0
  * @time 2019年10月20日 下午9:37:03
  */
-public abstract class DKSystemUtil {
+public abstract class DKSysUtil {
 
     /**
      * windows 安全命令
@@ -62,13 +63,13 @@ public abstract class DKSystemUtil {
      */
     public static final int SOUND_TYPE_SCAN = 1;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DKSysUtil.class);
     private static final SystemInfo SYSTEM_INFO = new SystemInfo();
 
     /**
      * default constructor
      */
-    public DKSystemUtil() {
+    public DKSysUtil() {
     }
 
     /**
@@ -114,7 +115,7 @@ public abstract class DKSystemUtil {
      *
      * @return 适合当前操作系统的助手接口
      */
-    public static DKSystemUtil getCurrentSystemUtil() {
+    public static DKSysUtil getCurrentSystemUtil() {
         if (isWindows()) {
             return new WinSystemUtil();
         }
@@ -164,7 +165,7 @@ public abstract class DKSystemUtil {
 
         if (Desktop.isDesktopSupported()) {
             try {
-                if (!DKSystemUtil.isDevelopMode()) {
+                if (!DKSysUtil.isDevelopMode()) {
                     Desktop.getDesktop().open(new File("" + appName));
                 } else {
                     String filePath = TrayItemWindowListener.class.getClassLoader().getResource("").getPath() + appName;
@@ -185,7 +186,7 @@ public abstract class DKSystemUtil {
      * @return 文件运行更目录
      */
     public static String getRootFolder() {
-        if (!DKSystemUtil.isDevelopMode()) {
+        if (!DKSysUtil.isDevelopMode()) {
             return new File("").getAbsolutePath();
         } else {
             return TrayItemWindowListener.class.getClassLoader().getResource("").getPath();
@@ -199,7 +200,7 @@ public abstract class DKSystemUtil {
      * @return 是否是以jar运行
      */
     public static boolean isDevelopMode() {
-        String protocol = DKSystemUtil.class.getResource("").getProtocol();
+        String protocol = DKSysUtil.class.getResource("").getProtocol();
         return !"jar".equals(protocol);
     }
 
@@ -255,7 +256,7 @@ public abstract class DKSystemUtil {
     public static void playSound(int soundType) {
         try {
             Clip clip = AudioSystem.getClip();
-            AudioInputStream inputStream = AudioSystem.getAudioInputStream(DKSystemUtil.class.getClassLoader().getResourceAsStream("scan.wav"));
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(DKSysUtil.class.getClassLoader().getResourceAsStream("scan.wav"));
             clip.open(inputStream);
             clip.start();
         } catch (Exception e) {
@@ -297,6 +298,24 @@ public abstract class DKSystemUtil {
      */
     public static String getSystemTempDir() {
         return System.getProperty("java.io.tmpdir");
+    }
+
+    /**
+     * 获取用户目录：字符串
+     *
+     * @return home dir
+     */
+    public static String getHomePath() {
+        return System.getProperty("user.home");
+    }
+
+    /**
+     * 获取用户目录：文件对象
+     *
+     * @return home dir of file
+     */
+    public static File getHomeDir() {
+        return FileSystemView.getFileSystemView().getHomeDirectory();
     }
 
 

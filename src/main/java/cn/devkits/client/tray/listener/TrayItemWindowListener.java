@@ -7,7 +7,7 @@ package cn.devkits.client.tray.listener;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.*;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class TrayItemWindowListener implements ActionListener {
                 frame = new DuplicateFilesFrame();
                 break;
             case SCRCAPTURE:
-                DKSystemUtil.invokeLocalApp("QQSnapShot.exe");
+                DKSysUtil.invokeLocalApp("QQSnapShot.exe");
                 return;
             case OS_INFO_MORE:
                 frame = new OsInfoDetailFrame();
@@ -70,8 +70,11 @@ public class TrayItemWindowListener implements ActionListener {
             case QR:
                 frame = new CodecFrame();
                 break;
-            case FILESPLITER:
+            case FILESPLITTER:
                 frame = new FileSpliterFrame();
+                break;
+            case IMG_PROCESSING:
+                frame = new ImgProcessingFrame();
                 break;
             case HOSTS:
                 openHostFile();
@@ -85,7 +88,7 @@ public class TrayItemWindowListener implements ActionListener {
     }
 
     private void openHostFile() {
-        if (DKSystemUtil.isWindows()) {
+        if (DKSysUtil.isWindows()) {
             StringBuilder sb = new StringBuilder(System.getenv("WINDIR"));
             sb.append(File.separator).append("System32").append(File.separator).append("drivers").append(File.separator).append("etc").append(File.separator).append("hosts");
             DKFileUtil.openTextFile(new File(sb.toString()));

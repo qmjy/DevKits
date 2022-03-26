@@ -5,7 +5,7 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.action.*;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import org.jdesktop.swingx.JXTaskPane;
@@ -28,7 +28,7 @@ public class SettingsFrame extends DKAbstractFrame {
     private CardLayout rightCardLayout;
 
     public SettingsFrame() {
-        super(DKSystemUIUtil.getLocaleString("SETTINGS_TITLE"), 0.8f);
+        super(DKSysUIUtil.getLocaleString("SETTINGS_TITLE"), 0.8f);
 
         initUI(getRootPane().getContentPane());
         initListener();
@@ -61,7 +61,7 @@ public class SettingsFrame extends DKAbstractFrame {
 
         // create a first taskPane with common actions
         JXTaskPane commonsPane = new JXTaskPane();
-        commonsPane.setTitle(DKSystemUIUtil.getLocaleString("SETTINGS_GROUP_COMMON_SETTINGS"));
+        commonsPane.setTitle(DKSysUIUtil.getLocaleString("SETTINGS_GROUP_COMMON_SETTINGS"));
         commonsPane.setSpecial(true);
         commonsPane.setIcon(IconFontSwing.buildIcon(FontAwesome.TACHOMETER, 16, new Color(50, 50, 50)));
         commonsPane.setFocusable(false);
@@ -72,7 +72,7 @@ public class SettingsFrame extends DKAbstractFrame {
 
         // create another taskPane, it will show sysPane of the selected file
         JXTaskPane sysPane = new JXTaskPane();
-        sysPane.setTitle(DKSystemUIUtil.getLocaleString("SETTINGS_GROUP_SYS_SETTINGS"));
+        sysPane.setTitle(DKSysUIUtil.getLocaleString("SETTINGS_GROUP_SYS_SETTINGS"));
         sysPane.setIcon(IconFontSwing.buildIcon(FontAwesome.COGS, 16, new Color(50, 50, 50)));
         sysPane.setFocusable(false);
 

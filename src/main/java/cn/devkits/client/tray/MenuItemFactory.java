@@ -6,8 +6,8 @@ package cn.devkits.client.tray;
 
 import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKNetworkUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +23,11 @@ public class MenuItemFactory {
         MenuItem menuItem = null;
         switch (itemType) {
             case SERVER_PORT:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("SERVER_PORT_DETECT"));
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("SERVER_PORT_DETECT"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SERVER_PORT));
                 break;
             case WIFI:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("SSID_MANAGEMENT"));
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("SSID_MANAGEMENT"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.WIFI));
                 break;
             default:
@@ -47,53 +47,53 @@ public class MenuItemFactory {
         switch (itemType) {
             case USER_NAME:
                 String userName = System.getProperty("user.name");
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("USER_NAME") + userName);
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithColon("USER_NAME") + userName);
                 menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(userName);
+                    DKSysUIUtil.setSystemClipboard(userName);
                 });
                 break;
             case PC_NAME:
                 String pcName = System.getenv().get("COMPUTERNAME");
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("PC_NAME") + pcName);
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithColon("PC_NAME") + pcName);
                 menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(pcName);
+                    DKSysUIUtil.setSystemClipboard(pcName);
                 });
                 break;
             case OS_NAME:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("OS") + DKSystemUtil.getOsInfo());
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithColon("OS") + DKSysUtil.getOsInfo());
                 menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(DKSystemUtil.getOsInfo());
+                    DKSysUIUtil.setSystemClipboard(DKSysUtil.getOsInfo());
                 });
                 break;
             case OS_ARCH:
                 String osArch = System.getProperty("os.arch");
 
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("OS_ARCH") + osArch);
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithColon("OS_ARCH") + osArch);
                 menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(osArch);
+                    DKSysUIUtil.setSystemClipboard(osArch);
                 });
                 break;
             case CPU_INF:
-                menuItem = new MenuItem("CPU: " + DKSystemUtil.getCpuInfo());
+                menuItem = new MenuItem("CPU: " + DKSysUtil.getCpuInfo());
                 menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(DKSystemUtil.getCpuInfo());
+                    DKSysUIUtil.setSystemClipboard(DKSysUtil.getCpuInfo());
                 });
                 break;
             case CPU_ENDIAN:
                 String endian = System.getProperty("sun.cpu.endian");
 
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("CPU_ENDIAN") + endian);
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithColon("CPU_ENDIAN") + endian);
                 menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(endian);
+                    DKSysUIUtil.setSystemClipboard(endian);
                 });
                 break;
             case SCREEN_SIZE:
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                 String screenLabel = (int) screenSize.getWidth() + "*" + (int) screenSize.getHeight() + "(" + Toolkit.getDefaultToolkit().getScreenResolution() + "dpi)";
 
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithColon("SCREEN_SIZE") + screenLabel);
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithColon("SCREEN_SIZE") + screenLabel);
                 menuItem.addActionListener(e -> {
-                    DKSystemUIUtil.setSystemClipboard(screenLabel);
+                    DKSysUIUtil.setSystemClipboard(screenLabel);
                 });
                 break;
             case IP:
@@ -102,7 +102,7 @@ public class MenuItemFactory {
                     String internetIp = ip.get();
                     menuItem = new MenuItem(itemType.toString() + ": " + internetIp);
                     menuItem.addActionListener(e -> {
-                        DKSystemUIUtil.setSystemClipboard(internetIp);
+                        DKSysUIUtil.setSystemClipboard(internetIp);
                     });
                     break;
                 }
@@ -114,7 +114,7 @@ public class MenuItemFactory {
 
                     menuItem = new MenuItem(itemType.toString() + ": " + mac);
                     menuItem.addActionListener(e -> {
-                        DKSystemUIUtil.setSystemClipboard(mac);
+                        DKSysUIUtil.setSystemClipboard(mac);
                     });
                     break;
                 }
@@ -130,7 +130,7 @@ public class MenuItemFactory {
         switch (itemType) {
 
             case OS_INFO_MORE:
-                menuItem = new MenuItem(DKSystemUIUtil.getLocaleStringWithEllipsis("MORE_DETAILS"));
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("MORE_DETAILS"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.OS_INFO_MORE));
                 break;
             default:

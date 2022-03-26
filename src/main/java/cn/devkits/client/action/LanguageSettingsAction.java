@@ -4,7 +4,7 @@
 
 package cn.devkits.client.action;
 
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
@@ -19,13 +19,13 @@ public class LanguageSettingsAction extends BaseAction {
     public LanguageSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
-        putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_LANG"));
+        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_LANG"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.GLOBE, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_LANG_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_LANG_DESC"));
 
         registerPane();
     }
@@ -37,12 +37,12 @@ public class LanguageSettingsAction extends BaseAction {
         jPanel.setLayout(mgr);
 
         JLabel currentLangLbl = new JLabel();
-        currentLangLbl.setText(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_LANG_LBL_CURRENT"));
+        currentLangLbl.setText(DKSysUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_LANG_LBL_CURRENT"));
         jPanel.add(currentLangLbl);
         JLabel currrentLang = new JLabel();
         jPanel.add(currrentLang);
         JLabel chooseLangLabl = new JLabel();
-        chooseLangLabl.setText(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_LANG_LBL_CHOOSE"));
+        chooseLangLabl.setText(DKSysUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_LANG_LBL_CHOOSE"));
         jPanel.add(chooseLangLabl);
         JLabel chooseLangLbl = new JLabel();
         jPanel.add(chooseLangLbl);
@@ -51,20 +51,20 @@ public class LanguageSettingsAction extends BaseAction {
         jPanel.add(langCombo);
 
         SpringLayout.Constraints currentLangLblCons = mgr.getConstraints(currentLangLbl);
-        currentLangLblCons.setX(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8));
-        currentLangLblCons.setY(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8));
+        currentLangLblCons.setX(Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_8));
+        currentLangLblCons.setY(Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_8));
 
         SpringLayout.Constraints currentLangCons = mgr.getConstraints(currrentLang);
-        currentLangCons.setConstraint(SpringLayout.WEST, Spring.sum(currentLangLblCons.getConstraint(SpringLayout.EAST), Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5)));
-        currentLangCons.setY(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8));
+        currentLangCons.setConstraint(SpringLayout.WEST, Spring.sum(currentLangLblCons.getConstraint(SpringLayout.EAST), Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_5)));
+        currentLangCons.setY(Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_8));
 
         SpringLayout.Constraints chooseLangCons = mgr.getConstraints(chooseLangLabl);
-        chooseLangCons.setX(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8));
-        chooseLangCons.setConstraint(SpringLayout.NORTH, Spring.sum(currentLangLblCons.getConstraint(SpringLayout.SOUTH), Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_8)));
+        chooseLangCons.setX(Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_8));
+        chooseLangCons.setConstraint(SpringLayout.NORTH, Spring.sum(currentLangLblCons.getConstraint(SpringLayout.SOUTH), Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_8)));
 
         SpringLayout.Constraints langsCons = mgr.getConstraints(langCombo);
-        langsCons.setConstraint(SpringLayout.WEST, Spring.sum(chooseLangCons.getConstraint(SpringLayout.EAST), Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5)));
-        langsCons.setConstraint(SpringLayout.NORTH, Spring.sum(currentLangLblCons.getConstraint(SpringLayout.SOUTH), Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5)));
+        langsCons.setConstraint(SpringLayout.WEST, Spring.sum(chooseLangCons.getConstraint(SpringLayout.EAST), Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_5)));
+        langsCons.setConstraint(SpringLayout.NORTH, Spring.sum(currentLangLblCons.getConstraint(SpringLayout.SOUTH), Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_5)));
         return jPanel;
     }
 

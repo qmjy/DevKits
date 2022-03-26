@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
@@ -32,13 +32,13 @@ public class ThemeSettingsAction extends BaseAction {
         applyBtn.setVisible(false);
         closeBtn.setVisible(false);
 
-        putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME"));
+        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.THEMEISLE, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSystemUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME_DESC"));
 
         registerPane();
     }
@@ -51,14 +51,14 @@ public class ThemeSettingsAction extends BaseAction {
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
-        builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_THEME_SETTINGS"), cc.xyw(1, 1, 8));
+        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_THEME_SETTINGS"), cc.xyw(1, 1, 8));
 
-        builder.addLabel(DKSystemUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_THEME_LAB"), cc.xy(1, 5));
+        builder.addLabel(DKSysUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_THEME_LAB"), cc.xy(1, 5));
         JComboBox<String> component = new JComboBox<>(listLookAndFeel());
         component.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 String itemName = (String) e.getItem();
-                DKSystemUIUtil.setLookAndFeel(itemName);
+                DKSysUIUtil.setLookAndFeel(itemName);
             }
         });
         builder.add(component, cc.xyw(3, 5, 6));

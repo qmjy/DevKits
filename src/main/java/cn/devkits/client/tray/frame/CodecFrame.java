@@ -6,8 +6,8 @@ package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
@@ -94,7 +94,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public CodecFrame() {
-        super(DKSystemUIUtil.getLocaleString("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
+        super(DKSysUIUtil.getLocaleString("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
 
         initUI(getContentPane());
         initListener();
@@ -105,9 +105,9 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
 
     private void initMenuBr() {
         JMenuBar mb = new JMenuBar();
-        JMenu fileMenu = new JMenu(DKSystemUIUtil.getLocaleString("COMMON_MENU_FILE"));
+        JMenu fileMenu = new JMenu(DKSysUIUtil.getLocaleString("COMMON_MENU_FILE"));
 
-        String decodeName = DKSystemUIUtil.getLocaleString("QR_MENUITEM_DECODE");
+        String decodeName = DKSysUIUtil.getLocaleString("QR_MENUITEM_DECODE");
         JMenuItem decodeMenuItem = new JMenuItem(decodeName);
         Icon qrcodeIcon = IconFontSwing.buildIcon(FontAwesome.QRCODE, 16, new Color(50, 50, 50));
         decodeMenuItem.setIcon(qrcodeIcon);
@@ -116,7 +116,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         });
         fileMenu.add(decodeMenuItem);
 
-        String encodeName = DKSystemUIUtil.getLocaleString("QR_MENUITEM_ENCODE");
+        String encodeName = DKSysUIUtil.getLocaleString("QR_MENUITEM_ENCODE");
         JMenuItem encodeMenuItem = new JMenuItem(encodeName);
         fileMenu.add(encodeMenuItem);
         encodeMenuItem.addActionListener(e -> {
@@ -125,7 +125,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         fileMenu.addSeparator();
 
         Icon quitIcon = IconFontSwing.buildIcon(FontAwesome.SIGN_OUT, 16, new Color(50, 50, 50));
-        JMenuItem quitMenuItem = new JMenuItem(DKSystemUIUtil.getLocaleString("COMMON_MENU_QUIT"));
+        JMenuItem quitMenuItem = new JMenuItem(DKSysUIUtil.getLocaleString("COMMON_MENU_QUIT"));
         quitMenuItem.setIcon(quitIcon);
         quitMenuItem.addActionListener(e -> {
             this.setVisible(false);
@@ -164,7 +164,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         } else {
             cameraPanel = new JPanel(new BorderLayout());
             Icon leftIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA, 16, new Color(50, 50, 50));
-            cameraPanel.add(new JLabel(DKSystemUIUtil.getLocaleString("NO_CAMERA_FOUND"), leftIcon, SwingConstants.CENTER));
+            cameraPanel.add(new JLabel(DKSysUIUtil.getLocaleString("NO_CAMERA_FOUND"), leftIcon, SwingConstants.CENTER));
         }
     }
 
@@ -178,9 +178,9 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         initCamePanel();
 
         this.decodePanel = new JTabbedPane();
-        decodePanel.addTab(DKSystemUIUtil.getLocaleString("QR_UPLOAD"), initUploadPane());
-        decodePanel.addTab(DKSystemUIUtil.getLocaleString("QR_CAMERA"), cameraPanel);
-        decodePanel.addTab(DKSystemUIUtil.getLocaleString("QR_SITE"), initSitePane());
+        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_UPLOAD"), initUploadPane());
+        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_CAMERA"), cameraPanel);
+        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_SITE"), initSitePane());
 
         this.encodePanel = new JTabbedPane();
 
@@ -192,8 +192,8 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         decodePanel.setFocusable(false);
         encodePanel.setFocusable(false);
 
-        jRootPane.add(decodePanel, DKSystemUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
-        jRootPane.add(encodePanel, DKSystemUIUtil.getLocaleString("QR_MENUITEM_ENCODE"));
+        jRootPane.add(decodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
+        jRootPane.add(encodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_ENCODE"));
     }
 
     private Component initSitePane() {
@@ -205,7 +205,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         topPanel.setLayout(springLayout);
 
         this.siteTextField = new JTextField(100);
-        this.siteBtn = new JButton(DKSystemUIUtil.getLocaleString("QR_START_DECODE"));
+        this.siteBtn = new JButton(DKSysUIUtil.getLocaleString("QR_START_DECODE"));
 
         topPanel.add(siteTextField);
         topPanel.add(siteBtn);
@@ -229,9 +229,9 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         topPanel.setLayout(springLayout);
 
         this.uploadTextField = new JTextField(100);
-        this.uploadTextField.setToolTipText(DKSystemUIUtil.getLocaleString("CODEC_IMG_INPUT_TIPS"));
+        this.uploadTextField.setToolTipText(DKSysUIUtil.getLocaleString("CODEC_IMG_INPUT_TIPS"));
         Icon uploadIcon = IconFontSwing.buildIcon(FontAwesome.UPLOAD, 16, new Color(50, 50, 50));
-        this.uploadBtn = new JButton(DKSystemUIUtil.getLocaleString("QR_START_UPLOAD"), uploadIcon);
+        this.uploadBtn = new JButton(DKSysUIUtil.getLocaleString("QR_START_UPLOAD"), uploadIcon);
 
         topPanel.add(uploadTextField);
         topPanel.add(uploadBtn);
@@ -245,9 +245,9 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         Box horizontalBox = Box.createHorizontalBox();
 
         JPanel imagePreviewPane = new JPanel();
-        imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSystemUIUtil.getLocaleString("CODEC_IMG_PREVIEW_AREA")));
+        imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocaleString("CODEC_IMG_PREVIEW_AREA")));
         imagePreviewPane.setPreferredSize(new Dimension((int) (CAMERA_DIMENSION.getWidth() * 0.4), (int) CAMERA_DIMENSION.getHeight()));
-        imgPreviewLabel = new JLabel(DKSystemUIUtil.getLocaleString("CODEC_IMG_PREVIEW_DROP_TARGET_MSG"));
+        imgPreviewLabel = new JLabel(DKSysUIUtil.getLocaleString("CODEC_IMG_PREVIEW_DROP_TARGET_MSG"));
         imagePreviewPane.add(imgPreviewLabel);
 
         horizontalBox.add(imagePreviewPane);
@@ -284,17 +284,17 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     private void layoutInputPanel(JPanel topPanel, SpringLayout springLayout, JTextField jTextField, JButton uploadBtn) {
         // Adjust constraints for the label so it's at (5,5).
         SpringLayout.Constraints labelCons = springLayout.getConstraints(jTextField);
-        labelCons.setX(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5));
-        labelCons.setY(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5));
+        labelCons.setX(Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_5));
+        labelCons.setY(Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_5));
 
         // Adjust constraints for the text field so it's at
         // (<label's right edge> + 5, 5).
         SpringLayout.Constraints textFieldCons = springLayout.getConstraints(uploadBtn);
-        textFieldCons.setX(Spring.sum(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5), labelCons.getConstraint(SpringLayout.EAST)));
-        textFieldCons.setY(Spring.constant(DKSystemUIUtil.COMPONENT_UI_PADDING_5));
+        textFieldCons.setX(Spring.sum(Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_5), labelCons.getConstraint(SpringLayout.EAST)));
+        textFieldCons.setY(Spring.constant(DKSysUIUtil.COMPONENT_UI_PADDING_5));
 
         // Adjust constraints for the content pane.
-        DKSystemUIUtil.setContainerSize(topPanel, DKSystemUIUtil.COMPONENT_UI_PADDING_5);
+        DKSysUIUtil.setContainerSize(topPanel, DKSysUIUtil.COMPONENT_UI_PADDING_5);
     }
 
 
@@ -328,8 +328,8 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
             }
         });
 
-        FileFilter[] filters = new FileFilter[]{DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
-                DKSystemUIUtil.createFileFilter("Portable Network Graphics", true, "png")};
+        FileFilter[] filters = new FileFilter[]{DKSysUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSysUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
+                DKSysUIUtil.createFileFilter("Portable Network Graphics", true, "png")};
 
         uploadBtn.addActionListener(new BrowserActionListener(this, filters, "QR file", JFileChooser.FILES_AND_DIRECTORIES, true));
 
@@ -419,13 +419,13 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
             bufferedImage = ImageIO.read(f);
             showPreviewImg(bufferedImage);
             Optional<Result> decodeBufferedImage = decodeBufferedImage(bufferedImage);
-            console.append(DKSystemUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_NAME") + f.getName() + System.lineSeparator());
+            console.append(DKSysUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_NAME") + f.getName() + System.lineSeparator());
             if (decodeBufferedImage.isPresent()) {
                 Result result = decodeBufferedImage.get();
-                console.append(DKSystemUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_TYPE") + result.getBarcodeFormat() + System.lineSeparator());
-                console.append(DKSystemUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_CONTENT") + result.getText() + System.lineSeparator());
+                console.append(DKSysUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_TYPE") + result.getBarcodeFormat() + System.lineSeparator());
+                console.append(DKSysUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_CONTENT") + result.getText() + System.lineSeparator());
             } else {
-                console.append(DKSystemUIUtil.getLocaleString("CODEC_IMG_CONSOLE_CAN_NOT_RECOGNIZED") + System.lineSeparator());
+                console.append(DKSysUIUtil.getLocaleString("CODEC_IMG_CONSOLE_CAN_NOT_RECOGNIZED") + System.lineSeparator());
             }
             console.append(System.lineSeparator());
         } catch (IllegalArgumentException e) {
@@ -513,7 +513,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
                     try {
                         Result result = new MultiFormatReader().decode(bitmap);
                         if (result != null) {
-                            DKSystemUtil.playSound(DKSystemUtil.SOUND_TYPE_SCAN);
+                            DKSysUtil.playSound(DKSysUtil.SOUND_TYPE_SCAN);
                             String resultTxt = "<html>Recognized result as below has been set to the clipboard:<br/><span style='color:RED'>";
 
                             Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();

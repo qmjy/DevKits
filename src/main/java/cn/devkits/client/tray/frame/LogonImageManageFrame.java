@@ -22,7 +22,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
@@ -38,8 +37,8 @@ import com.sun.jna.platform.win32.WinReg;
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -64,10 +63,10 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
     private JButton cancelBtn;
 
     public LogonImageManageFrame() {
-        super(DKSystemUIUtil.getLocaleString("LOGON_BG_MNG"), 0.7f, 0.25f);
+        super(DKSysUIUtil.getLocaleString("LOGON_BG_MNG"), 0.7f, 0.25f);
 
         initUI(getContentPane());
-        if ("Windows 7".equalsIgnoreCase(DKSystemUtil.getOsName())) {
+        if (DKSysUtil.isWindow7()) {
             initListener();
         }
     }
@@ -84,11 +83,11 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         SpringLayout layout = new SpringLayout();
         centerPanel.setLayout(layout);
 
-        JLabel comp = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("LOGON_BG_CHOOSE_IMG"));
+        JLabel comp = new JLabel(DKSysUIUtil.getLocaleStringWithColon("LOGON_BG_CHOOSE_IMG"));
         this.imgFilePathTextField = new JTextField(38);
         imgFilePathTextField.setEditable(false);
 
-        this.browseBtn = new JButton(DKSystemUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
+        this.browseBtn = new JButton(DKSysUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
 
         centerPanel.add(comp);
         centerPanel.add(imgFilePathTextField);
@@ -121,18 +120,18 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
-        JLabel note = new JLabel(DKSystemUIUtil.getLocaleString("LOGON_BG_NOTE"));
+        JLabel note = new JLabel(DKSysUIUtil.getLocaleString("LOGON_BG_NOTE"));
         note.setForeground(Color.RED);
         buttonPane.add(note);
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        this.applyBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
+        this.applyBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
 
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        this.cancelBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CANCEL"));
+        this.cancelBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CANCEL"));
         buttonPane.add(cancelBtn);
 
         return buttonPane;
@@ -140,8 +139,8 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
 
     @Override
     protected void initListener() {
-        FileFilter[] filters = new FileFilter[]{DKSystemUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSystemUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
-                DKSystemUIUtil.createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif")};
+        FileFilter[] filters = new FileFilter[]{DKSysUIUtil.createFileFilter("Graphics Interchange Format", true, "gif"), DKSysUIUtil.createFileFilter("JPEG Compge Files", true, "jpg"),
+                DKSysUIUtil.createFileFilter("GIF ImaG and GIF Image Files", true, "jpg", "gif")};
 
         browseBtn.addActionListener(new BrowserActionListener(this, filters, "Background Image", JFileChooser.FILES_ONLY, false));
         applyBtn.addActionListener(new LogonImgManageListener(this));
@@ -221,7 +220,7 @@ class LogonImgManageListener implements ActionListener {
     private boolean isImg() {
         Optional<File> choosedFile = loadUserChoosedFile();
         if (choosedFile.isPresent()) {
-            return DKFileUtil.isImg(choosedFile.get());
+            return DKFileUtil.isRealImg(choosedFile.get());
         }
         return false;
     }
@@ -261,9 +260,9 @@ class LogonImgManageListener implements ActionListener {
 
     private Optional<File> doCompress(File sourceFile) {
         String tempTimeStr = DKDateTimeUtil.currentTimeStrWithPattern(DKDateTimeUtil.DATE_TIME_PATTERN_FULL);
-        File tempFile = new File(DKSystemUtil.getSystemTempDir() + tempTimeStr + "." + FileUtils.getExtension(sourceFile.getName()));
+        File tempFile = new File(DKSysUtil.getSystemTempDir() + tempTimeStr + "." + FileUtils.getExtension(sourceFile.getName()));
 
-        Dimension screenSize = DKSystemUtil.getScreenSize();
+        Dimension screenSize = DKSysUtil.getScreenSize();
 
         // windows logon background image size threshold 256KB
         if (sourceFile.length() > WIN_LOGONO_BG_MAX_SIZE) {

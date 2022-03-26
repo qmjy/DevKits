@@ -2,7 +2,7 @@ package cn.devkits.client.camera;
 
 import com.github.sarxos.webcam.WebcamResolution;
 import cn.devkits.client.tray.frame.DKAbstractFrame;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -32,7 +32,7 @@ public class WebCameraFrame extends DKAbstractFrame {
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
 
     public WebCameraFrame() {
-        super(DKSystemUIUtil.getLocaleString("CAMERA"),
+        super(DKSysUIUtil.getLocaleString("CAMERA"),
                 (int) CAMERA_DIMENSION.getWidth(),
                 (int) CAMERA_DIMENSION.getHeight());
         createMenubar();
@@ -41,9 +41,9 @@ public class WebCameraFrame extends DKAbstractFrame {
 
     private void createMenubar() {
         JMenuBar mb = new JMenuBar();
-        JMenu fileMenu = new JMenu(DKSystemUIUtil.getLocaleString("COMMON_MENU_FILE"));
+        JMenu fileMenu = new JMenu(DKSysUIUtil.getLocaleString("COMMON_MENU_FILE"));
 
-        JMenuItem quitMenuItem = new JMenuItem(DKSystemUIUtil.getLocaleString("COMMON_MENU_QUIT"));
+        JMenuItem quitMenuItem = new JMenuItem(DKSysUIUtil.getLocaleString("COMMON_MENU_QUIT"));
         Icon quitIcon = IconFontSwing.buildIcon(FontAwesome.SIGN_OUT, 16, new Color(50, 50, 50));
         quitMenuItem.setIcon(quitIcon);
         quitMenuItem.addActionListener(e -> {

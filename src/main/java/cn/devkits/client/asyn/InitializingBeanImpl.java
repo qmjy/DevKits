@@ -2,9 +2,9 @@ package cn.devkits.client.asyn;
 
 import cn.devkits.client.App;
 import cn.devkits.client.mapper.BaseMapper;
-import cn.devkits.client.model.SysConfig;
+import cn.devkits.client.dto.SysConfig;
 import cn.devkits.client.service.SysConfigService;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 
 import com.sun.management.OperatingSystemMXBean;
 
@@ -107,7 +107,7 @@ public class InitializingBeanImpl implements InitializingBean {
 
                 int percentCpuLoad = getCpuLoad();
                 if (trayIcon != null) {
-                    trayIcon.setToolTip(DKSystemUIUtil.getLocaleStringWithParam("TRAY_ICON_MSG", percentCpuLoad));
+                    trayIcon.setToolTip(DKSysUIUtil.getLocaleStringWithParam("TRAY_ICON_MSG", percentCpuLoad));
                     trayIcon.setImage(image);
                 }
                 try {

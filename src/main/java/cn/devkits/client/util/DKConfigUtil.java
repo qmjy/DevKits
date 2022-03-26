@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.Properties;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -31,7 +29,7 @@ public class DKConfigUtil {
     private Model model;
 
     private DKConfigUtil() {
-        loadVersionProperties(DKSystemUtil.isDevelopMode());
+        loadVersionProperties(DKSysUtil.isDevelopMode());
     }
 
     private void loadVersionProperties(boolean isDevelopMode) {
@@ -74,11 +72,11 @@ public class DKConfigUtil {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(DKSystemUIUtil.getLocaleString("DEVKITS_DESC")).append("<br/><br/>");
-        sb.append(DKSystemUIUtil.getLocaleStringWithColon("AUTHOR") + " Shaofeng Liu").append("<br/>");
-        sb.append(DKSystemUIUtil.getLocaleStringWithColon("HOMEPAGE") + " <a href='").append(model.getUrl()).append("'>");
+        sb.append(DKSysUIUtil.getLocaleString("DEVKITS_DESC")).append("<br/><br/>");
+        sb.append(DKSysUIUtil.getLocaleStringWithColon("AUTHOR") + " Shaofeng Liu").append("<br/>");
+        sb.append(DKSysUIUtil.getLocaleStringWithColon("HOMEPAGE") + " <a href='").append(model.getUrl()).append("'>");
         sb.append(model.getUrl()).append("</a>").append("<br/>");
-        sb.append(DKSystemUIUtil.getLocaleStringWithColon("ISSUE") + " <a href='" + getIssueUri() + "'>" + getIssueUri() + "</a>");
+        sb.append(DKSysUIUtil.getLocaleStringWithColon("ISSUE") + " <a href='" + getIssueUri() + "'>" + getIssueUri() + "</a>");
 
         return sb.toString();
     }

@@ -3,14 +3,13 @@ package cn.devkits.client.action;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 import cn.devkits.client.util.WinRegisterUtil;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,13 +35,13 @@ public class SystemRegisterAction extends BaseAction {
     public SystemRegisterAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
-        putValue(Action.NAME, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_REGISTER"));
+        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_SYS_REGISTER"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.DESKTOP, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSystemUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DESC"));
 
         registerPane();
     }
@@ -56,16 +55,16 @@ public class SystemRegisterAction extends BaseAction {
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
 
-        builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DRIVER"), cc.xyw(1, 1, 11));
+        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DRIVER"), cc.xyw(1, 1, 11));
 
-        String enableTxt = DKSystemUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DRIVER_ENABLE_TXT");
+        String enableTxt = DKSysUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DRIVER_ENABLE_TXT");
         enableCamera = new JCheckBox(enableTxt);
         enableCamera.setActionCommand(enableTxt);
         builder.add(enableCamera, cc.xyw(1, 3, 11));
 
-        builder.addSeparator(DKSystemUIUtil.getLocaleString("SETTINGS_SYS_CONTEXT_MENU"), cc.xyw(1, 5, 11));
+        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_CONTEXT_MENU"), cc.xyw(1, 5, 11));
 
-        String enableQrRecognizeTxt = DKSystemUIUtil.getLocaleString("SETTINGS_SYS_CONTEXT_MENU_QR_4_IMG");
+        String enableQrRecognizeTxt = DKSysUIUtil.getLocaleString("SETTINGS_SYS_CONTEXT_MENU_QR_4_IMG");
         enableQrRecognize = new JCheckBox(enableQrRecognizeTxt);
         enableQrRecognize.setActionCommand(enableQrRecognizeTxt);
         builder.add(enableQrRecognize, cc.xyw(1, 7, 11));
@@ -90,7 +89,7 @@ public class SystemRegisterAction extends BaseAction {
 
     private void installQrRecognize() {
         unInstallQrRecognize();
-        if (DKSystemUtil.isWindows()) {
+        if (DKSysUtil.isWindows()) {
             WinRegisterUtil instance = WinRegisterUtil.getInstance();
             instance.regQrCodeSubCommand();
         }

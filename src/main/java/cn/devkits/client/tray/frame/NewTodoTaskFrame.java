@@ -16,7 +16,7 @@ import cn.devkits.client.App;
 import cn.devkits.client.DKConstants;
 import cn.devkits.client.service.impl.TodoTaskServiceImpl;
 import cn.devkits.client.tray.model.TodoTaskModel;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 import cn.devkits.client.util.SpringUtilities;
 
 import javax.swing.BorderFactory;
@@ -71,7 +71,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     private int reminder;
 
     public NewTodoTaskFrame(TodoListFrame todoListFrame) {
-        super(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
+        super(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
 
         initUI(getContentPane());
         initListener();
@@ -89,25 +89,25 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     protected void initUI(Container rootContainer) {
         JPanel panel = new JPanel(new SpringLayout());
 
-        JLabel nameLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME"), JLabel.TRAILING);
+        JLabel nameLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME"), JLabel.TRAILING);
         panel.add(nameLbl);
         this.nameTextField = new JTextField();
         nameLbl.setLabelFor(nameTextField);
         panel.add(nameTextField);
 
-        JLabel reminderLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_REMINDER"), JLabel.TRAILING);
+        JLabel reminderLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_REMINDER"), JLabel.TRAILING);
         panel.add(reminderLbl);
         JPanel reminderPane = createReminderPane();
         reminderLbl.setLabelFor(reminderPane);
         panel.add(reminderPane);
 
-        JLabel cornLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CRON"), JLabel.TRAILING);
+        JLabel cornLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CRON"), JLabel.TRAILING);
         panel.add(cornLbl);
         JPanel cornTextFieldPane = createCornPane();
         cornLbl.setLabelFor(cornTextFieldPane);
         panel.add(cornTextFieldPane);
 
-        JLabel descLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_DESC"), JLabel.TRAILING);
+        JLabel descLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_DESC"), JLabel.TRAILING);
         panel.add(descLbl);
         JScrollPane descTextAreaPane = createDescTextArea();
         descLbl.setLabelFor(descTextAreaPane);
@@ -115,7 +115,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         SpringUtilities.makeCompactGrid(panel,
                 4, 2,
-                DKSystemUIUtil.COMPONENT_UI_PADDING_5, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
+                DKSysUIUtil.COMPONENT_UI_PADDING_5, DKSysUIUtil.COMPONENT_UI_PADDING_5,
                 6, 6);
 
         rootContainer.add(panel, BorderLayout.CENTER);
@@ -124,16 +124,16 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
     private JPanel createReminderPane() {
         JPanel jPanel = new JPanel(new SpringLayout());
-        JRadioButton reminderTypeOfTrayMsg = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_TRAY_MSG"));
+        JRadioButton reminderTypeOfTrayMsg = new JRadioButton(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_TRAY_MSG"));
         reminderTypeOfTrayMsg.setSelected(true);
         reminderTypeOfTrayMsg.setName(String.valueOf(DKConstants.TODO_REMINDER.TRAY.ordinal()));
         jPanel.add(reminderTypeOfTrayMsg);
 
-        JRadioButton reminderTypeOfDialog = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_DIALOG"));
+        JRadioButton reminderTypeOfDialog = new JRadioButton(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_DIALOG"));
         reminderTypeOfDialog.setName(String.valueOf(DKConstants.TODO_REMINDER.DIALOG.ordinal()));
         jPanel.add(reminderTypeOfDialog);
 
-        JRadioButton reminderTypeOfEmail = new JRadioButton(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL"));
+        JRadioButton reminderTypeOfEmail = new JRadioButton(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL"));
         reminderTypeOfEmail.setName(String.valueOf(DKConstants.TODO_REMINDER.EMAIL.ordinal()));
         jPanel.add(reminderTypeOfEmail);
 
@@ -143,7 +143,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         group.add(reminderTypeOfEmail);
 
         this.emailsInput = new JTextField();
-        emailsInput.setToolTipText(DKSystemUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL_TOOLTIPS"));
+        emailsInput.setToolTipText(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL_TOOLTIPS"));
         emailsInput.setEnabled(false);
         jPanel.add(emailsInput);
 
@@ -153,8 +153,8 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         SpringUtilities.makeCompactGrid(jPanel,
                 1, 4,
-                DKSystemUIUtil.COMPONENT_UI_PADDING_0, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
-                DKSystemUIUtil.COMPONENT_UI_PADDING_0, 2);
+                DKSysUIUtil.COMPONENT_UI_PADDING_0, DKSysUIUtil.COMPONENT_UI_PADDING_5,
+                DKSysUIUtil.COMPONENT_UI_PADDING_0, 2);
 
         return jPanel;
     }
@@ -169,7 +169,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         SpringUtilities.makeCompactGrid(jPanel,
                 1, 2,
-                DKSystemUIUtil.COMPONENT_UI_PADDING_0, DKSystemUIUtil.COMPONENT_UI_PADDING_5,
+                DKSysUIUtil.COMPONENT_UI_PADDING_0, DKSysUIUtil.COMPONENT_UI_PADDING_5,
                 2, 2);
         return jPanel;
     }
@@ -183,7 +183,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
             public void mouseClicked(MouseEvent e) {
                 String cornUrl = "https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm";
                 try {
-                    DKSystemUIUtil.browseURL(new URI(cornUrl));
+                    DKSysUIUtil.browseURL(new URI(cornUrl));
                 } catch (URISyntaxException uriSyntaxException) {
                     LOGGER.error("Can't convert string to URI: {}", cornUrl);
                 }
@@ -220,7 +220,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        JButton applyBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CREATE"));
+        JButton applyBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CREATE"));
         applyBtn.addActionListener(e -> {
             TodoTaskServiceImpl service = (TodoTaskServiceImpl) App.getContext().getBean("todoTaskServiceImpl");
             //TODO input check
@@ -241,7 +241,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton closeBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
+        JButton closeBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
         closeBtn.addActionListener(e -> {
             this.setVisible(false);
         });

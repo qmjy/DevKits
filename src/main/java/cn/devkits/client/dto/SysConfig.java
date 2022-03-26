@@ -1,6 +1,4 @@
-package cn.devkits.client.model;
-
-import java.util.Date;
+package cn.devkits.client.dto;
 
 /**
  * 系统配置

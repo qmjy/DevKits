@@ -6,7 +6,7 @@ package cn.devkits.client.tray.model;
 
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 
 import java.io.File;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -18,9 +18,9 @@ public class LargeDuplicateFilesTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 5068639881692339753L;
 
     private Set<String> files;
-    private String[] names = {DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_FILE_NAME"),
-            DKSystemUIUtil.getLocaleString("COMMON_LABEL_FILE_PATH"), DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_FILE_SIZE"),
-            DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_CREATE_TIME"), DKSystemUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_MODIFY_TIME")};
+    private String[] names = {DKSysUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_FILE_NAME"),
+            DKSysUIUtil.getLocaleString("COMMON_LABEL_FILE_PATH"), DKSysUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_FILE_SIZE"),
+            DKSysUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_CREATE_TIME"), DKSysUIUtil.getLocaleString("DUP_FILE_TABLE_HEADER_MODIFY_TIME")};
 
     public LargeDuplicateFilesTableModel() {
         this.files = new HashSet<>();

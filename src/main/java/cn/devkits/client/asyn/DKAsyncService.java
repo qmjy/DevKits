@@ -4,9 +4,7 @@
 
 package cn.devkits.client.asyn;
 
-import cn.devkits.client.model.ClipboardModel;
 import cn.devkits.client.service.ClipboardService;
-import cn.devkits.client.util.DKDateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +12,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.util.List;
 import java.util.Optional;
 
 /**

@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
@@ -41,7 +40,7 @@ import java.util.Locale;
  * @version 1.0.0
  * @time 2020年1月12日 下午1:05:12
  */
-public final class DKSystemUIUtil {
+public final class DKSysUIUtil {
 
     /**
      * 控件边距：0
@@ -66,8 +65,19 @@ public final class DKSystemUIUtil {
      */
     public static final int COMPONENT_UI_PADDING_10 = 10;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DKSystemUIUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DKSysUIUtil.class);
 
+    /**
+     * 创建带边框的Panel
+     *
+     * @param color 边框颜色
+     * @return 带颜色的Jpanel容器
+     */
+    public static JPanel createPaneWithBorder(Color color) {
+        JPanel jPanel = new JPanel();
+        jPanel.setBorder(BorderFactory.createLineBorder(color));
+        return jPanel;
+    }
 
     /**
      * 创建绿色文本的的label

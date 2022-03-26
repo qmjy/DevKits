@@ -13,8 +13,8 @@ import cn.devkits.client.tray.pattern.FileSpliterStrategy;
 import cn.devkits.client.tray.pattern.TextFileSpliterStrategyImpl;
 import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
-import cn.devkits.client.util.DKSystemUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import cn.devkits.client.util.DKSysUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -74,8 +73,8 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private static final long serialVersionUID = -6345009512566288941L;
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSpliterFrame.class);
     private final String[] fileTypeItems = new String[]{"TXT File", "Excel File", "More Type..."};
-    private final String[] textFileSpliterParamTypes = new String[]{DKSystemUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_SEGMENTS"),
-            DKSystemUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_FIXED_LINES"), DKSystemUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_FIXED_SIZE")};
+    private final String[] textFileSpliterParamTypes = new String[]{DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_SEGMENTS"),
+            DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_FIXED_LINES"), DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_FIXED_SIZE")};
     private final static Dimension hpad10 = new Dimension(10, 1);
     private final static Dimension vpad20 = new Dimension(1, 20);
     private final static Dimension vpad4 = new Dimension(1, 4);
@@ -111,7 +110,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private ThreadPoolExecutor executor;
 
     public FileSpliterFrame() {
-        super(DKSystemUIUtil.getLocaleString("FILE_SPLITTER_TITLE"), 0.7f, 0.55f);
+        super(DKSysUIUtil.getLocaleString("FILE_SPLITTER_TITLE"), 0.7f, 0.55f);
 
         initUI(getContentPane());
         initListener();
@@ -124,16 +123,16 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         SpringLayout layout = new SpringLayout();
         centerPanel.setLayout(layout);
 
-        JLabel fileTypeLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("COMMON_LABEL_FILE_TYPE"));
+        JLabel fileTypeLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("COMMON_LABEL_FILE_TYPE"));
 
         jComboBox = new JComboBox<String>(fileTypeItems);
         jComboBox.setLightWeightPopupEnabled(false);
 
-        JLabel filePathLbl = new JLabel(DKSystemUIUtil.getLocaleStringWithColon("COMMON_LABEL_FILE_PATH"));
+        JLabel filePathLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("COMMON_LABEL_FILE_PATH"));
         this.chosenFilePath = new JTextField(38);
         chosenFilePath.setEditable(false);
 
-        this.browseBtn = new JButton(DKSystemUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
+        this.browseBtn = new JButton(DKSysUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
 
         JPanel detailPane = createOrUpdateSegmentPane();
 
@@ -213,7 +212,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private JPanel createTxtSplitSegmentPane() {
         JPanel detailPane = new InsetPanel(insets);
 
-        detailPane.setBorder(BorderFactory.createTitledBorder(DKSystemUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM")));
+        detailPane.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM")));
         detailPane.setLayout(new BoxLayout(detailPane, BoxLayout.Y_AXIS));
         detailPane.add(Box.createRigidArea(vpad20));
         averageSizeBtn = new JRadioButton(textFileSpliterParamTypes[0]);
@@ -261,18 +260,18 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
-        openResultBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_OPEN_RESULT"));
+        openResultBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_OPEN_RESULT"));
         openResultBtn.setEnabled(false);
         buttonPane.add(openResultBtn);
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        this.applyBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
+        this.applyBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
 
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        this.closeBtn = new JButton(DKSystemUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
+        this.closeBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
         buttonPane.add(closeBtn);
 
         return buttonPane;
@@ -299,7 +298,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
                         String issueUri = DKConfigUtil.getInstance().getIssueUri();
                         try {
                             URI uri = new URI(issueUri);
-                            DKSystemUIUtil.browseURL(uri);
+                            DKSysUIUtil.browseURL(uri);
                         } catch (URISyntaxException e1) {
                             LOGGER.error("URI convert failed: {}", issueUri);
                         }
@@ -414,7 +413,7 @@ class ApplyActionListener implements ActionListener {
         FileSpliterModel splitModel = new FileSpliterModel(frame.getChosenFilePath().getText());
 
         FileSpliterStrategy strategy = null;
-        switch (DKSystemUtil.arraysSearch(frame.getFileTypeItems(), frame.getCurrentFileType())) {
+        switch (DKSysUtil.arraysSearch(frame.getFileTypeItems(), frame.getCurrentFileType())) {
             case 0:
                 strategy = new TextFileSpliterStrategyImpl(frame.getTextFileSpliterParamTypes(), current, param, splitModel);
                 break;
@@ -479,7 +478,7 @@ class UiUpdateThread implements Runnable {
         while (!(splitModel.isFinished() && splitModel.isMsgEmpty())) {
             String text = splitModel.pollMsg();
             frame.updateConsole(text);
-            DKSystemUtil.sleep(50);
+            DKSysUtil.sleep(50);
         }
         frame.enableOpenResult(splitModel);
     }

@@ -25,10 +25,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+
+import cn.devkits.client.util.DKSysUtil;
 import com.google.common.collect.Lists;
 import cn.devkits.client.tray.model.FileTableModel;
 import cn.devkits.client.util.DKFileUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
@@ -45,7 +47,7 @@ public class FileExplorerPanel extends JPanel {
 
     /** serialVersionUID */
     private static final long serialVersionUID = -2230863950855742735L;
-    private static final String HOME_PATH = System.getProperty("user.home");
+    private static final String HOME_PATH = DKSysUtil.getHomePath();
 
     private JButton backBtn;
     private JButton homeBtn;
@@ -108,7 +110,7 @@ public class FileExplorerPanel extends JPanel {
         textFieldCons.setY(Spring.constant(5));
 
         // Adjust constraints for the content pane.
-        DKSystemUIUtil.setContainerSize(jPanel, 5);
+        DKSysUIUtil.setContainerSize(jPanel, 5);
 
         add(jPanel, BorderLayout.NORTH);
 

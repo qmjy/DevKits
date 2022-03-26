@@ -9,7 +9,7 @@ import cn.devkits.client.DKConstants;
 import cn.devkits.client.service.impl.TodoTaskServiceImpl;
 import cn.devkits.client.tray.model.TodoTaskModel;
 import cn.devkits.client.util.DKDateTimeUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 
 import org.springframework.scheduling.support.CronSequenceGenerator;
 
@@ -47,7 +47,7 @@ public class TodoListFrame extends DKAbstractFrame {
     private JTable dialogTable;
 
     public TodoListFrame() {
-        super(DKSystemUIUtil.getLocaleString("TODO_LIST_TITLE"), 0.7f);
+        super(DKSysUIUtil.getLocaleString("TODO_LIST_TITLE"), 0.7f);
 
         this.jTabbedPane = new JTabbedPane();
         this.trayTable = new JTable();
@@ -67,9 +67,9 @@ public class TodoListFrame extends DKAbstractFrame {
         setPreferredSize(new Dimension(450, 130));
         add(toolBar, BorderLayout.PAGE_START);
 
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, reminderHeader, DKConstants.TODO_REMINDER.TRAY));
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader, DKConstants.TODO_REMINDER.EMAIL));
-        jTabbedPane.addTab(DKSystemUIUtil.getLocaleString("TODO_LIST_TAB_DIALOG"), createReminderPane(dialogTable, reminderHeader,
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, reminderHeader, DKConstants.TODO_REMINDER.TRAY));
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader, DKConstants.TODO_REMINDER.EMAIL));
+        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_DIALOG"), createReminderPane(dialogTable, reminderHeader,
                 DKConstants.TODO_REMINDER.DIALOG));
 
         jTabbedPane.setFocusable(false);
@@ -123,7 +123,7 @@ public class TodoListFrame extends DKAbstractFrame {
     }
 
     private void createToolbarBtns(JToolBar toolBar) {
-        JButton systemBtn = new JButton(DKSystemUIUtil.getLocaleString("TODO_LIST_CREATE"));
+        JButton systemBtn = new JButton(DKSysUIUtil.getLocaleString("TODO_LIST_CREATE"));
         systemBtn.setFocusable(false);
         systemBtn.addActionListener(e -> {
             NewTodoTaskFrame frame = new NewTodoTaskFrame(this);

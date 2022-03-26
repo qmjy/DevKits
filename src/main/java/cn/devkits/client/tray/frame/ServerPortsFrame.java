@@ -7,7 +7,7 @@ package cn.devkits.client.tray.frame;
 import cn.devkits.client.tray.model.SocketReachableModel;
 import cn.devkits.client.util.DKNetworkUtil;
 import cn.devkits.client.util.DKStringUtil;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public class ServerPortsFrame extends DKAbstractFrame {
     private JScrollPane scrollPane;
 
     public ServerPortsFrame() {
-        super(DKSystemUIUtil.getLocaleString("SERVER_PORTS_DETECTION"), 0.6f);
+        super(DKSysUIUtil.getLocaleString("SERVER_PORTS_DETECTION"), 0.6f);
 
         initUI(getContentPane());
         initListener();
@@ -77,16 +77,16 @@ public class ServerPortsFrame extends DKAbstractFrame {
     }
 
     private void createSearchBtn(final JPanel northPanel) {
-        this.searchBtn = new JButton(DKSystemUIUtil.getLocaleString("DETECT"));
+        this.searchBtn = new JButton(DKSysUIUtil.getLocaleString("DETECT"));
         searchBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 String inputText = addressInputField.getText();
                 if (DKStringUtil.isIP(inputText) || DKStringUtil.isDomain(inputText)) {
-                    userConsole.append(DKSystemUIUtil.getLocaleStringWithParam("START_MSG", inputText) + System.getProperty("line.separator"));
+                    userConsole.append(DKSysUIUtil.getLocaleStringWithParam("START_MSG", inputText) + System.getProperty("line.separator"));
                     startCheck(northPanel, inputText);
                 } else {
-                    JOptionPane.showMessageDialog(scrollPane.getParent(), DKSystemUIUtil.getLocaleStringWithParam("INVALID_ADDR_MSG", inputText));
+                    JOptionPane.showMessageDialog(scrollPane.getParent(), DKSysUIUtil.getLocaleStringWithParam("INVALID_ADDR_MSG", inputText));
                 }
             }
         });
@@ -107,7 +107,7 @@ public class ServerPortsFrame extends DKAbstractFrame {
     }
 
     private void createInputTextField(final JPanel northPanel) {
-        final String defaultText = DKSystemUIUtil.getLocaleStringWithEllipsis("INPUT_MSG");
+        final String defaultText = DKSysUIUtil.getLocaleStringWithEllipsis("INPUT_MSG");
 
         this.addressInputField = new JTextField(20);
         addressInputField.setText(defaultText);
@@ -136,10 +136,10 @@ public class ServerPortsFrame extends DKAbstractFrame {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String inputStr = textField.getText();
                     if (DKStringUtil.isIP(inputStr) || DKStringUtil.isDomain(inputStr)) {
-                        userConsole.append(DKSystemUIUtil.getLocaleStringWithParam("START_MSG", inputStr) + System.getProperty("line.separator"));
+                        userConsole.append(DKSysUIUtil.getLocaleStringWithParam("START_MSG", inputStr) + System.getProperty("line.separator"));
                         startCheck(northPanel, inputStr);
                     } else {
-                        JOptionPane.showMessageDialog(scrollPane.getParent(), DKSystemUIUtil.getLocaleStringWithParam("INVALID_ADDR_MSG", inputStr));
+                        JOptionPane.showMessageDialog(scrollPane.getParent(), DKSysUIUtil.getLocaleStringWithParam("INVALID_ADDR_MSG", inputStr));
                     }
                 }
             }
@@ -177,16 +177,16 @@ public class ServerPortsFrame extends DKAbstractFrame {
             while (true) {
                 if (pool.isTerminated() && msgQuene.isEmpty()) {
                     String duration = String.valueOf(System.currentTimeMillis() - start - 1 * 1000);
-                    userConsole.insert(DKSystemUIUtil.getLocaleStringWithParam("TAKE_TIME", duration) + System.getProperty("line.separator"), 0);
+                    userConsole.insert(DKSysUIUtil.getLocaleStringWithParam("TAKE_TIME", duration) + System.getProperty("line.separator"), 0);
                     String portsStr = String.join(",", ports);
 
-                    userConsole.insert(DKSystemUIUtil.getLocaleStringWithParam("PORT_LISTENING_MSG", address, portsStr) + System.getProperty("line.separator"), 0);
+                    userConsole.insert(DKSysUIUtil.getLocaleStringWithParam("PORT_LISTENING_MSG", address, portsStr) + System.getProperty("line.separator"), 0);
 
                     Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
                     Transferable tText = new StringSelection(portsStr);
                     clip.setContents(tText, null);
 
-                    JOptionPane.showMessageDialog(northPanel, DKSystemUIUtil.getLocaleString("PORT_COPIED_MSG"));
+                    JOptionPane.showMessageDialog(northPanel, DKSysUIUtil.getLocaleString("PORT_COPIED_MSG"));
                     return;
                 }
 
@@ -221,7 +221,7 @@ public class ServerPortsFrame extends DKAbstractFrame {
             try {
                 if (DKNetworkUtil.socketReachable(address, port)) {
 
-                    msgQuene.put(new SocketReachableModel(port, true, DKSystemUIUtil.getLocaleStringWithParam("PORT_LISTENING", port) + System.getProperty("line.separator")));
+                    msgQuene.put(new SocketReachableModel(port, true, DKSysUIUtil.getLocaleStringWithParam("PORT_LISTENING", port) + System.getProperty("line.separator")));
                 }
                 // else
                 // {

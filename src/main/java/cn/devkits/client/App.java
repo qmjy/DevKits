@@ -10,14 +10,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.google.common.eventbus.EventBus;
 import cn.devkits.client.asyn.AppStarter;
-import cn.devkits.client.util.DKSystemUIUtil;
+import cn.devkits.client.util.DKSysUIUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.AWTException;
-import java.awt.SplashScreen;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.io.IOException;
@@ -75,7 +72,7 @@ public class App {
     private static void initLookAndFeel() {
         // UIManager.getSystemLookAndFeelClassName() get system defualt;
         String lookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-        DKSystemUIUtil.setLookAndFeel(lookAndFeel);
+        DKSysUIUtil.setLookAndFeel(lookAndFeel);
     }
 
     public static AnnotationConfigApplicationContext getContext() {

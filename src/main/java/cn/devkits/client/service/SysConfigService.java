@@ -1,7 +1,7 @@
 package cn.devkits.client.service;
 
 
-import cn.devkits.client.model.SysConfig;
+import cn.devkits.client.dto.SysConfig;
 
 import java.util.List;
 import java.util.Optional;
