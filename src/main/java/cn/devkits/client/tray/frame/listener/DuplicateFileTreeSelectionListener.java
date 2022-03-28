@@ -1,9 +1,7 @@
-package cn.devkits.client.tray.frame;
+package cn.devkits.client.tray.frame.listener;
 
 import cn.devkits.client.tray.model.LargeDuplicateFilesTableModel;
 import cn.devkits.client.util.DKFileUtil;
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
@@ -130,8 +128,8 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
             }
         }
 
-        try {
-            Metadata metadata = ImageMetadataReader.readMetadata(new File(filePath));
+        Metadata metadata = DKFileUtil.getMetadataOfFile(new File(filePath));
+        if (metadata != null) {
             for (Directory directory : metadata.getDirectories()) {
                 JPanel component = new JPanel();
                 component.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -145,10 +143,6 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
                     }
                 }
             }
-        } catch (ImageProcessingException e) {
-            LOGGER.error("Read image meta data failed: {}", e.getMessage());
-        } catch (IOException e) {
-            LOGGER.error("Read image meta data failed: {}", e.getMessage());
         }
     }
 

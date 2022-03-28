@@ -4,6 +4,7 @@
 
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.tray.frame.listener.DuplicateFileTreeSelectionListener;
 import cn.devkits.client.tray.frame.listener.StartEndListener;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.SpringLayout.Constraints;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -86,13 +86,10 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
     private DefaultMutableTreeNode treeNode = null;
     private DefaultTreeModel treeModel = null;
 
-    private ConcurrentHashMap<String, Set<String>> md5FilesMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Set<String>> md5FilesMap = null;
 
     public DuplicateFilesFrame() {
         super(DKSysUIUtil.getLocaleString("DUP_WIN_TITLE"), 1.2f);
-
-        initUI(getContentPane());
-        initListener();
     }
 
     @Override
@@ -101,6 +98,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
         JSplitPane jSplitPane = new JSplitPane();
 
+        md5FilesMap = new ConcurrentHashMap<>();
         treeNode = new DefaultMutableTreeNode(DKSysUIUtil.getLocaleString("DUP_TREE_NODE_ROOT"));
         treeModel = new DefaultTreeModel(treeNode);
         tree = new JTree(treeModel);

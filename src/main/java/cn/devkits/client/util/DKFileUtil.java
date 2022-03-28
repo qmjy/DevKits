@@ -7,6 +7,9 @@ package cn.devkits.client.util;
 import cn.devkits.client.App;
 import cn.devkits.client.DKConstants;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -256,6 +259,29 @@ public final class DKFileUtil {
         }
     }
 
+    /**
+     * 获取指定文件的元数据
+     *
+     * @param file 待获取元数据的文件
+     * @return 文件元数据
+     */
+    public static Metadata getMetadataOfFile(File file) {
+        try {
+            return ImageMetadataReader.readMetadata(file);
+        } catch (ImageProcessingException e) {
+            LOGGER.error("Load meta data failed: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            LOGGER.error("Load meta data failed: " + file.getAbsolutePath());
+        }
+        return null;
+    }
+
+    /**
+     * 用资源管理器打开系统目录
+     *
+     * @param filePath 待打开的目录
+     * @return 打开成功与否
+     */
     public static boolean openFolder(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {

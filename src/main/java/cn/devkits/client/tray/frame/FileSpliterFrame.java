@@ -6,7 +6,7 @@ package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.component.InsetPanel;
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
-import cn.devkits.client.tray.listener.FileSplitSegmentsParamCheckListener;
+import cn.devkits.client.tray.frame.listener.FileSplitSegmentsParamCheckListener;
 import cn.devkits.client.tray.model.FileSpliterModel;
 import cn.devkits.client.tray.pattern.ExcelFileSpliterStrategyImpl;
 import cn.devkits.client.tray.pattern.FileSpliterStrategy;
@@ -72,13 +72,12 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
      */
     private static final long serialVersionUID = -6345009512566288941L;
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSpliterFrame.class);
-    private final String[] fileTypeItems = new String[]{"TXT File", "Excel File", "More Type..."};
-    private final String[] textFileSpliterParamTypes = new String[]{DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_SEGMENTS"),
-            DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_FIXED_LINES"), DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_FIXED_SIZE")};
-    private final static Dimension hpad10 = new Dimension(10, 1);
-    private final static Dimension vpad20 = new Dimension(1, 20);
-    private final static Dimension vpad4 = new Dimension(1, 4);
-    private final static Insets insets = new Insets(5, 10, 0, 10);
+    private String[] fileTypeItems = null;
+    private String[] textFileSpliterParamTypes = null;
+    private static Dimension hpad10 = null;
+    private static Dimension vpad20 = null;
+    private static Dimension vpad4 = null;
+    private static Insets insets = null;
 
     private JComboBox<String> jComboBox;
     private JTextField chosenFilePath;
@@ -86,7 +85,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     private CardLayout sgmtParamPaneLayout;
     private JTextArea consoleTextArea;
 
-    private Map<JRadioButton, JTextField> mapping = new HashMap<JRadioButton, JTextField>();
+    private Map<JRadioButton, JTextField> mapping = null;
 
     /**
      * text split start
@@ -98,7 +97,6 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
      * text split end
      */
 
-    private String currentFileType = fileTypeItems[0];
     private JRadioButton current;
     private FileSpliterModel splitModel;
 
@@ -112,8 +110,6 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     public FileSpliterFrame() {
         super(DKSysUIUtil.getLocaleString("FILE_SPLITTER_TITLE"), 0.7f, 0.55f);
 
-        initUI(getContentPane());
-        initListener();
         executor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
@@ -125,6 +121,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
 
         JLabel fileTypeLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("COMMON_LABEL_FILE_TYPE"));
 
+        fileTypeItems = new String[]{"TXT File", "Excel File", "More Type..."};
         jComboBox = new JComboBox<String>(fileTypeItems);
         jComboBox.setLightWeightPopupEnabled(false);
 
@@ -210,15 +207,23 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     }
 
     private JPanel createTxtSplitSegmentPane() {
+        insets = new Insets(5, 10, 0, 10);
         JPanel detailPane = new InsetPanel(insets);
 
         detailPane.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM")));
         detailPane.setLayout(new BoxLayout(detailPane, BoxLayout.Y_AXIS));
+        vpad20 = new Dimension(1, 20);
         detailPane.add(Box.createRigidArea(vpad20));
+
+        textFileSpliterParamTypes = new String[]{DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_SEGMENTS"),
+                DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_FIXED_LINES"), DKSysUIUtil.getLocaleString("FILE_SPLITTER_SEGMENT_PARAM_FIXED_SIZE")};
+
         averageSizeBtn = new JRadioButton(textFileSpliterParamTypes[0]);
         averageSizeBtn.setSelected(true);
         this.current = averageSizeBtn;
         detailPane.add(averageSizeBtn);
+
+        vpad4 = new Dimension(1, 4);
         detailPane.add(Box.createRigidArea(vpad4));
         detailPane.add(initFieldWrapper(averageSizeBtn, Integer.class));
         fixedLinesBtn = new JRadioButton(textFileSpliterParamTypes[1]);
@@ -243,6 +248,8 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         JPanel fieldWrapper = new JPanel();
         fieldWrapper.setLayout(new BoxLayout(fieldWrapper, BoxLayout.X_AXIS));
         fieldWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        hpad10 = new Dimension(10, 1);
         fieldWrapper.add(Box.createRigidArea(hpad10));
         fieldWrapper.add(Box.createRigidArea(hpad10));
         JTextField comp = new JTextField(10);
@@ -250,6 +257,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
         comp.addKeyListener(new FileSplitSegmentsParamCheckListener(this, clazz));
         fieldWrapper.add(comp);
 
+        mapping = new HashMap<>();
         mapping.put(jRadioButton, comp);
 
         return fieldWrapper;
@@ -351,7 +359,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     }
 
     public String getCurrentFileType() {
-        return currentFileType;
+        return fileTypeItems[0];
     }
 
     public JRadioButton getCurrent() {

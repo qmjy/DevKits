@@ -64,11 +64,11 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
 
     public LogonImageManageFrame() {
         super(DKSysUIUtil.getLocaleString("LOGON_BG_MNG"), 0.7f, 0.25f);
+    }
 
-        initUI(getContentPane());
-        if (DKSysUtil.isWindow7()) {
-            initListener();
-        }
+    @Override
+    protected void initData() {
+
     }
 
     @Override
@@ -146,8 +146,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         applyBtn.addActionListener(new LogonImgManageListener(this));
         cancelBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();
-            ;
-            Container parent = btn.getParent().getParent().getParent();
+            Container parent = btn.getParent().getParent();
             if (parent instanceof LogonImageManageFrame) {
                 LogonImageManageFrame root = (LogonImageManageFrame) parent;
                 root.dispose();

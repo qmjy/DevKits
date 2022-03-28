@@ -73,8 +73,6 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     public NewTodoTaskFrame(TodoListFrame todoListFrame) {
         super(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
 
-        initUI(getContentPane());
-        initListener();
 
         this.todoListFrame = todoListFrame;
         App.getEventBus().register(this);
@@ -88,7 +86,6 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     @Override
     protected void initUI(Container rootContainer) {
         JPanel panel = new JPanel(new SpringLayout());
-
         JLabel nameLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME"), JLabel.TRAILING);
         panel.add(nameLbl);
         this.nameTextField = new JTextField();

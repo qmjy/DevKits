@@ -36,7 +36,6 @@ public class WebCameraFrame extends DKAbstractFrame {
                 (int) CAMERA_DIMENSION.getWidth(),
                 (int) CAMERA_DIMENSION.getHeight());
         createMenubar();
-        initUI(getContentPane());
     }
 
     private void createMenubar() {

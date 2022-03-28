@@ -4,9 +4,18 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import com.drew.metadata.Metadata;
 import org.junit.Test;
 
 public class DKFileUtilTest {
+
+    @Test
+    public void testGetMetadataOfFile() {
+        String file = this.getClass().getResource("/logo.png").getFile().toString();
+        Metadata metadata = DKFileUtil.getMetadataOfFile(new File(file));
+        System.out.println();
+    }
+
     @Test
     public void testIsTextFile() {
         if (DKSysUtil.isWindows()) {
@@ -32,4 +41,6 @@ public class DKFileUtilTest {
             assertEquals("1 KiB", DKFileUtil.formatBytes(1024));
         }
     }
+
+
 }

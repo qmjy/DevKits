@@ -73,7 +73,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
 
     //整体布局
-    private Container jRootPane;
+    private JPanel jRootPane;
     private CardLayout cardLayout;
 
     //编码控件
@@ -96,14 +96,10 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     public CodecFrame() {
         super(DKSysUIUtil.getLocaleString("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
 
-        initUI(getContentPane());
-        initListener();
-        initMenuBr();
-
         executor.execute(this);
     }
 
-    private void initMenuBr() {
+    private void initMenuBar() {
         JMenuBar mb = new JMenuBar();
         JMenu fileMenu = new JMenu(DKSysUIUtil.getLocaleString("COMMON_MENU_FILE"));
 
@@ -146,7 +142,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     }
 
 
-    private void initCamePanel() {
+    private JPanel initCamePanel() {
         // 检测是否有摄像头
         // https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/DetectWebcamExample.java
         webcam = Webcam.getDefault();
@@ -154,7 +150,6 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
             webcam.setViewSize(CAMERA_DIMENSION);
 
             WebcamPanel camPanel = new WebcamPanel(webcam, false);
-
             camPanel.setFPSDisplayed(true);
             camPanel.setDisplayDebugInfo(true);
             camPanel.setImageSizeDisplayed(true);
@@ -166,20 +161,22 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
             Icon leftIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA, 16, new Color(50, 50, 50));
             cameraPanel.add(new JLabel(DKSysUIUtil.getLocaleString("NO_CAMERA_FOUND"), leftIcon, SwingConstants.CENTER));
         }
+
+        return cameraPanel;
     }
 
 
     @Override
-    protected void initUI(Container jRootPane) {
-        this.cardLayout = new CardLayout();
-        this.jRootPane = jRootPane;
-        jRootPane.setLayout(cardLayout);
+    protected void initUI(Container container) {
+        initMenuBar();
 
-        initCamePanel();
+        this.cardLayout = new CardLayout();
+        this.jRootPane = new JPanel();
+        jRootPane.setLayout(cardLayout);
 
         this.decodePanel = new JTabbedPane();
         decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_UPLOAD"), initUploadPane());
-        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_CAMERA"), cameraPanel);
+        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_CAMERA"), initCamePanel());
         decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_SITE"), initSitePane());
 
         this.encodePanel = new JTabbedPane();
@@ -194,6 +191,8 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
 
         jRootPane.add(decodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
         jRootPane.add(encodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_ENCODE"));
+
+        container.add(jRootPane,BorderLayout.CENTER);
     }
 
     private Component initSitePane() {

@@ -35,11 +35,10 @@ import java.awt.Dimension;
  *
  * @author Tophua
  * @since 2020/8/5
- *
  */
 public class TodoListFrame extends DKAbstractFrame {
-    private String[] reminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "内容", "创建时间"};
-    private String[] emailReminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "收件人", "内容", "创建时间"};
+    private String[] reminderHeader = null;
+    private String[] emailReminderHeader = null;
 
     private JTabbedPane jTabbedPane;
     private JTable trayTable;
@@ -48,25 +47,23 @@ public class TodoListFrame extends DKAbstractFrame {
 
     public TodoListFrame() {
         super(DKSysUIUtil.getLocaleString("TODO_LIST_TITLE"), 0.7f);
+    }
 
-        this.jTabbedPane = new JTabbedPane();
+    @Override
+    protected void initData() {
         this.trayTable = new JTable();
         this.emailTable = new JTable();
         this.dialogTable = new JTable();
-
-        initUI(getContentPane());
-        initListener();
+        this.reminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "内容", "创建时间"};
+        this.emailReminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "收件人", "内容", "创建时间"};
     }
 
     @Override
     protected void initUI(Container rootContainer) {
-        JToolBar toolBar = new JToolBar("Todo List Toolbar");
-        toolBar.setFloatable(false);
-        createToolbarBtns(toolBar);
+        initData();
+        intiJToolBar(rootContainer);
 
-        setPreferredSize(new Dimension(450, 130));
-        add(toolBar, BorderLayout.PAGE_START);
-
+        jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, reminderHeader, DKConstants.TODO_REMINDER.TRAY));
         jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader, DKConstants.TODO_REMINDER.EMAIL));
         jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_DIALOG"), createReminderPane(dialogTable, reminderHeader,
@@ -74,6 +71,15 @@ public class TodoListFrame extends DKAbstractFrame {
 
         jTabbedPane.setFocusable(false);
         rootContainer.add(jTabbedPane, BorderLayout.CENTER);
+    }
+
+    private void intiJToolBar(Container rootContainer) {
+        JToolBar toolBar = new JToolBar("Todo List Toolbar");
+        toolBar.setFloatable(false);
+        createToolbarBtns(toolBar);
+
+        setPreferredSize(new Dimension(450, 130));
+        rootContainer.add(toolBar, BorderLayout.PAGE_START);
     }
 
     private String[][] queryData(DKConstants.TODO_REMINDER reminder) {

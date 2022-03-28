@@ -51,9 +51,6 @@ public class ServerPortsFrame extends DKAbstractFrame {
 
     public ServerPortsFrame() {
         super(DKSysUIUtil.getLocaleString("SERVER_PORTS_DETECTION"), 0.6f);
-
-        initUI(getContentPane());
-        initListener();
     }
 
     @Override

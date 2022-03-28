@@ -2,7 +2,7 @@
  * Copyright (c) 2019-2020 QMJY.CN All rights reserved.
  */
 
-package cn.devkits.client.tray.listener;
+package cn.devkits.client.tray.frame.listener;
 
 import cn.devkits.client.tray.frame.FileSpliterFrame;
 import cn.devkits.client.util.DKStringUtil;

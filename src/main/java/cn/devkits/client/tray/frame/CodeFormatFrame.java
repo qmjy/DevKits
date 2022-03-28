@@ -30,9 +30,11 @@ public class CodeFormatFrame extends DKAbstractFrame {
 
     public CodeFormatFrame() {
         super("Code Format");
+    }
 
-        initUI(getContentPane());
-        initListener();
+    @Override
+    protected void initData() {
+
     }
 
 

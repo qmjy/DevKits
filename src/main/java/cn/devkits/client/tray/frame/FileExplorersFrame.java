@@ -14,9 +14,6 @@ public class FileExplorersFrame extends DKAbstractFrame {
 
     public FileExplorersFrame() {
         super("File Explorer", 1.2f);
-
-        initUI(getContentPane());
-        initListener();
     }
 
     @Override

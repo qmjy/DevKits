@@ -34,6 +34,16 @@ public class ImgProcessingListModel extends AbstractTableModel {
     }
 
     /**
+     * 获取表格模型的指定行
+     *
+     * @param rowIndex 指定行的文件模型
+     * @return 文件对象
+     */
+    public File getFileAt(int rowIndex) {
+        return fileList.get(rowIndex);
+    }
+
+    /**
      * 新增多个文件
      *
      * @param files 待追加的文件列表

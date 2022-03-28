@@ -6,6 +6,7 @@ package cn.devkits.client.util;
 
 import cn.devkits.client.App;
 
+import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
 import com.sun.jna.platform.DesktopWindow;
 import com.sun.jna.platform.WindowUtils;
 import jiconfont.icons.font_awesome.FontAwesome;
@@ -110,6 +111,16 @@ public final class DKSysUIUtil {
         jLabel.setForeground(color);
         jLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
         return jLabel;
+    }
+
+
+    /**
+     * 获取自定义央视JPopupMenu
+     *
+     * @return JPopupMenu
+     */
+    public static DKJImagePopupMenu createDKJPopupMenu() {
+        return new DKJImagePopupMenu("Devkits");
     }
 
     /**

@@ -1,4 +1,4 @@
-package cn.devkits.client.tray.listener;
+package cn.devkits.client.tray.frame.listener;
 
 import cn.devkits.client.tray.model.ImgProcessingListModel;
 import cn.devkits.client.util.DKFileUtil;

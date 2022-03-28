@@ -29,9 +29,6 @@ public class SettingsFrame extends DKAbstractFrame {
 
     public SettingsFrame() {
         super(DKSysUIUtil.getLocaleString("SETTINGS_TITLE"), 0.8f);
-
-        initUI(getRootPane().getContentPane());
-        initListener();
     }
 
     @Override

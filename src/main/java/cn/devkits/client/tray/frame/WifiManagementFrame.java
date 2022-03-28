@@ -19,14 +19,14 @@ import java.util.List;
  * @Date 2022/03/11
  */
 public class WifiManagementFrame extends DKAbstractFrame {
-    private float PANE_WIDTH_L = 0.6f;
-    private float PANE_WIDTH_R = 1 - PANE_WIDTH_L;
+    private static final float PANE_WIDTH_L = 0.6f;
+    private static final float PANE_WIDTH_R = 1 - PANE_WIDTH_L;
+    private static JLabel currentName = new JLabel("N/A");
+    private static JLabel currentPwd = new JLabel("N/A");
+    private static JLabel currentOnline = new JLabel("N/A");
+    private static JLabel currentQr = new JLabel();
 
-    private JList<String> view = null;
-    private JLabel currentName = new JLabel("N/A");
-    private JLabel currentPwd = new JLabel("N/A");
-    private JLabel currentOnline = new JLabel("N/A");
-    private JLabel currentQr = new JLabel();
+    private JList<String> view;
 
     private List<String> connectedSsids = null;
     private Map<String, Map<String, String>> availableSsids = null;
@@ -36,15 +36,11 @@ public class WifiManagementFrame extends DKAbstractFrame {
      */
     public WifiManagementFrame() {
         super(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_FRAME_TITLE"), 0.7f);
-
-        initUI(getContentPane());
-        initListener();
     }
+
 
     @Override
     protected void initUI(Container rootContainer) {
-        rootContainer.setLayout(new BorderLayout());
-
         Box horizontalBox = Box.createHorizontalBox();
         horizontalBox.add(createWifiListPane(PANE_WIDTH_L));
         horizontalBox.add(createDetailPane(PANE_WIDTH_R));
@@ -112,7 +108,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
         view = new JList<>(getSsidList());
         jPanel.add(new JScrollPane(view), BorderLayout.CENTER);
 
-        jPanel.setPreferredSize(new Dimension((int) (getWidth() * width), (int) getHeight()));
+        jPanel.setPreferredSize(new Dimension((int) (getWidth() * width), getHeight()));
         return jPanel;
     }
 

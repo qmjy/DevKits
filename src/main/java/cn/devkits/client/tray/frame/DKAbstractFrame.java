@@ -20,8 +20,8 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
     private static final int DEFAULT_LOAD_FACTOR = 1;
 
-    protected int currentWidth = 0;
-    protected int currentHeight = 0;
+    protected int currentWidth = WINDOW_SIZE_WIDTH;
+    protected int currentHeight = WINDOW_SIZE_HEIGHT;
 
     protected DKSysUtil currentSystemUtil = DKSysUtil.getCurrentSystemUtil();
 
@@ -36,8 +36,6 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      */
     protected DKAbstractFrame(String title) {
         this(title, DEFAULT_LOAD_FACTOR);
-
-        initUI(getRootPane());
     }
 
     /**
@@ -50,19 +48,6 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
         this(title, loadFactor, loadFactor);
     }
 
-
-    /**
-     * frame constructor
-     *
-     * @param title  frame title
-     * @param width  width
-     * @param height height
-     */
-    protected DKAbstractFrame(String title, int width, int height) {
-        super(title);
-        this.setBounds(DKSysUIUtil.getCenter(width, height));
-    }
-
     /**
      * frame constructor
      *
@@ -72,11 +57,8 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      */
     protected DKAbstractFrame(String title, float widthLoadFactor, float heightLoadFactor) {
         super(title);
-
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        currentWidth = WINDOW_SIZE_WIDTH;
-        currentHeight = WINDOW_SIZE_HEIGHT;
         if (widthLoadFactor > 0 && heightLoadFactor > 0) {
 
             if (currentWidth * widthLoadFactor > screenSize.getWidth()) {
@@ -92,7 +74,37 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
             }
         }
 
-        this.setBounds((int) ((screenSize.width - currentWidth) / 2), (int) ((screenSize.height - currentHeight) / 2), (int) currentWidth, (int) currentHeight);
+        this.setBounds(DKSysUIUtil.getCenter(currentWidth, currentHeight));
+
+        initData();
+        JRootPane rootPane = getRootPane();
+        rootPane.setLayout(new BorderLayout());
+        initUI(rootPane);
+        initListener();
+
+    }
+
+    /**
+     * frame constructor
+     *
+     * @param title  frame title
+     * @param width  width
+     * @param height height
+     */
+    protected DKAbstractFrame(String title, int width, int height) {
+        super(title);
+        this.setBounds(DKSysUIUtil.getCenter(width, height));
+
+        initData();
+        initUI(getRootPane());
+        initListener();
+    }
+
+    /**
+     * 初始化数据
+     */
+    protected void initData() {
+
     }
 
     /**

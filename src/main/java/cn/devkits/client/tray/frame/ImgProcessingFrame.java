@@ -1,11 +1,20 @@
 package cn.devkits.client.tray.frame;
 
-import cn.devkits.client.tray.listener.SelectFileListener;
+import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
+import cn.devkits.client.tray.frame.listener.ImgTableListSelectionListener;
+import cn.devkits.client.tray.frame.listener.SelectFileListener;
 import cn.devkits.client.tray.model.ImgProcessingListModel;
+import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
 /**
  * 图片处理窗体
@@ -19,15 +28,16 @@ public class ImgProcessingFrame extends DKAbstractFrame {
 
     private ImgProcessingListModel filesModel = null;
     private JTable table = null;
+    private final DKJImagePopupMenu menu = DKSysUIUtil.createDKJPopupMenu();
 
     public ImgProcessingFrame() {
         super(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_TITLE"));
+        initPopupMenu();
     }
+
 
     @Override
     protected void initUI(Container rootContainer) {
-        rootContainer.setLayout(new BorderLayout());
-
         Box horizontalBox = Box.createHorizontalBox();
         horizontalBox.add(createLeftPane(PANE_WIDTH_L));
         horizontalBox.add(createRightPane(PANE_WIDTH_R));
@@ -35,6 +45,7 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         rootContainer.add(BorderLayout.CENTER, horizontalBox);
         rootContainer.add(BorderLayout.SOUTH, createBottomPane());
     }
+
 
     private Component createBottomPane() {
         JPanel bottomPane = DKSysUIUtil.createPaneWithBorder(Color.GRAY);
@@ -65,6 +76,7 @@ public class ImgProcessingFrame extends DKAbstractFrame {
 
         this.filesModel = new ImgProcessingListModel();
         this.table = new JTable(filesModel);
+        this.table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         jPanel.add(table.getTableHeader(), BorderLayout.NORTH);
         jPanel.add(table, BorderLayout.CENTER);
@@ -80,7 +92,6 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         appendPane.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
         appendPane.setLayout(new FlowLayout());
 
-
         JButton addBtn = new JButton(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_BTNS_ADD_FILE"));
         addBtn.addActionListener(new SelectFileListener(table, true));
         appendPane.add(addBtn);
@@ -89,27 +100,50 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         appendPane.add(addFolderBtn);
         JButton delSelectedBtn = new JButton(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_BTNS_DEL_FILE"));
         delSelectedBtn.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            filesModel.removeFileOfRow(selectedRow);
-            table.setModel(filesModel);
+//            int selectedRow = table.getSelectedRow();
+//            filesModel.removeFileOfRow(selectedRow);
+//            table.setModel(filesModel);
         });
         appendPane.add(delSelectedBtn);
 
-        jPanel.add(appendPane, BorderLayout.NORTH);
-
-        JPanel imgInfoPane = new JPanel();
-        imgInfoPane.setLayout(new GridLayout(1, 4, 5, 5));
-        imgInfoPane.add(new JLabel("图像宽度:"));
-        imgInfoPane.add(new JLabel("1024px"));
-        imgInfoPane.add(new JLabel("图像高度："));
-        imgInfoPane.add(new JLabel("1024px"));
-
-        jPanel.add(imgInfoPane, BorderLayout.CENTER);
+        jPanel.add(appendPane, BorderLayout.CENTER);
         return jPanel;
+    }
+
+    public void wrapImgInfo(File file) {
+        JPanel comp = new JPanel();
+        comp.setLayout(new GridLayout(0, 4, 5, 5));
+
+        Metadata metadata = DKFileUtil.getMetadataOfFile(file);
+        for (Directory directory : metadata.getDirectories()) {
+            for (Tag tag : directory.getTags()) {
+                comp.add(new JLabel(tag.getTagName() + ":", JLabel.RIGHT));
+                comp.add(new JLabel(tag.getDescription(), JLabel.LEFT));
+            }
+        }
     }
 
     @Override
     protected void initListener() {
+        table.getSelectionModel().addListSelectionListener(new ImgTableListSelectionListener(this, table));
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    menu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+    }
 
+    private void initPopupMenu() {
+        menu.add(new JMenuItem("Winzip 8.0"));
+        menu.addSeparator();
+        menu.add(new JMenuItem("Programs"));
+        menu.add(new JMenuItem("Document"));
+        menu.add(new JMenuItem("Settings"));
+        menu.add(new JMenuItem("Search"));
+        menu.add(new JMenuItem("Help and Support"));
+        menu.add(new JMenuItem("Run..."));
     }
 }

@@ -61,9 +61,11 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
     public OsInfoDetailFrame() {
         super(DKSysUIUtil.getLocaleString("SYS_INFO_TITLE"), 0.9f);
+    }
 
-        initUI(getContentPane());
-        initListener();
+    @Override
+    protected void initData() {
+        this.jTabbedPane = new JTabbedPane();
     }
 
     @Override
@@ -75,7 +77,6 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         setPreferredSize(new Dimension(450, 130));
         add(toolBar, BorderLayout.PAGE_START);
 
-        this.jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard());
         jTabbedPane.addTab("CPU", getPanel());
         jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), getPanel());

@@ -215,6 +215,7 @@ public class AppStarter implements Runnable {
 
         menuItem = new MenuItem(DKSysUIUtil.getLocaleString("SCREENSHOTS"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.SCRCAPTURE));
+        menuItem.setEnabled(DKSysUtil.isWindows());
         toolsItem.add(menuItem);
 
         menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("DUPLICATE_FILES"));
@@ -227,6 +228,7 @@ public class AppStarter implements Runnable {
 
         menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("LOGON_IMAGE"));
         menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.LOGONUI));
+        menuItem.setEnabled(DKSysUtil.isWindow7());
         toolsItem.add(menuItem);
 
         menuItem = new MenuItem(DKSysUIUtil.getLocaleStringWithEllipsis("FILE_EXPLORERS"));
