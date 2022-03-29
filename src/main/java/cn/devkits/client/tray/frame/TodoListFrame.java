@@ -46,7 +46,7 @@ public class TodoListFrame extends DKAbstractFrame {
     private JTable dialogTable;
 
     public TodoListFrame() {
-        super(DKSysUIUtil.getLocaleString("TODO_LIST_TITLE"), 0.7f);
+        super(DKSysUIUtil.getLocale("TODO_LIST_TITLE"), 0.7f);
     }
 
     @Override
@@ -64,9 +64,9 @@ public class TodoListFrame extends DKAbstractFrame {
         intiJToolBar(rootContainer);
 
         jTabbedPane = new JTabbedPane();
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, reminderHeader, DKConstants.TODO_REMINDER.TRAY));
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader, DKConstants.TODO_REMINDER.EMAIL));
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("TODO_LIST_TAB_DIALOG"), createReminderPane(dialogTable, reminderHeader,
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, reminderHeader, DKConstants.TODO_REMINDER.TRAY));
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader, DKConstants.TODO_REMINDER.EMAIL));
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("TODO_LIST_TAB_DIALOG"), createReminderPane(dialogTable, reminderHeader,
                 DKConstants.TODO_REMINDER.DIALOG));
 
         jTabbedPane.setFocusable(false);
@@ -129,7 +129,7 @@ public class TodoListFrame extends DKAbstractFrame {
     }
 
     private void createToolbarBtns(JToolBar toolBar) {
-        JButton systemBtn = new JButton(DKSysUIUtil.getLocaleString("TODO_LIST_CREATE"));
+        JButton systemBtn = new JButton(DKSysUIUtil.getLocale("TODO_LIST_CREATE"));
         systemBtn.setFocusable(false);
         systemBtn.addActionListener(e -> {
             NewTodoTaskFrame frame = new NewTodoTaskFrame(this);

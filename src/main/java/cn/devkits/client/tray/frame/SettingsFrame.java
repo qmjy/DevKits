@@ -28,7 +28,7 @@ public class SettingsFrame extends DKAbstractFrame {
     private CardLayout rightCardLayout;
 
     public SettingsFrame() {
-        super(DKSysUIUtil.getLocaleString("SETTINGS_TITLE"), 0.8f);
+        super(DKSysUIUtil.getLocale("SETTINGS_TITLE"), 0.8f);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SettingsFrame extends DKAbstractFrame {
 
         // create a first taskPane with common actions
         JXTaskPane commonsPane = new JXTaskPane();
-        commonsPane.setTitle(DKSysUIUtil.getLocaleString("SETTINGS_GROUP_COMMON_SETTINGS"));
+        commonsPane.setTitle(DKSysUIUtil.getLocale("SETTINGS_GROUP_COMMON_SETTINGS"));
         commonsPane.setSpecial(true);
         commonsPane.setIcon(IconFontSwing.buildIcon(FontAwesome.TACHOMETER, 16, new Color(50, 50, 50)));
         commonsPane.setFocusable(false);
@@ -69,7 +69,7 @@ public class SettingsFrame extends DKAbstractFrame {
 
         // create another taskPane, it will show sysPane of the selected file
         JXTaskPane sysPane = new JXTaskPane();
-        sysPane.setTitle(DKSysUIUtil.getLocaleString("SETTINGS_GROUP_SYS_SETTINGS"));
+        sysPane.setTitle(DKSysUIUtil.getLocale("SETTINGS_GROUP_SYS_SETTINGS"));
         sysPane.setIcon(IconFontSwing.buildIcon(FontAwesome.COGS, 16, new Color(50, 50, 50)));
         sysPane.setFocusable(false);
 

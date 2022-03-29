@@ -47,14 +47,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class DuplicateFilesFrame extends DKAbstractFrame {
 
-    public static final String[] BUTTONS_TEXT = {DKSysUIUtil.getLocaleString("DUP_INPUT_LAB_START_DETECT"), DKSysUIUtil.getLocaleString("DUP_INPUT_LAB_STOP_DETECT")};
+    public static final String[] BUTTONS_TEXT = {DKSysUIUtil.getLocale("DUP_INPUT_LAB_START_DETECT"), DKSysUIUtil.getLocale("DUP_INPUT_LAB_STOP_DETECT")};
 
     private static final long serialVersionUID = 6081895254576694963L;
     private static final Logger LOGGER = LoggerFactory.getLogger(DuplicateFilesFrame.class);
 
-    private static final String[] FILE_TYPE_UNITS = {DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_ALL"),
-            DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_DOCUMENT"), DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_IMAGE"),
-            DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_AUDIO"), DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_VIDEO")};
+    private static final String[] FILE_TYPE_UNITS = {DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_ALL"),
+            DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_DOCUMENT"), DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_IMAGE"),
+            DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_AUDIO"), DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_VIDEO")};
     private static final String[] FILE_UNITS = {"Byte", "KB", "MB", "GB", "TB", "PB"};
     private static final String[] RIGHT_PANE_NAMES = {"LIST_PANE", "DETAIL_PANE"};
 
@@ -89,7 +89,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
     private ConcurrentHashMap<String, Set<String>> md5FilesMap = null;
 
     public DuplicateFilesFrame() {
-        super(DKSysUIUtil.getLocaleString("DUP_WIN_TITLE"), 1.2f);
+        super(DKSysUIUtil.getLocale("DUP_WIN_TITLE"), 1.2f);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         JSplitPane jSplitPane = new JSplitPane();
 
         md5FilesMap = new ConcurrentHashMap<>();
-        treeNode = new DefaultMutableTreeNode(DKSysUIUtil.getLocaleString("DUP_TREE_NODE_ROOT"));
+        treeNode = new DefaultMutableTreeNode(DKSysUIUtil.getLocale("DUP_TREE_NODE_ROOT"));
         treeModel = new DefaultTreeModel(treeNode);
         tree = new JTree(treeModel);
         initPopupMenu();
@@ -122,7 +122,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         jSplitPane.setResizeWeight(0.3);
         rootContainer.add(jSplitPane, BorderLayout.CENTER);
 
-        statusLine = new JLabel(DKSysUIUtil.getLocaleString("DUP_FILE_STATUS_LINE_READY")) {
+        statusLine = new JLabel(DKSysUIUtil.getLocale("DUP_FILE_STATUS_LINE_READY")) {
             @Override
             public void paint(Graphics g) {
                 super.paint(g);
@@ -143,26 +143,26 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         SpringLayout mgr = new SpringLayout();
         northRootPane.setLayout(mgr);
 
-        JLabel fileSearchPathLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_PATH"), JLabel.LEFT);
+        JLabel fileSearchPathLbl = new JLabel(DKSysUIUtil.getLocaleWithColon("DUP_INPUT_LAB_PATH"), JLabel.LEFT);
         this.searchPath = new JTextField();
         searchPath.setColumns(15);
         searchPath.setText("Computer");
 
-        this.browseBtn = new JButton(DKSysUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
+        this.browseBtn = new JButton(DKSysUIUtil.getLocaleWithEllipsis("COMMON_BTNS_BROWSE"));
         browseBtn.setFocusPainted(false);
 
-        JLabel fileTypeLabel = new JLabel(DKSysUIUtil.getLocaleStringWithColon("COMMON_LABEL_FILE_TYPE"), JLabel.RIGHT);
+        JLabel fileTypeLabel = new JLabel(DKSysUIUtil.getLocaleWithColon("COMMON_LABEL_FILE_TYPE"), JLabel.RIGHT);
         fileTypeComboBox = new JComboBox<String>(FILE_TYPE_UNITS);
         fileTypeComboBox.setLightWeightPopupEnabled(false);
 
-        JLabel minSizeLabel = new JLabel(DKSysUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_MIN"), JLabel.RIGHT);
+        JLabel minSizeLabel = new JLabel(DKSysUIUtil.getLocaleWithColon("DUP_INPUT_LAB_MIN"), JLabel.RIGHT);
         minFileSizeInput = new JTextField(2);
         minFileSizeInput.setText("0");
 
-        JLabel maxSizeLabel = new JLabel(DKSysUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_MAX"), JLabel.RIGHT);
+        JLabel maxSizeLabel = new JLabel(DKSysUIUtil.getLocaleWithColon("DUP_INPUT_LAB_MAX"), JLabel.RIGHT);
         maxFileSizeInput = new JTextField(2);
 
-        JLabel fileSizeUnit = new JLabel(DKSysUIUtil.getLocaleStringWithColon("DUP_INPUT_LAB_SIZE_UNIT"), JLabel.RIGHT);
+        JLabel fileSizeUnit = new JLabel(DKSysUIUtil.getLocaleWithColon("DUP_INPUT_LAB_SIZE_UNIT"), JLabel.RIGHT);
         fileSizeUnitComboBox = new JComboBox<String>(FILE_UNITS);
         fileSizeUnitComboBox.setLightWeightPopupEnabled(false);
         // 默认选中MB单位
@@ -172,7 +172,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         // 不显示焦点虚线边框
         startCancelBtn.setFocusPainted(false);
 
-        exportBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_EXPORT"));
+        exportBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_EXPORT"));
         // 不显示焦点虚线边框
         exportBtn.setFocusPainted(false);
 
@@ -253,36 +253,36 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
     private void initPopupMenu() {
         this.jtreeMenu = new JPopupMenu();
 
-        JMenuItem copyPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocaleString("DUP_FILE_MENU_COPY_PATH"));
+        JMenuItem copyPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_COPY_PATH"));
         copyPath2Clipboard.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKSysUIUtil.setSystemClipboard(node.getUserObject().toString());
         });
         jtreeMenu.add(copyPath2Clipboard);
-        JMenuItem copyParentPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocaleString("DUP_FILE_MENU_COPY_PARENT_PATH"));
+        JMenuItem copyParentPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_COPY_PARENT_PATH"));
         copyParentPath2Clipboard.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKSysUIUtil.setSystemClipboard(new File(node.getUserObject().toString()).getParent());
         });
         jtreeMenu.add(copyParentPath2Clipboard);
         jtreeMenu.addSeparator();
-        JMenuItem openFolder = new JMenuItem(DKSysUIUtil.getLocaleString("DUP_FILE_MENU_SHOW_IN_EXPLORER"));
+        JMenuItem openFolder = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_SHOW_IN_EXPLORER"));
         openFolder.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKFileUtil.openFolder(node.getUserObject().toString());
         });
         jtreeMenu.add(openFolder);
-        JMenuItem openFile = new JMenuItem(DKSysUIUtil.getLocaleString("DUP_FILE_MENU_OPEN"));
+        JMenuItem openFile = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_OPEN"));
         openFile.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             DKFileUtil.openFile(node.getUserObject().toString());
         });
         jtreeMenu.add(openFile);
         jtreeMenu.addSeparator();
-        JMenuItem delete = new JMenuItem(DKSysUIUtil.getLocaleString("DUP_FILE_MENU_DELETE"));
+        JMenuItem delete = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_DELETE"));
         delete.addActionListener(e -> {
-            int deleteOption = JOptionPane.showConfirmDialog(this, DKSysUIUtil.getLocaleString(
-                    "DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSysUIUtil.getLocaleString(
+            int deleteOption = JOptionPane.showConfirmDialog(this, DKSysUIUtil.getLocale(
+                    "DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSysUIUtil.getLocale(
                     "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.YES_NO_OPTION);
             if (deleteOption == JOptionPane.YES_OPTION) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -292,13 +292,13 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
                     if (b) {
                         //TODO 文件删除收树刷新
                     } else {
-                        JOptionPane.showMessageDialog(this, DKSysUIUtil.getLocaleString(
-                                "DUP_FILE_MENU_DEL_FAILED_CONTENT"), DKSysUIUtil.getLocaleString(
+                        JOptionPane.showMessageDialog(this, DKSysUIUtil.getLocale(
+                                "DUP_FILE_MENU_DEL_FAILED_CONTENT"), DKSysUIUtil.getLocale(
                                 "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, DKSysUIUtil.getLocaleString(
-                            "DUP_FILE_MENU_DEL_DIALOG_WARNING_CONTENT"), DKSysUIUtil.getLocaleString(
+                    JOptionPane.showMessageDialog(this, DKSysUIUtil.getLocale(
+                            "DUP_FILE_MENU_DEL_DIALOG_WARNING_CONTENT"), DKSysUIUtil.getLocale(
                             "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.WARNING_MESSAGE);
                 }
             }
@@ -335,7 +335,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
             JFileChooser jfc = new JFileChooser();
             jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             jfc.setCurrentDirectory(DKSysUtil.getHomeDir());
-            jfc.setDialogTitle(DKSysUIUtil.getLocaleString("FILE_CHOOSER_DIALOG_TITLE_EXPORT"));
+            jfc.setDialogTitle(DKSysUIUtil.getLocale("FILE_CHOOSER_DIALOG_TITLE_EXPORT"));
             int i = jfc.showSaveDialog(this);
             if (i == JFileChooser.APPROVE_OPTION) {
                 File file = jfc.getSelectedFile();
@@ -442,7 +442,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
                 LOGGER.error("Sleep error: {0}", e.getMessage());
             }
         }
-        updateStatusLineText(DKSysUIUtil.getLocaleStringWithParam("DUP_FILE_STATUS_LINE_RESULT", md5FilesMap.size()));
+        updateStatusLineText(DKSysUIUtil.getLocaleWithParam("DUP_FILE_STATUS_LINE_RESULT", md5FilesMap.size()));
         startCancelBtn.setText(BUTTONS_TEXT[0]);
     }
 

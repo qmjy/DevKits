@@ -77,9 +77,7 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
         this.setBounds(DKSysUIUtil.getCenter(currentWidth, currentHeight));
 
         initData();
-        JRootPane rootPane = getRootPane();
-        rootPane.setLayout(new BorderLayout());
-        initUI(rootPane);
+        initUI(initDKPane(getRootPane()));
         initListener();
     }
 
@@ -96,8 +94,15 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
 
         initData();
 
-        initUI(getRootPane());
+        initUI(initDKPane(getRootPane()));
         initListener();
+    }
+
+    private JPanel initDKPane(JRootPane rootPane){
+        JPanel jPanel = new JPanel();
+        jPanel.setLayout(new BorderLayout());
+        rootPane.setContentPane(jPanel);
+        return jPanel;
     }
 
     /**

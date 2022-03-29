@@ -17,8 +17,8 @@ import java.awt.event.ActionEvent;
 public abstract class BaseAction extends AbstractAction {
     protected Frame frame;
     protected final JPanel cardLayoutRootPanel;
-    protected JButton applyBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
-    protected JButton closeBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
+    protected JButton applyBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_APPLY"));
+    protected JButton closeBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_CLOSE"));
     private JPanel rightPanel = new JPanel();
 
 

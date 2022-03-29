@@ -60,7 +60,7 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     private JTabbedPane jTabbedPane;
 
     public OsInfoDetailFrame() {
-        super(DKSysUIUtil.getLocaleString("SYS_INFO_TITLE"), 0.9f);
+        super(DKSysUIUtil.getLocale("SYS_INFO_TITLE"), 0.9f);
     }
 
     @Override
@@ -76,18 +76,18 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
         setPreferredSize(new Dimension(450, 130));
 
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_DASHBOARD"), initDashboard());
         jTabbedPane.addTab("CPU", getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_MAINBOARD"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_MEMORY"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_DISK"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_SENSORS"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_DISPLAYS"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_NETWORK"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_SOUNDCARDS"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_USB_DEVICES"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_POWER_SOURCES"), getPanel());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_PROCESSES"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_MAINBOARD"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_MEMORY"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_DISK"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_SENSORS"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_DISPLAYS"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_NETWORK"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_SOUNDCARDS"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_USB_DEVICES"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_POWER_SOURCES"), getPanel());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("SYS_INFO_TAB_PROCESSES"), getPanel());
 
         // 不显示选项卡上的焦点虚线边框
         jTabbedPane.setFocusable(false);
@@ -109,14 +109,14 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
     }
 
     private void createToolbarBtns(JToolBar toolBar) {
-        JButton systemBtn = new JButton(DKSysUIUtil.getLocaleString("SYS_INFO_TOOL_BAR_SYS"));
+        JButton systemBtn = new JButton(DKSysUIUtil.getLocale("SYS_INFO_TOOL_BAR_SYS"));
         systemBtn.setFocusable(false);
         systemBtn.addActionListener(e -> {
             DKSysUtil.openSystemInfoClient("msinfo32");
         });
         toolBar.add(systemBtn);
 
-        JButton dxBtn = new JButton(DKSysUIUtil.getLocaleString("SYS_INFO_TOOL_BAR_DX"));
+        JButton dxBtn = new JButton(DKSysUIUtil.getLocale("SYS_INFO_TOOL_BAR_DX"));
         dxBtn.setFocusable(false);
         dxBtn.addActionListener(e -> {
             DKSysUtil.openSystemInfoClient("dxdiag");

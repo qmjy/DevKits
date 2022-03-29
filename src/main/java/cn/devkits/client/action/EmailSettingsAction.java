@@ -65,13 +65,13 @@ public class EmailSettingsAction extends BaseAction {
     public EmailSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
-        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL"));
+        putValue(Action.NAME, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.ENVELOPE_O, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_DESC"));
 
         registerPane();
     }
@@ -92,36 +92,36 @@ public class EmailSettingsAction extends BaseAction {
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
 
-        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SEG_NEW"), cc.xyw(1, 1, 11));
+        builder.addSeparator(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_SEG_NEW"), cc.xyw(1, 1, 11));
 
-        builder.addLabel(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_SERVER"), cc.xy(1, 3));
+        builder.addLabel(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_LBL_SERVER"), cc.xy(1, 3));
         builder.add(smtpServers, cc.xy(3, 3));
-        builder.addLabel(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PORT"), cc.xy(5, 3));
+        builder.addLabel(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PORT"), cc.xy(5, 3));
         JTextField portComponent = new JTextField();
         portComponent.setText("25");
         builder.add(portComponent, cc.xy(7, 3));
-        builder.addLabel(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_TLS"), cc.xy(9, 3));
+        builder.addLabel(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_LBL_TLS"), cc.xy(9, 3));
         JRadioButton tlsComponent = new JRadioButton();
         builder.add(tlsComponent, cc.xy(11, 3));
 
-        builder.addLabel(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_MAIL"), cc.xy(1, 5));
+        builder.addLabel(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_LBL_MAIL"), cc.xy(1, 5));
         JTextField mailComponent = new JTextField();
         builder.add(mailComponent, cc.xy(3, 5));
-        builder.addLabel(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PWD"), cc.xy(5, 5));
+        builder.addLabel(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_LBL_PWD"), cc.xy(5, 5));
         JPasswordField pwdComponent = new JPasswordField();
         builder.add(pwdComponent, cc.xy(7, 5));
-        builder.addLabel(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_ACCOUNT"), cc.xy(9, 5));
+        builder.addLabel(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_LBL_ACCOUNT"), cc.xy(9, 5));
         JTextField accountComponent = new JTextField();
         builder.add(accountComponent, cc.xy(11, 5));
 
-        builder.addLabel(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_LBL_DEFAULT"), cc.xy(1, 7));
+        builder.addLabel(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_LBL_DEFAULT"), cc.xy(1, 7));
         JCheckBox defaultSmtpServerComponent = new JCheckBox();
         builder.add(defaultSmtpServerComponent, cc.xy(3, 7));
 
         Component btnsPane = createBtnsPane(portComponent, tlsComponent, mailComponent, pwdComponent, accountComponent, defaultSmtpServerComponent);
         builder.add(btnsPane, cc.xyw(1, 9, 11));
 
-        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SEG_ALL"), cc.xyw(1, 11, 11));
+        builder.addSeparator(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_SEG_ALL"), cc.xyw(1, 11, 11));
 
         refreshAllMailsTable();
         builder.add(new JScrollPane(savedEmailsTable), cc.xyw(1, 13, 11));
@@ -132,13 +132,13 @@ public class EmailSettingsAction extends BaseAction {
                                      JTextField accountComponent, JCheckBox defaultSmtpServerComponent) {
         JPanel jPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        JButton testBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_TEST"));
+        JButton testBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_TEST"));
         jPanel.add(testBtn);
         testBtn.addActionListener(e -> {
             testSmtpSever(portComponent, tlsComponent, accountComponent, pwdComponent, mailComponent);
         });
 
-        JButton save = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_SAVE_UPDATE"));
+        JButton save = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_SAVE_UPDATE"));
         jPanel.add(save);
         save.addActionListener(e -> {
             save2Db(portComponent, tlsComponent, accountComponent, pwdComponent, mailComponent, defaultSmtpServerComponent);
@@ -155,10 +155,10 @@ public class EmailSettingsAction extends BaseAction {
         if (next.getKey()) {
             persistence2Db(cfg, defaultSmtpServerComponent.isSelected());
             refreshAllMailsTable();
-            JOptionPane.showMessageDialog(frame, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_SAVE_MSG_SUCCESS"),
-                    DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"), JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_SAVE_MSG_SUCCESS"),
+                    DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"), JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(frame, next.getValue(), DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"),
+            JOptionPane.showMessageDialog(frame, next.getValue(), DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"),
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -192,10 +192,10 @@ public class EmailSettingsAction extends BaseAction {
         cfg.setEmail(mailComponent.getText());
         Map.Entry<Boolean, String> next = doSmtpServerTest(cfg);
         if (next.getKey()) {
-            JOptionPane.showMessageDialog(frame, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_SUCCESS"),
-                    DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"), JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_SUCCESS"),
+                    DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"), JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(frame, next.getValue(), DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"),
+            JOptionPane.showMessageDialog(frame, next.getValue(), DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_TEST_TITLE"),
                     JOptionPane.ERROR_MESSAGE);
         }
     }

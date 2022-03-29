@@ -31,7 +31,7 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     private final DKJImagePopupMenu menu = DKSysUIUtil.createDKJPopupMenu();
 
     public ImgProcessingFrame() {
-        super(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_TITLE"));
+        super(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_TITLE"));
         initPopupMenu();
     }
 
@@ -64,8 +64,8 @@ public class ImgProcessingFrame extends DKAbstractFrame {
 
     private JTabbedPane createTabPanel() {
         JTabbedPane jTabbedPane = new JTabbedPane();
-        jTabbedPane.add(DKSysUIUtil.getLocaleString("IMG_PROCESSING_R_TAB_NAME_PROCESS"), new JLabel());
-        jTabbedPane.add(DKSysUIUtil.getLocaleString("IMG_PROCESSING_R_TAB_NAME_FORMAT"), new JLabel());
+        jTabbedPane.add(DKSysUIUtil.getLocale("IMG_PROCESSING_R_TAB_NAME_PROCESS"), new JLabel());
+        jTabbedPane.add(DKSysUIUtil.getLocale("IMG_PROCESSING_R_TAB_NAME_FORMAT"), new JLabel());
         return jTabbedPane;
     }
 
@@ -92,13 +92,13 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         appendPane.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
         appendPane.setLayout(new FlowLayout());
 
-        JButton addBtn = new JButton(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_BTNS_ADD_FILE"));
+        JButton addBtn = new JButton(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_BTNS_ADD_FILE"));
         addBtn.addActionListener(new SelectFileTableActionListener(table, true));
         appendPane.add(addBtn);
-        JButton addFolderBtn = new JButton(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_BTNS_ADD_FOLDER"));
+        JButton addFolderBtn = new JButton(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_BTNS_ADD_FOLDER"));
         addFolderBtn.addActionListener(new SelectFileTableActionListener(table, false));
         appendPane.add(addFolderBtn);
-        JButton delSelectedBtn = new JButton(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_BTNS_DEL_FILE"));
+        JButton delSelectedBtn = new JButton(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_BTNS_DEL_FILE"));
         delSelectedBtn.addActionListener(e -> {
 //            int selectedRow = table.getSelectedRow();
 //            filesModel.removeFileOfRow(selectedRow);

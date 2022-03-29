@@ -67,7 +67,7 @@ public class EmailServiceImpl implements EmailService {
             dkJavaMailSender.testConnection();
             resultMap.put(true, "");
         } catch (MessagingException e) {
-            resultMap.put(false, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_ERROR_AUTHFAILED"));
+            resultMap.put(false, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_EMAIL_TEST_MSG_ERROR_AUTHFAILED"));
         }
         return resultMap;
     }

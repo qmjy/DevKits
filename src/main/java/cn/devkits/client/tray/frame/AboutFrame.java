@@ -39,12 +39,12 @@ public class AboutFrame extends DKAbstractFrame {
     private JLabel name;
 
     public AboutFrame() {
-        super(DKSysUIUtil.getLocaleString("ABOUT_APP"), 0.7f, 0.6f);
+        super(DKSysUIUtil.getLocale("ABOUT_APP"), 0.7f, 0.6f);
     }
 
     @Override
     protected void initData() {
-        name = new JLabel(DKSysUIUtil.getLocaleString("APP_LOGO"));
+        name = new JLabel(DKSysUIUtil.getLocale("APP_LOGO"));
     }
 
     @Override
@@ -52,11 +52,11 @@ public class AboutFrame extends DKAbstractFrame {
         name.setFont(getAFont());
         name.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
-        JLabel version = new JLabel(DKSysUIUtil.getLocaleStringWithColon("VERSION") + DKConfigUtil.getInstance().getPomInfo().getVersion());
+        JLabel version = new JLabel(DKSysUIUtil.getLocaleWithColon("VERSION") + DKConfigUtil.getInstance().getPomInfo().getVersion());
         version.setLabelFor(name);
         version.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
-        JLabel cpNo = new JLabel(DKSysUIUtil.getLocaleStringWithColon("COPYRIGHT_NO") + "2022SR0402234");
+        JLabel cpNo = new JLabel(DKSysUIUtil.getLocaleWithColon("COPYRIGHT_NO") + "2022SR0402234");
         cpNo.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
         // Create the panel we'll return and set up the layout.
@@ -81,9 +81,9 @@ public class AboutFrame extends DKAbstractFrame {
 
     private Component initTabContent() {
         JTabbedPane jTabbedPane = new JTabbedPane();
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("VERSION_INFO"), loadVersionDetail());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("OPEN_SOURCE_DEPENDENT"), loadOpenSourceTable());
-        jTabbedPane.addTab(DKSysUIUtil.getLocaleString("LICENSE"), loadLicensePane());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("VERSION_INFO"), loadVersionDetail());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("OPEN_SOURCE_DEPENDENT"), loadOpenSourceTable());
+        jTabbedPane.addTab(DKSysUIUtil.getLocale("LICENSE"), loadLicensePane());
 
         // 不显示选项卡上的焦点虚线边框
         jTabbedPane.setFocusable(false);

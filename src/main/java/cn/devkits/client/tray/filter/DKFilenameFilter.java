@@ -32,18 +32,18 @@ public class DKFilenameFilter implements FilenameFilter {
         }
 
         String fileType = (String) fileTypeComboBox.getSelectedItem();
-        if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_ALL").equals(fileType)) {
+        if (DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_ALL").equals(fileType)) {
             return true;
         } else {
             if (name.indexOf(".") > 0) {
                 String suffix = name.substring(name.lastIndexOf(".")).toLowerCase(Locale.getDefault());
-                if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_DOCUMENT").equals(fileType)) {
+                if (DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_DOCUMENT").equals(fileType)) {
                     return DKConstants.FILE_TYPE_DOC.contains(suffix);
-                } else if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_IMAGE").equals(fileType)) {
+                } else if (DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_IMAGE").equals(fileType)) {
                     return DKConstants.FILE_TYPE_IMG.contains(suffix);
-                } else if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_AUDIO").equals(fileType)) {
+                } else if (DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_AUDIO").equals(fileType)) {
                     return DKConstants.FILE_TYPE_AUDIO.contains(suffix);
-                } else if (DKSysUIUtil.getLocaleString("DUP_INPUT_FILE_TYPE_VIDEO").equals(fileType)) {
+                } else if (DKSysUIUtil.getLocale("DUP_INPUT_FILE_TYPE_VIDEO").equals(fileType)) {
                     return DKConstants.FILE_TYPE_VEDIO.contains(suffix);
                 } else {
                     return false;

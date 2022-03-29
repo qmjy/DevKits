@@ -35,13 +35,13 @@ public class SystemRegisterAction extends BaseAction {
     public SystemRegisterAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
-        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_SYS_REGISTER"));
+        putValue(Action.NAME, DKSysUIUtil.getLocale("SETTINGS_SYS_REGISTER"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.DESKTOP, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocale("SETTINGS_SYS_REGISTER_DESC"));
 
         registerPane();
     }
@@ -55,16 +55,16 @@ public class SystemRegisterAction extends BaseAction {
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
 
-        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DRIVER"), cc.xyw(1, 1, 11));
+        builder.addSeparator(DKSysUIUtil.getLocale("SETTINGS_SYS_REGISTER_DRIVER"), cc.xyw(1, 1, 11));
 
-        String enableTxt = DKSysUIUtil.getLocaleString("SETTINGS_SYS_REGISTER_DRIVER_ENABLE_TXT");
+        String enableTxt = DKSysUIUtil.getLocale("SETTINGS_SYS_REGISTER_DRIVER_ENABLE_TXT");
         enableCamera = new JCheckBox(enableTxt);
         enableCamera.setActionCommand(enableTxt);
         builder.add(enableCamera, cc.xyw(1, 3, 11));
 
-        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_CONTEXT_MENU"), cc.xyw(1, 5, 11));
+        builder.addSeparator(DKSysUIUtil.getLocale("SETTINGS_SYS_CONTEXT_MENU"), cc.xyw(1, 5, 11));
 
-        String enableQrRecognizeTxt = DKSysUIUtil.getLocaleString("SETTINGS_SYS_CONTEXT_MENU_QR_4_IMG");
+        String enableQrRecognizeTxt = DKSysUIUtil.getLocale("SETTINGS_SYS_CONTEXT_MENU_QR_4_IMG");
         enableQrRecognize = new JCheckBox(enableQrRecognizeTxt);
         enableQrRecognize.setActionCommand(enableQrRecognizeTxt);
         builder.add(enableQrRecognize, cc.xyw(1, 7, 11));

@@ -43,21 +43,21 @@ public class HotKeySettingsAction extends BaseAction {
 
     private JTextField newTaskShortKeyTextField = new JTextField(NEW_TASK_HOT_KEY_DEFAULT);
     private JTextField screenShotShortKeyTextField = new JTextField(SCREEN_SHOT_HOT_KEY_DEFAULT);
-    private JButton newTaskShortKeyClearBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CLEAR"));
-    private JButton screenShotShortKeyClearBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CLEAR"));
+    private JButton newTaskShortKeyClearBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_CLEAR"));
+    private JButton screenShotShortKeyClearBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_CLEAR"));
 
     public HotKeySettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
         EmailService service = (EmailService) App.getContext().getBean("emailServiceImpl");
 
-        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_HOTKEY"));
+        putValue(Action.NAME, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_HOTKEY"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.KEYBOARD_O, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_HOTKEY_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_HOTKEY_DESC"));
 
         registerPane();
         registerListener();
@@ -80,13 +80,13 @@ public class HotKeySettingsAction extends BaseAction {
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
-        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_HOTKEY_SETTINGS"), cc.xyw(1, 1, 8));
+        builder.addSeparator(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_HOTKEY_SETTINGS"), cc.xyw(1, 1, 8));
 
-        builder.addLabel(DKSysUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_HOTKEY_NEW_TASK_LAB"), cc.xy(1, 5));
+        builder.addLabel(DKSysUIUtil.getLocaleWithColon("SETTINGS_SYS_SETTINGS_HOTKEY_NEW_TASK_LAB"), cc.xy(1, 5));
         builder.add(newTaskShortKeyTextField, cc.xyw(3, 5, 4));
         builder.add(newTaskShortKeyClearBtn, cc.xy(7, 5));
 
-        builder.addLabel(DKSysUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_HOTKEY_SCREENSHOT"), cc.xy(1, 7));
+        builder.addLabel(DKSysUIUtil.getLocaleWithColon("SETTINGS_SYS_SETTINGS_HOTKEY_SCREENSHOT"), cc.xy(1, 7));
         builder.add(screenShotShortKeyTextField, cc.xyw(3, 7, 4));
         builder.add(screenShotShortKeyClearBtn, cc.xy(7, 7));
 

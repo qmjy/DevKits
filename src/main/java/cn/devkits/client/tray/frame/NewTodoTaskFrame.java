@@ -71,7 +71,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     private int reminder;
 
     public NewTodoTaskFrame(TodoListFrame todoListFrame) {
-        super(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_TITLE"), 0.6f);
+        super(DKSysUIUtil.getLocale("TODO_NEW_DIALOG_TITLE"), 0.6f);
 
 
         this.todoListFrame = todoListFrame;
@@ -86,25 +86,25 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
     @Override
     protected void initUI(Container rootContainer) {
         JPanel panel = new JPanel(new SpringLayout());
-        JLabel nameLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_NAME"), JLabel.TRAILING);
+        JLabel nameLbl = new JLabel(DKSysUIUtil.getLocaleWithColon("TODO_NEW_DIALOG_NAME"), JLabel.TRAILING);
         panel.add(nameLbl);
         this.nameTextField = new JTextField();
         nameLbl.setLabelFor(nameTextField);
         panel.add(nameTextField);
 
-        JLabel reminderLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_REMINDER"), JLabel.TRAILING);
+        JLabel reminderLbl = new JLabel(DKSysUIUtil.getLocaleWithColon("TODO_NEW_DIALOG_REMINDER"), JLabel.TRAILING);
         panel.add(reminderLbl);
         JPanel reminderPane = createReminderPane();
         reminderLbl.setLabelFor(reminderPane);
         panel.add(reminderPane);
 
-        JLabel cornLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_CRON"), JLabel.TRAILING);
+        JLabel cornLbl = new JLabel(DKSysUIUtil.getLocaleWithColon("TODO_NEW_DIALOG_CRON"), JLabel.TRAILING);
         panel.add(cornLbl);
         JPanel cornTextFieldPane = createCornPane();
         cornLbl.setLabelFor(cornTextFieldPane);
         panel.add(cornTextFieldPane);
 
-        JLabel descLbl = new JLabel(DKSysUIUtil.getLocaleStringWithColon("TODO_NEW_DIALOG_DESC"), JLabel.TRAILING);
+        JLabel descLbl = new JLabel(DKSysUIUtil.getLocaleWithColon("TODO_NEW_DIALOG_DESC"), JLabel.TRAILING);
         panel.add(descLbl);
         JScrollPane descTextAreaPane = createDescTextArea();
         descLbl.setLabelFor(descTextAreaPane);
@@ -121,16 +121,16 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
     private JPanel createReminderPane() {
         JPanel jPanel = new JPanel(new SpringLayout());
-        JRadioButton reminderTypeOfTrayMsg = new JRadioButton(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_TRAY_MSG"));
+        JRadioButton reminderTypeOfTrayMsg = new JRadioButton(DKSysUIUtil.getLocale("TODO_NEW_DIALOG_REMINDER_TRAY_MSG"));
         reminderTypeOfTrayMsg.setSelected(true);
         reminderTypeOfTrayMsg.setName(String.valueOf(DKConstants.TODO_REMINDER.TRAY.ordinal()));
         jPanel.add(reminderTypeOfTrayMsg);
 
-        JRadioButton reminderTypeOfDialog = new JRadioButton(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_DIALOG"));
+        JRadioButton reminderTypeOfDialog = new JRadioButton(DKSysUIUtil.getLocale("TODO_NEW_DIALOG_REMINDER_DIALOG"));
         reminderTypeOfDialog.setName(String.valueOf(DKConstants.TODO_REMINDER.DIALOG.ordinal()));
         jPanel.add(reminderTypeOfDialog);
 
-        JRadioButton reminderTypeOfEmail = new JRadioButton(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL"));
+        JRadioButton reminderTypeOfEmail = new JRadioButton(DKSysUIUtil.getLocale("TODO_NEW_DIALOG_REMINDER_EMAIL"));
         reminderTypeOfEmail.setName(String.valueOf(DKConstants.TODO_REMINDER.EMAIL.ordinal()));
         jPanel.add(reminderTypeOfEmail);
 
@@ -140,7 +140,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         group.add(reminderTypeOfEmail);
 
         this.emailsInput = new JTextField();
-        emailsInput.setToolTipText(DKSysUIUtil.getLocaleString("TODO_NEW_DIALOG_REMINDER_EMAIL_TOOLTIPS"));
+        emailsInput.setToolTipText(DKSysUIUtil.getLocale("TODO_NEW_DIALOG_REMINDER_EMAIL_TOOLTIPS"));
         emailsInput.setEnabled(false);
         jPanel.add(emailsInput);
 
@@ -217,7 +217,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        JButton applyBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CREATE"));
+        JButton applyBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_CREATE"));
         applyBtn.addActionListener(e -> {
             TodoTaskServiceImpl service = (TodoTaskServiceImpl) App.getContext().getBean("todoTaskServiceImpl");
             //TODO input check
@@ -238,7 +238,7 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        JButton closeBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CLOSE"));
+        JButton closeBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_CLOSE"));
         closeBtn.addActionListener(e -> {
             this.setVisible(false);
         });

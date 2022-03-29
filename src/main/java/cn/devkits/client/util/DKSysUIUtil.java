@@ -7,8 +7,10 @@ package cn.devkits.client.util;
 import cn.devkits.client.App;
 
 import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
+
 import com.sun.jna.platform.DesktopWindow;
 import com.sun.jna.platform.WindowUtils;
+
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
@@ -129,8 +131,8 @@ public final class DKSysUIUtil {
      * @param code 字典查询的code
      * @return 字典查询结果
      */
-    public static String getLocaleString(String code) {
-        return getLocaleString(code, "'" + code + "'");
+    public static String getLocale(String code) {
+        return getLocale(code, "'" + code + "'");
     }
 
     /**
@@ -140,8 +142,8 @@ public final class DKSysUIUtil {
      * @param arguments 占位符数据
      * @return 填充数据后的i18n字符串
      */
-    public static String getLocaleStringWithParam(String key, Object... arguments) {
-        return MessageFormat.format(getLocaleString(key), arguments);
+    public static String getLocaleWithParam(String key, Object... arguments) {
+        return MessageFormat.format(getLocale(key), arguments);
     }
 
     /**
@@ -150,8 +152,8 @@ public final class DKSysUIUtil {
      * @param code 字典查询的code
      * @return 字典查询结果，并且会追加一个省略号
      */
-    public static String getLocaleStringWithEllipsis(String code) {
-        return getLocaleString(code) + "...";
+    public static String getLocaleWithEllipsis(String code) {
+        return getLocale(code) + "...";
     }
 
     /**
@@ -160,8 +162,18 @@ public final class DKSysUIUtil {
      * @param code 字典查询的code
      * @return 字典查询结果，并且会追加一个冒号
      */
-    public static String getLocaleStringWithColon(String code) {
-        return getLocaleString(code) + ":";
+    public static String getLocaleWithColon(String code) {
+        return getLocale(code) + ":";
+    }
+
+    /**
+     * 获取系统默认语言字符（带叹号）
+     *
+     * @param code 字典查询的code
+     * @return 字典查询结果，并且会追加一个叹号
+     */
+    public static String getLocaleWithExclamation(String code) {
+        return getLocale(code) + "!";
     }
 
     /**
@@ -171,7 +183,7 @@ public final class DKSysUIUtil {
      * @param defualt 语言字典不存在时的，则会显示此默认值
      * @return 字典查询结果
      */
-    public static String getLocaleString(String code, String defualt) {
+    public static String getLocale(String code, String defualt) {
         return App.getContext().getMessage(code, null, defualt, Locale.getDefault());
     }
 

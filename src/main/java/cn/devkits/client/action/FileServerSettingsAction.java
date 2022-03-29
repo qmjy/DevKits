@@ -37,13 +37,13 @@ public class FileServerSettingsAction extends BaseAction {
         super(frame, cardLayoutRootPanel);
 
 
-        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_FILE_SERVER"));
+        putValue(Action.NAME, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_FILE_SERVER"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.FILES_O, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_FILE_SERVER_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_FILE_SERVER_DESC"));
 
         registerPane();
     }
@@ -56,7 +56,7 @@ public class FileServerSettingsAction extends BaseAction {
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
-        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_FILE_SERVER_SEG"), cc.xyw(1, 1, 8));
+        builder.addSeparator(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_FILE_SERVER_SEG"), cc.xyw(1, 1, 8));
         builder.addLabel("端口", cc.xy(1, 3));
         builder.add(new JTextField(), cc.xy(3, 3));
         builder.addLabel("文件目录", cc.xy(1, 5));

@@ -14,8 +14,10 @@ import com.github.sarxos.webcam.WebcamResolution;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -94,7 +96,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     private Executor executor = Executors.newSingleThreadExecutor(this);
 
     public CodecFrame() {
-        super(DKSysUIUtil.getLocaleString("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
+        super(DKSysUIUtil.getLocale("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
         executor.execute(this);
     }
 
@@ -105,9 +107,9 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         mainPane.setLayout(cardLayout);
 
         this.decodePanel = new JTabbedPane();
-        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_UPLOAD"), initUploadPane());
-        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_CAMERA"), initCamePanel());
-        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_SITE"), initSitePane());
+        decodePanel.addTab(DKSysUIUtil.getLocale("QR_UPLOAD"), initUploadPane());
+        decodePanel.addTab(DKSysUIUtil.getLocale("QR_CAMERA"), initCamePanel());
+        decodePanel.addTab(DKSysUIUtil.getLocale("QR_SITE"), initSitePane());
 
         this.encodePanel = new JTabbedPane();
 
@@ -119,19 +121,19 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         decodePanel.setFocusable(false);
         encodePanel.setFocusable(false);
 
-        mainPane.add(decodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
-        mainPane.add(encodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_ENCODE"));
+        mainPane.add(decodePanel, DKSysUIUtil.getLocale("QR_MENUITEM_DECODE"));
+        mainPane.add(encodePanel, DKSysUIUtil.getLocale("QR_MENUITEM_ENCODE"));
 
-        container.add(mainPane);
+        container.add(mainPane, BorderLayout.CENTER);
 
         initMenuBar();
     }
 
     private void initMenuBar() {
         JMenuBar mb = new JMenuBar();
-        JMenu fileMenu = new JMenu(DKSysUIUtil.getLocaleString("COMMON_MENU_FILE"));
+        JMenu fileMenu = new JMenu(DKSysUIUtil.getLocale("COMMON_MENU_FILE"));
 
-        String decodeName = DKSysUIUtil.getLocaleString("QR_MENUITEM_DECODE");
+        String decodeName = DKSysUIUtil.getLocale("QR_MENUITEM_DECODE");
         JMenuItem decodeMenuItem = new JMenuItem(decodeName);
         Icon qrcodeIcon = IconFontSwing.buildIcon(FontAwesome.QRCODE, 16, new Color(50, 50, 50));
         decodeMenuItem.setIcon(qrcodeIcon);
@@ -140,7 +142,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         });
         fileMenu.add(decodeMenuItem);
 
-        String encodeName = DKSysUIUtil.getLocaleString("QR_MENUITEM_ENCODE");
+        String encodeName = DKSysUIUtil.getLocale("QR_MENUITEM_ENCODE");
         JMenuItem encodeMenuItem = new JMenuItem(encodeName);
         fileMenu.add(encodeMenuItem);
         encodeMenuItem.addActionListener(e -> {
@@ -149,7 +151,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         fileMenu.addSeparator();
 
         Icon quitIcon = IconFontSwing.buildIcon(FontAwesome.SIGN_OUT, 16, new Color(50, 50, 50));
-        JMenuItem quitMenuItem = new JMenuItem(DKSysUIUtil.getLocaleString("COMMON_MENU_QUIT"));
+        JMenuItem quitMenuItem = new JMenuItem(DKSysUIUtil.getLocale("COMMON_MENU_QUIT"));
         quitMenuItem.setIcon(quitIcon);
         quitMenuItem.addActionListener(e -> {
             this.setVisible(false);
@@ -187,7 +189,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         } else {
             cameraPanel = new JPanel(new BorderLayout());
             Icon leftIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA, 16, new Color(50, 50, 50));
-            cameraPanel.add(new JLabel(DKSysUIUtil.getLocaleString("NO_CAMERA_FOUND"), leftIcon, SwingConstants.CENTER));
+            cameraPanel.add(new JLabel(DKSysUIUtil.getLocale("NO_CAMERA_FOUND"), leftIcon, SwingConstants.CENTER));
         }
 
         return cameraPanel;
@@ -202,7 +204,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         topPanel.setLayout(springLayout);
 
         this.siteTextField = new JTextField(100);
-        this.siteBtn = new JButton(DKSysUIUtil.getLocaleString("QR_START_DECODE"));
+        this.siteBtn = new JButton(DKSysUIUtil.getLocale("QR_START_DECODE"));
 
         topPanel.add(siteTextField);
         topPanel.add(siteBtn);
@@ -226,9 +228,9 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         topPanel.setLayout(springLayout);
 
         this.uploadTextField = new JTextField(100);
-        this.uploadTextField.setToolTipText(DKSysUIUtil.getLocaleString("CODEC_IMG_INPUT_TIPS"));
+        this.uploadTextField.setToolTipText(DKSysUIUtil.getLocale("CODEC_IMG_INPUT_TIPS"));
         Icon uploadIcon = IconFontSwing.buildIcon(FontAwesome.UPLOAD, 16, new Color(50, 50, 50));
-        this.uploadBtn = new JButton(DKSysUIUtil.getLocaleString("QR_START_UPLOAD"), uploadIcon);
+        this.uploadBtn = new JButton(DKSysUIUtil.getLocale("QR_START_UPLOAD"), uploadIcon);
 
         topPanel.add(uploadTextField);
         topPanel.add(uploadBtn);
@@ -242,9 +244,9 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         Box horizontalBox = Box.createHorizontalBox();
 
         JPanel imagePreviewPane = new JPanel();
-        imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocaleString("CODEC_IMG_PREVIEW_AREA")));
+        imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocale("CODEC_IMG_PREVIEW_AREA")));
         imagePreviewPane.setPreferredSize(new Dimension((int) (CAMERA_DIMENSION.getWidth() * 0.4), (int) CAMERA_DIMENSION.getHeight()));
-        imgPreviewLabel = new JLabel(DKSysUIUtil.getLocaleString("CODEC_IMG_PREVIEW_DROP_TARGET_MSG"));
+        imgPreviewLabel = new JLabel(DKSysUIUtil.getLocale("CODEC_IMG_PREVIEW_DROP_TARGET_MSG"));
         imagePreviewPane.add(imgPreviewLabel);
 
         horizontalBox.add(imagePreviewPane);
@@ -416,13 +418,13 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
             bufferedImage = ImageIO.read(f);
             showPreviewImg(bufferedImage);
             Optional<Result> decodeBufferedImage = decodeBufferedImage(bufferedImage);
-            console.append(DKSysUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_NAME") + f.getName() + System.lineSeparator());
+            console.append(DKSysUIUtil.getLocaleWithColon("CODEC_IMG_CONSOLE_KEY_NAME") + f.getName() + System.lineSeparator());
             if (decodeBufferedImage.isPresent()) {
                 Result result = decodeBufferedImage.get();
-                console.append(DKSysUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_TYPE") + result.getBarcodeFormat() + System.lineSeparator());
-                console.append(DKSysUIUtil.getLocaleStringWithColon("CODEC_IMG_CONSOLE_KEY_CONTENT") + result.getText() + System.lineSeparator());
+                console.append(DKSysUIUtil.getLocaleWithColon("CODEC_IMG_CONSOLE_KEY_TYPE") + result.getBarcodeFormat() + System.lineSeparator());
+                console.append(DKSysUIUtil.getLocaleWithColon("CODEC_IMG_CONSOLE_KEY_CONTENT") + result.getText() + System.lineSeparator());
             } else {
-                console.append(DKSysUIUtil.getLocaleString("CODEC_IMG_CONSOLE_CAN_NOT_RECOGNIZED") + System.lineSeparator());
+                console.append(DKSysUIUtil.getLocale("CODEC_IMG_CONSOLE_CAN_NOT_RECOGNIZED") + System.lineSeparator());
             }
             console.append(System.lineSeparator());
         } catch (IllegalArgumentException e) {

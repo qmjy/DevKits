@@ -107,7 +107,7 @@ public class InitializingBeanImpl implements InitializingBean {
 
                 int percentCpuLoad = getCpuLoad();
                 if (trayIcon != null) {
-                    trayIcon.setToolTip(DKSysUIUtil.getLocaleStringWithParam("TRAY_ICON_MSG", percentCpuLoad));
+                    trayIcon.setToolTip(DKSysUIUtil.getLocaleWithParam("TRAY_ICON_MSG", percentCpuLoad));
                     trayIcon.setImage(image);
                 }
                 try {

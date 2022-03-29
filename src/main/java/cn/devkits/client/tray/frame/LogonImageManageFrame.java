@@ -51,7 +51,6 @@ import net.coobird.thumbnailator.Thumbnails;
  * @time 2019年10月24日 下午9:41:50
  */
 public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameChosenable {
-
     /**
      * serialVersionUID
      */
@@ -63,7 +62,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
     private JButton cancelBtn;
 
     public LogonImageManageFrame() {
-        super(DKSysUIUtil.getLocaleString("LOGON_BG_MNG"), 0.7f, 0.25f);
+        super(DKSysUIUtil.getLocale("LOGON_BG_MNG"), 0.7f, 0.25f);
     }
 
     @Override
@@ -83,11 +82,11 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         SpringLayout layout = new SpringLayout();
         centerPanel.setLayout(layout);
 
-        JLabel comp = new JLabel(DKSysUIUtil.getLocaleStringWithColon("LOGON_BG_CHOOSE_IMG"));
+        JLabel comp = new JLabel(DKSysUIUtil.getLocaleWithColon("LOGON_BG_CHOOSE_IMG"));
         this.imgFilePathTextField = new JTextField(38);
         imgFilePathTextField.setEditable(false);
 
-        this.browseBtn = new JButton(DKSysUIUtil.getLocaleStringWithEllipsis("COMMON_BTNS_BROWSE"));
+        this.browseBtn = new JButton(DKSysUIUtil.getLocaleWithEllipsis("COMMON_BTNS_BROWSE"));
 
         centerPanel.add(comp);
         centerPanel.add(imgFilePathTextField);
@@ -120,18 +119,18 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
-        JLabel note = new JLabel(DKSysUIUtil.getLocaleString("LOGON_BG_NOTE"));
+        JLabel note = new JLabel(DKSysUIUtil.getLocaleWithExclamation("LOGON_BG_NOTE"));
         note.setForeground(Color.RED);
         buttonPane.add(note);
 
         buttonPane.add(Box.createHorizontalGlue());
 
-        this.applyBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_APPLY"));
+        this.applyBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_APPLY"));
 
         buttonPane.add(applyBtn);
         buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        this.cancelBtn = new JButton(DKSysUIUtil.getLocaleString("COMMON_BTNS_CANCEL"));
+        this.cancelBtn = new JButton(DKSysUIUtil.getLocale("COMMON_BTNS_CANCEL"));
         buttonPane.add(cancelBtn);
 
         return buttonPane;
@@ -146,7 +145,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
         applyBtn.addActionListener(new LogonImgManageListener(this));
         cancelBtn.addActionListener(e -> {
             JButton btn = (JButton) e.getSource();
-            Container parent = btn.getParent().getParent();
+            Container parent = btn.getRootPane().getParent();
             if (parent instanceof LogonImageManageFrame) {
                 LogonImageManageFrame root = (LogonImageManageFrame) parent;
                 root.dispose();
@@ -212,7 +211,10 @@ class LogonImgManageListener implements ActionListener {
                 frame.close();
             }
         } else {
-            JOptionPane.showMessageDialog(frame, "The selected file is not a image!", "File Type Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    DKSysUIUtil.getLocaleWithExclamation("LOGON_BG_INPUT_FILE_INVALID"),
+                    DKSysUIUtil.getLocale("LOGON_BG_INPUT_FILE_TITLE"),
+                    JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -243,7 +245,10 @@ class LogonImgManageListener implements ActionListener {
             }
             return file.renameTo(targetFile);
         } else {
-            JOptionPane.showMessageDialog(frame, "Select file error, you have to select one file at least!", "File Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    DKSysUIUtil.getLocaleWithExclamation("LOGON_BG_INPUT_FILE_EMPTY_MSG"),
+                    DKSysUIUtil.getLocale("LOGON_BG_INPUT_FILE_EMPTY_TITLE"),
+                    JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

@@ -24,13 +24,13 @@ public class CameraSettingsAction extends BaseAction {
     public CameraSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
-        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_CAMERA"));
+        putValue(Action.NAME, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_CAMERA"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.CAMERA_RETRO, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_CAMERA_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_CAMERA_DESC"));
 
         registerPane();
     }

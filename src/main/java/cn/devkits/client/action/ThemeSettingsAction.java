@@ -32,13 +32,13 @@ public class ThemeSettingsAction extends BaseAction {
         applyBtn.setVisible(false);
         closeBtn.setVisible(false);
 
-        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME"));
+        putValue(Action.NAME, DKSysUIUtil.getLocale("SETTINGS_COMMON_SETTINGS_THEME"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.THEMEISLE, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_COMMON_SETTINGS_THEME_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocale("SETTINGS_COMMON_SETTINGS_THEME_DESC"));
 
         registerPane();
     }
@@ -51,9 +51,9 @@ public class ThemeSettingsAction extends BaseAction {
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
-        builder.addSeparator(DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_THEME_SETTINGS"), cc.xyw(1, 1, 8));
+        builder.addSeparator(DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_THEME_SETTINGS"), cc.xyw(1, 1, 8));
 
-        builder.addLabel(DKSysUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_THEME_LAB"), cc.xy(1, 5));
+        builder.addLabel(DKSysUIUtil.getLocaleWithColon("SETTINGS_SYS_SETTINGS_THEME_LAB"), cc.xy(1, 5));
         JComboBox<String> component = new JComboBox<>(listLookAndFeel());
         component.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {

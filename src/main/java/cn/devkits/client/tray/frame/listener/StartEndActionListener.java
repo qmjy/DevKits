@@ -44,11 +44,11 @@ public class StartEndActionListener implements ActionListener {
             }
             new Thread(new SearchFileThread(frame)).start();
             btn.setText(DuplicateFilesFrame.BUTTONS_TEXT[1]);
-            frame.updateStatusLineText(DKSysUIUtil.getLocaleStringWithEllipsis("DUP_FILE_STATUS_LINE_START"));
+            frame.updateStatusLineText(DKSysUIUtil.getLocaleWithEllipsis("DUP_FILE_STATUS_LINE_START"));
         } else {
             threadPool.shutdownNow();
             btn.setText(DuplicateFilesFrame.BUTTONS_TEXT[0]);
-            frame.updateStatusLineText(DKSysUIUtil.getLocaleString("DUP_FILE_STATUS_LINE_CANCEL"));
+            frame.updateStatusLineText(DKSysUIUtil.getLocale("DUP_FILE_STATUS_LINE_CANCEL"));
         }
     }
 }

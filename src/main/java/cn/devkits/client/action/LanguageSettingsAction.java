@@ -19,13 +19,13 @@ public class LanguageSettingsAction extends BaseAction {
     public LanguageSettingsAction(Frame frame, JPanel cardLayoutRootPanel) {
         super(frame, cardLayoutRootPanel);
 
-        putValue(Action.NAME, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_LANG"));
+        putValue(Action.NAME, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_LANG"));
 
         Icon rightIcon = IconFontSwing.buildIcon(FontAwesome.GLOBE, 16, new Color(50, 50, 50));
 
         putValue(Action.SMALL_ICON, rightIcon);
         putValue(Action.MNEMONIC_KEY, null);
-        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocaleString("SETTINGS_SYS_SETTINGS_LANG_DESC"));
+        putValue(Action.SHORT_DESCRIPTION, DKSysUIUtil.getLocale("SETTINGS_SYS_SETTINGS_LANG_DESC"));
 
         registerPane();
     }
@@ -37,12 +37,12 @@ public class LanguageSettingsAction extends BaseAction {
         jPanel.setLayout(mgr);
 
         JLabel currentLangLbl = new JLabel();
-        currentLangLbl.setText(DKSysUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_LANG_LBL_CURRENT"));
+        currentLangLbl.setText(DKSysUIUtil.getLocaleWithColon("SETTINGS_SYS_SETTINGS_LANG_LBL_CURRENT"));
         jPanel.add(currentLangLbl);
         JLabel currrentLang = new JLabel();
         jPanel.add(currrentLang);
         JLabel chooseLangLabl = new JLabel();
-        chooseLangLabl.setText(DKSysUIUtil.getLocaleStringWithColon("SETTINGS_SYS_SETTINGS_LANG_LBL_CHOOSE"));
+        chooseLangLabl.setText(DKSysUIUtil.getLocaleWithColon("SETTINGS_SYS_SETTINGS_LANG_LBL_CHOOSE"));
         jPanel.add(chooseLangLabl);
         JLabel chooseLangLbl = new JLabel();
         jPanel.add(chooseLangLbl);
