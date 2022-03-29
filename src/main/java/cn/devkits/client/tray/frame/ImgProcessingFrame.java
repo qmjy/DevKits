@@ -2,7 +2,7 @@ package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
 import cn.devkits.client.tray.frame.listener.ImgTableListSelectionListener;
-import cn.devkits.client.tray.frame.listener.SelectFileListener;
+import cn.devkits.client.tray.frame.listener.SelectFileTableActionListener;
 import cn.devkits.client.tray.model.ImgProcessingListModel;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
@@ -93,10 +93,10 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         appendPane.setLayout(new FlowLayout());
 
         JButton addBtn = new JButton(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_BTNS_ADD_FILE"));
-        addBtn.addActionListener(new SelectFileListener(table, true));
+        addBtn.addActionListener(new SelectFileTableActionListener(table, true));
         appendPane.add(addBtn);
         JButton addFolderBtn = new JButton(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_BTNS_ADD_FOLDER"));
-        addFolderBtn.addActionListener(new SelectFileListener(table, false));
+        addFolderBtn.addActionListener(new SelectFileTableActionListener(table, false));
         appendPane.add(addFolderBtn);
         JButton delSelectedBtn = new JButton(DKSysUIUtil.getLocaleString("IMG_PROCESSING_FRAME_BTNS_DEL_FILE"));
         delSelectedBtn.addActionListener(e -> {

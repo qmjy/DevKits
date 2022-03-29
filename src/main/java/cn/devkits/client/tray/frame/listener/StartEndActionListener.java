@@ -23,13 +23,13 @@ import java.util.concurrent.ExecutorService;
  * @version 1.0.0
  * @datetime 2019年10月5日 下午3:25:08
  */
-public class StartEndListener implements ActionListener {
+public class StartEndActionListener implements ActionListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StartEndListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StartEndActionListener.class);
 
     private DuplicateFilesFrame frame;
 
-    public StartEndListener(DuplicateFilesFrame frame) {
+    public StartEndActionListener(DuplicateFilesFrame frame) {
         this.frame = frame;
     }
 

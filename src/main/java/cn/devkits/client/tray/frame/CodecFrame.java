@@ -73,7 +73,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
 
     //整体布局
-    private JPanel jRootPane;
+    private JPanel mainPane;
     private CardLayout cardLayout;
 
     //编码控件
@@ -95,8 +95,36 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
 
     public CodecFrame() {
         super(DKSysUIUtil.getLocaleString("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
-
         executor.execute(this);
+    }
+
+    @Override
+    protected void initUI(Container container) {
+        this.mainPane = new JPanel();
+        this.cardLayout = new CardLayout();
+        mainPane.setLayout(cardLayout);
+
+        this.decodePanel = new JTabbedPane();
+        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_UPLOAD"), initUploadPane());
+        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_CAMERA"), initCamePanel());
+        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_SITE"), initSitePane());
+
+        this.encodePanel = new JTabbedPane();
+
+        encodePanel.addTab("Text", new JLabel());
+        encodePanel.addTab("URL", new JLabel());
+        encodePanel.addTab("Profile", new JLabel());
+
+        // 不显示选项卡上的焦点虚线边框
+        decodePanel.setFocusable(false);
+        encodePanel.setFocusable(false);
+
+        mainPane.add(decodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
+        mainPane.add(encodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_ENCODE"));
+
+        container.add(mainPane);
+
+        initMenuBar();
     }
 
     private void initMenuBar() {
@@ -138,7 +166,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
      * @param paneName 容器名称
      */
     private void switchPane(String paneName) {
-        cardLayout.show(jRootPane, paneName);
+        cardLayout.show(mainPane, paneName);
     }
 
 
@@ -163,36 +191,6 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         }
 
         return cameraPanel;
-    }
-
-
-    @Override
-    protected void initUI(Container container) {
-        initMenuBar();
-
-        this.cardLayout = new CardLayout();
-        this.jRootPane = new JPanel();
-        jRootPane.setLayout(cardLayout);
-
-        this.decodePanel = new JTabbedPane();
-        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_UPLOAD"), initUploadPane());
-        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_CAMERA"), initCamePanel());
-        decodePanel.addTab(DKSysUIUtil.getLocaleString("QR_SITE"), initSitePane());
-
-        this.encodePanel = new JTabbedPane();
-
-        encodePanel.addTab("Text", new JLabel());
-        encodePanel.addTab("URL", new JLabel());
-        encodePanel.addTab("Profile", new JLabel());
-
-        // 不显示选项卡上的焦点虚线边框
-        decodePanel.setFocusable(false);
-        encodePanel.setFocusable(false);
-
-        jRootPane.add(decodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_DECODE"));
-        jRootPane.add(encodePanel, DKSysUIUtil.getLocaleString("QR_MENUITEM_ENCODE"));
-
-        container.add(jRootPane,BorderLayout.CENTER);
     }
 
     private Component initSitePane() {

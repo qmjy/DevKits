@@ -81,11 +81,10 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
         rootPane.setLayout(new BorderLayout());
         initUI(rootPane);
         initListener();
-
     }
 
     /**
-     * frame constructor
+     * frame constructor, getRootPane()不会被设置成BorderLayout，设置后将导致菜单不显示
      *
      * @param title  frame title
      * @param width  width
@@ -96,6 +95,7 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
         this.setBounds(DKSysUIUtil.getCenter(width, height));
 
         initData();
+
         initUI(getRootPane());
         initListener();
     }
@@ -118,6 +118,5 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      * 需要初始化的监听器
      */
     protected abstract void initListener();
-
 
 }

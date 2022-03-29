@@ -172,8 +172,7 @@ public final class DKSysUIUtil {
      * @return 字典查询结果
      */
     public static String getLocaleString(String code, String defualt) {
-        Locale default1 = Locale.getDefault();
-        return App.getContext().getMessage(code, null, defualt, default1);
+        return App.getContext().getMessage(code, null, defualt, Locale.getDefault());
     }
 
     /**

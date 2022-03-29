@@ -1,5 +1,6 @@
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.tray.frame.listener.SsidListViewSelectionListener;
 import cn.devkits.client.util.DKSysUIUtil;
 import cn.devkits.client.util.DKSysUtil;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -26,10 +27,10 @@ public class WifiManagementFrame extends DKAbstractFrame {
     private static JLabel currentOnline = new JLabel("N/A");
     private static JLabel currentQr = new JLabel();
 
-    private JList<String> view;
+    private JList<String> listView;
 
-    private List<String> connectedSsids = null;
-    private Map<String, Map<String, String>> availableSsids = null;
+    private List<String> connectedSsids;
+    private Map<String, Map<String, String>> availableSsids;
 
     /**
      * 构造方法
@@ -38,6 +39,11 @@ public class WifiManagementFrame extends DKAbstractFrame {
         super(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_FRAME_TITLE"), 0.7f);
     }
 
+    @Override
+    protected void initData() {
+        connectedSsids = currentSystemUtil.getSsidNamesOfConnected();
+        availableSsids = currentSystemUtil.getAvailableSsids();
+    }
 
     @Override
     protected void initUI(Container rootContainer) {
@@ -105,17 +111,14 @@ public class WifiManagementFrame extends DKAbstractFrame {
         jPanel.setLayout(new BorderLayout());
         jPanel.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocaleString("SSID_MANAGEMENT_SSID_LIST_LABEL")));
 
-        view = new JList<>(getSsidList());
-        jPanel.add(new JScrollPane(view), BorderLayout.CENTER);
+        listView = new JList<>(getSsidList());
+        jPanel.add(new JScrollPane(listView), BorderLayout.CENTER);
 
         jPanel.setPreferredSize(new Dimension((int) (getWidth() * width), getHeight()));
         return jPanel;
     }
 
     private Vector<String> getSsidList() {
-        connectedSsids = currentSystemUtil.getSsidNamesOfConnected();
-        availableSsids = currentSystemUtil.getAvailableSsids();
-
         List<String> objects = new ArrayList<>();
         objects.addAll(connectedSsids);
 
@@ -131,16 +134,15 @@ public class WifiManagementFrame extends DKAbstractFrame {
 
     @Override
     protected void initListener() {
-        view.addListSelectionListener(e -> {
-            if (!view.getValueIsAdjusting()) {
-                String selectedValue = view.getSelectedValue();
-                currentName.setText(selectedValue);
-                String pwd = currentSystemUtil.getPwdOfSsid(selectedValue);
-                currentPwd.setText(pwd);
-                currentOnline.setText(getSignalOfSsid(selectedValue));
-                currentQr.setIcon(generateQrImg(selectedValue, pwd));
-            }
-        });
+        listView.addListSelectionListener(new SsidListViewSelectionListener(this));
+    }
+
+    public  void updateSsidDetail(String selectedValue){
+        currentName.setText(selectedValue);
+        String pwd = currentSystemUtil.getPwdOfSsid(selectedValue);
+        currentPwd.setText(pwd);
+        currentOnline.setText(getSignalOfSsid(selectedValue));
+        currentQr.setIcon(generateQrImg(selectedValue, pwd));
     }
 
     private String getSignalOfSsid(String ssid) {

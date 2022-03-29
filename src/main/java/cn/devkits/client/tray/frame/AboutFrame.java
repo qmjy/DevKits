@@ -37,7 +37,6 @@ public class AboutFrame extends DKAbstractFrame {
     private static final long serialVersionUID = 3737746590178589617L;
     private static final Logger LOGGER = LoggerFactory.getLogger(AboutFrame.class);
     private JLabel name;
-    private JLabel version = null;
 
     public AboutFrame() {
         super(DKSysUIUtil.getLocaleString("ABOUT_APP"), 0.7f, 0.6f);
@@ -51,18 +50,23 @@ public class AboutFrame extends DKAbstractFrame {
     @Override
     protected void initUI(Container jRootPane) {
         name.setFont(getAFont());
+        name.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
-        version = new JLabel(DKSysUIUtil.getLocaleString("VERSION") + DKConfigUtil.getInstance().getPomInfo().getVersion());
+        JLabel version = new JLabel(DKSysUIUtil.getLocaleStringWithColon("VERSION") + DKConfigUtil.getInstance().getPomInfo().getVersion());
         version.setLabelFor(name);
+        version.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+        JLabel cpNo = new JLabel(DKSysUIUtil.getLocaleStringWithColon("COPYRIGHT_NO") + "2022SR0402234");
+        cpNo.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
         // Create the panel we'll return and set up the layout.
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
-        version.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        name.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
         panel.add(name);
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(cpNo);
         panel.add(Box.createVerticalStrut(5)); // extra space
         panel.add(version);
 

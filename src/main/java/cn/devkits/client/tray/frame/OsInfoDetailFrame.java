@@ -70,12 +70,11 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
 
     @Override
     protected void initUI(Container rootContainer) {
-        JToolBar toolBar = new JToolBar("System Information Toolbar");
-        toolBar.setFloatable(false);
-        createToolbarBtns(toolBar);
+        if (DKSysUtil.isWindows()) {
+            createJToolBar(rootContainer);
+        }
 
         setPreferredSize(new Dimension(450, 130));
-        add(toolBar, BorderLayout.PAGE_START);
 
         jTabbedPane.addTab(DKSysUIUtil.getLocaleString("SYS_INFO_TAB_DASHBOARD"), initDashboard());
         jTabbedPane.addTab("CPU", getPanel());
@@ -94,6 +93,13 @@ public class OsInfoDetailFrame extends DKAbstractFrame {
         jTabbedPane.setFocusable(false);
 
         rootContainer.add(jTabbedPane, BorderLayout.CENTER);
+    }
+
+    private void createJToolBar(Container rootContainer) {
+        JToolBar toolBar = new JToolBar("System Information Toolbar");
+        toolBar.setFloatable(false);
+        createToolbarBtns(toolBar);
+        rootContainer.add(toolBar, BorderLayout.PAGE_START);
     }
 
     private JPanel getPanel() {

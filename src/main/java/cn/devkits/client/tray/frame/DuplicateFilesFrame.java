@@ -5,7 +5,7 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.tray.frame.listener.DuplicateFileTreeSelectionListener;
-import cn.devkits.client.tray.frame.listener.StartEndListener;
+import cn.devkits.client.tray.frame.listener.StartEndActionListener;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
@@ -330,7 +330,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
             }
         });
 
-        startCancelBtn.addActionListener(new StartEndListener(this));
+        startCancelBtn.addActionListener(new StartEndActionListener(this));
         exportBtn.addActionListener(e -> {
             JFileChooser jfc = new JFileChooser();
             jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

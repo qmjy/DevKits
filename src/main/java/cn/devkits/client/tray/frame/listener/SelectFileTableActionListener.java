@@ -18,7 +18,7 @@ import java.util.List;
  * @author Shaofeng Liu
  * @Date 2022/03/26
  */
-public class SelectFileListener implements ActionListener {
+public class SelectFileTableActionListener implements ActionListener {
 
     private final JTable table;
     private final ImgProcessingListModel filesModel;
@@ -30,7 +30,7 @@ public class SelectFileListener implements ActionListener {
      * @param table        待刷新的表格
      * @param isSelectFile 选择文件还是目录
      */
-    public SelectFileListener(JTable table, boolean isSelectFile) {
+    public SelectFileTableActionListener(JTable table, boolean isSelectFile) {
         this.table = table;
         this.filesModel = (ImgProcessingListModel) table.getModel();
         this.isSelectFile = isSelectFile;
