@@ -26,26 +26,29 @@ import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
+import cn.devkits.client.tray.model.FileTableCellRender;
 import cn.devkits.client.util.DKSysUtil;
 import com.google.common.collect.Lists;
-import cn.devkits.client.tray.model.FileTableModel;
+import cn.devkits.client.tray.model.FilesTableModel;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
 /**
- * 
  * Mutil File Explorers
  * <br>
  * https://blog.csdn.net/xietansheng/article/details/72814492
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年12月1日 下午3:03:56
  */
 public class FileExplorerPanel extends JPanel {
 
-    /** serialVersionUID */
+    /**
+     * serialVersionUID
+     */
     private static final long serialVersionUID = -2230863950855742735L;
     private static final String HOME_PATH = DKSysUtil.getHomePath();
 
@@ -59,7 +62,7 @@ public class FileExplorerPanel extends JPanel {
     private List<String> history = Lists.newArrayList(HOME_PATH);
     private int historyIndex = 0;
 
-    private FileTableModel model;
+    private FilesTableModel model;
 
     public FileExplorerPanel() {
         super(new BorderLayout());
@@ -114,8 +117,9 @@ public class FileExplorerPanel extends JPanel {
 
         add(jPanel, BorderLayout.NORTH);
 
-        this.model = new FileTableModel(new File(HOME_PATH));
+        this.model = new FilesTableModel(new File(HOME_PATH));
         this.filesTable = new JTable(model);
+        filesTable.setDefaultRenderer(Object.class, new FileTableCellRender());
         // arbitrary size adjustment to better account for icons
         filesTable.setRowHeight((int) (filesTable.getRowHeight() * 1.3));
         add(new JScrollPane(filesTable), BorderLayout.CENTER);

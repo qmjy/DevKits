@@ -46,6 +46,11 @@ import java.util.Locale;
 public final class DKSysUIUtil {
 
     /**
+     * 黄金比例常数
+     */
+    public static final float GOLDEN_RATIO = 0.618f;
+
+    /**
      * 控件边距：0
      */
     public static final int COMPONENT_UI_PADDING_0 = 0;
@@ -197,6 +202,18 @@ public final class DKSysUIUtil {
     public static Rectangle getCenter(int width, int height) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         return new Rectangle((int) ((screenSize.width - width) / 2), (int) ((screenSize.height - height) / 2), (int) width, (int) height);
+    }
+
+
+    /**
+     * 居中显示一个对话框，并指定对话框的宽度
+     *
+     * @param jDialog 待居中的容器组件
+     * @param width   容器的宽度
+     */
+    public static void centerWithWidth(JDialog jDialog, int width) {
+        int height = (int) (width * GOLDEN_RATIO);
+        jDialog.setBounds(getCenter(width, height));
     }
 
     public static void setLookAndFeel(String lookAndFeelName) {

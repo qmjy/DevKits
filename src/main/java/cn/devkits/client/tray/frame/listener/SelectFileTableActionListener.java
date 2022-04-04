@@ -1,6 +1,6 @@
 package cn.devkits.client.tray.frame.listener;
 
-import cn.devkits.client.tray.model.ImgProcessingListModel;
+import cn.devkits.client.tray.model.FilesTableModel;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
 import cn.devkits.client.util.DKSysUtil;
@@ -21,7 +21,7 @@ import java.util.List;
 public class SelectFileTableActionListener implements ActionListener {
 
     private final JTable table;
-    private final ImgProcessingListModel filesModel;
+    private final FilesTableModel filesModel;
     private final boolean isSelectFile;
 
     /**
@@ -32,7 +32,7 @@ public class SelectFileTableActionListener implements ActionListener {
      */
     public SelectFileTableActionListener(JTable table, boolean isSelectFile) {
         this.table = table;
-        this.filesModel = (ImgProcessingListModel) table.getModel();
+        this.filesModel = (FilesTableModel) table.getModel();
         this.isSelectFile = isSelectFile;
     }
 

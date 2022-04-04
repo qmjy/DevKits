@@ -44,7 +44,12 @@ public final class DKFileUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
-    public FileSystemView getFileSysView() {
+    /**
+     * 获取文件系统
+     *
+     * @return FileSystemView
+     */
+    public static FileSystemView getFileSysView() {
         return FileSystemView.getFileSystemView();
     }
 

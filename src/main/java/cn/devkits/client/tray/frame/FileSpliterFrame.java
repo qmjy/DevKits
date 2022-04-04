@@ -110,6 +110,9 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
     public FileSpliterFrame() {
         super(DKSysUIUtil.getLocale("FILE_SPLITTER_TITLE"), 0.7f, 0.55f);
 
+        initUI(getDKPane());
+        initListener();
+
         executor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     }
 

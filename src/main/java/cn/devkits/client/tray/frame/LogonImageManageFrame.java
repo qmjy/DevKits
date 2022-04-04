@@ -63,12 +63,12 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
 
     public LogonImageManageFrame() {
         super(DKSysUIUtil.getLocale("LOGON_BG_MNG"), 0.7f, 0.25f);
+
+        initUI(getDKPane());
+        initListener();
     }
 
-    @Override
-    protected void initData() {
 
-    }
 
     @Override
     public boolean isResizable() {

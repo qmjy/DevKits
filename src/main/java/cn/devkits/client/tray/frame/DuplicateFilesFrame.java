@@ -81,7 +81,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
     private JButton exportBtn = null;
     private JPanel rightPane;
     private CardLayout rightPaneLayout;
-    private ExecutorService theadPool = null;
+    private ExecutorService theadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
 
     private DefaultMutableTreeNode treeNode = null;
     private DefaultTreeModel treeModel = null;
@@ -90,7 +90,11 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
     public DuplicateFilesFrame() {
         super(DKSysUIUtil.getLocale("DUP_WIN_TITLE"), 1.2f);
+
+        initUI(getDKPane());
+        initListener();
     }
+
 
     @Override
     protected void initUI(Container rootContainer) {
@@ -429,8 +433,6 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         md5FilesMap.clear();
         treeNode.removeAllChildren();
         treeModel.reload();
-
-        theadPool = Executors.newFixedThreadPool(FIXED_THREAD_NUM);
     }
 
     public void searchComplete() {

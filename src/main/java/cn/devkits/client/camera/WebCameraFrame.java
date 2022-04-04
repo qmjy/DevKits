@@ -34,6 +34,9 @@ public class WebCameraFrame extends DKAbstractFrame {
     public WebCameraFrame() {
         super(DKSysUIUtil.getLocale("CAMERA"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
         createMenubar();
+
+        initUI(getDKPane());
+        initListener();
     }
 
     private void createMenubar() {

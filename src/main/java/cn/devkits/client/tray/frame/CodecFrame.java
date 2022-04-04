@@ -97,6 +97,10 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
 
     public CodecFrame() {
         super(DKSysUIUtil.getLocale("CODEC_IMG_TITLE"), (int) CAMERA_DIMENSION.getWidth(), (int) CAMERA_DIMENSION.getHeight());
+
+        initUI(getDKPane());
+        initListener();
+
         executor.execute(this);
     }
 

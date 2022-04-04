@@ -37,13 +37,11 @@ public class WifiManagementFrame extends DKAbstractFrame {
      */
     public WifiManagementFrame() {
         super(DKSysUIUtil.getLocale("SSID_MANAGEMENT_FRAME_TITLE"), 0.7f);
+
+        initUI(getDKPane());
+        initListener();
     }
 
-    @Override
-    protected void initData() {
-        connectedSsids = currentSystemUtil.getSsidNamesOfConnected();
-        availableSsids = currentSystemUtil.getAvailableSsids();
-    }
 
     @Override
     protected void initUI(Container rootContainer) {
@@ -119,6 +117,9 @@ public class WifiManagementFrame extends DKAbstractFrame {
     }
 
     private Vector<String> getSsidList() {
+        connectedSsids = currentSystemUtil.getSsidNamesOfConnected();
+        availableSsids = currentSystemUtil.getAvailableSsids();
+
         List<String> objects = new ArrayList<>();
         objects.addAll(connectedSsids);
 

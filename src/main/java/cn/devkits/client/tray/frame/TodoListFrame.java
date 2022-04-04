@@ -37,30 +37,24 @@ import java.awt.Dimension;
  * @since 2020/8/5
  */
 public class TodoListFrame extends DKAbstractFrame {
-    private String[] reminderHeader = null;
-    private String[] emailReminderHeader = null;
+    private String[] reminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "内容", "创建时间"};
+    private String[] emailReminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "收件人", "内容", "创建时间"};
 
     private JTabbedPane jTabbedPane;
-    private JTable trayTable;
-    private JTable emailTable;
-    private JTable dialogTable;
+    private JTable trayTable = new JTable();
+    private JTable emailTable = new JTable();
+    private JTable dialogTable = new JTable();
 
     public TodoListFrame() {
         super(DKSysUIUtil.getLocale("TODO_LIST_TITLE"), 0.7f);
+
+        initUI(getDKPane());
+        initListener();
     }
 
-    @Override
-    protected void initData() {
-        this.trayTable = new JTable();
-        this.emailTable = new JTable();
-        this.dialogTable = new JTable();
-        this.reminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "内容", "创建时间"};
-        this.emailReminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "收件人", "内容", "创建时间"};
-    }
 
     @Override
     protected void initUI(Container rootContainer) {
-        initData();
         intiJToolBar(rootContainer);
 
         jTabbedPane = new JTabbedPane();

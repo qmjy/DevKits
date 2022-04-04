@@ -1,7 +1,7 @@
 package cn.devkits.client.tray.frame.listener;
 
 import cn.devkits.client.tray.frame.ImgProcessingFrame;
-import cn.devkits.client.tray.model.ImgProcessingListModel;
+import cn.devkits.client.tray.model.FilesTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -27,7 +27,7 @@ public class ImgTableListSelectionListener implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             int selectedRow = table.getSelectedRow();
-            ImgProcessingListModel selectionModel = (ImgProcessingListModel) table.getModel();
+            FilesTableModel selectionModel = (FilesTableModel) table.getModel();
             File fileAt = selectionModel.getFileAt(selectedRow);
         }
     }

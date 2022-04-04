@@ -72,9 +72,11 @@ public class NewTodoTaskFrame extends DKAbstractFrame {
 
     public NewTodoTaskFrame(TodoListFrame todoListFrame) {
         super(DKSysUIUtil.getLocale("TODO_NEW_DIALOG_TITLE"), 0.6f);
-
-
         this.todoListFrame = todoListFrame;
+
+        initUI(getDKPane());
+        initListener();
+
         App.getEventBus().register(this);
     }
 

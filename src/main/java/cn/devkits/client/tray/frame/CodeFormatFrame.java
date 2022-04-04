@@ -14,8 +14,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * 
  * 代码格式化
+ *
  * @author shaofeng liu
  * @version 1.0.0
  * @time 2019年11月25日 下午11:11:04
@@ -30,11 +30,9 @@ public class CodeFormatFrame extends DKAbstractFrame {
 
     public CodeFormatFrame() {
         super("Code Format");
-    }
 
-    @Override
-    protected void initData() {
-
+        initUI(getDKPane());
+        initListener();
     }
 
 
@@ -76,7 +74,6 @@ public class CodeFormatFrame extends DKAbstractFrame {
             }
         });
     }
-
 
 
     private void addTabContent(JTabbedPane tabbedPane, String title) {

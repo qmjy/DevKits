@@ -36,16 +36,15 @@ public class AboutFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 3737746590178589617L;
     private static final Logger LOGGER = LoggerFactory.getLogger(AboutFrame.class);
-    private JLabel name;
+    private JLabel name = new JLabel(DKSysUIUtil.getLocale("APP_LOGO"));
 
     public AboutFrame() {
         super(DKSysUIUtil.getLocale("ABOUT_APP"), 0.7f, 0.6f);
+
+        initUI(getDKPane());
+        initListener();
     }
 
-    @Override
-    protected void initData() {
-        name = new JLabel(DKSysUIUtil.getLocale("APP_LOGO"));
-    }
 
     @Override
     protected void initUI(Container jRootPane) {

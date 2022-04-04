@@ -1,14 +1,13 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
+import cn.devkits.client.tray.frame.listener.DelFileTableActionListener;
 import cn.devkits.client.tray.frame.listener.ImgTableListSelectionListener;
+import cn.devkits.client.tray.frame.listener.ImgTableMenuItemActionListener;
 import cn.devkits.client.tray.frame.listener.SelectFileTableActionListener;
-import cn.devkits.client.tray.model.ImgProcessingListModel;
-import cn.devkits.client.util.DKFileUtil;
+import cn.devkits.client.tray.model.FileTableCellRender;
+import cn.devkits.client.tray.model.FilesTableModel;
 import cn.devkits.client.util.DKSysUIUtil;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.Tag;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,13 +25,15 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     private float PANE_WIDTH_L = 0.6f;
     private float PANE_WIDTH_R = 1 - PANE_WIDTH_L;
 
-    private ImgProcessingListModel filesModel = null;
-    private JTable table = null;
-    private final DKJImagePopupMenu menu = DKSysUIUtil.createDKJPopupMenu();
+    private FilesTableModel filesModel = new FilesTableModel();
+    private JTable table = new JTable(filesModel);
+    private DKJImagePopupMenu menu = DKSysUIUtil.createDKJPopupMenu();
 
     public ImgProcessingFrame() {
         super(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_TITLE"));
         initPopupMenu();
+        initUI(getDKPane());
+        initListener();
     }
 
 
@@ -74,9 +75,8 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         jPanel.setPreferredSize(new Dimension((int) (getWidth() * leftWidth), getHeight()));
         jPanel.setLayout(new BorderLayout());
 
-        this.filesModel = new ImgProcessingListModel();
-        this.table = new JTable(filesModel);
-        this.table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setDefaultRenderer(Object.class, new FileTableCellRender());
+        table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         jPanel.add(table.getTableHeader(), BorderLayout.NORTH);
         jPanel.add(table, BorderLayout.CENTER);
@@ -99,29 +99,13 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         addFolderBtn.addActionListener(new SelectFileTableActionListener(table, false));
         appendPane.add(addFolderBtn);
         JButton delSelectedBtn = new JButton(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_BTNS_DEL_FILE"));
-        delSelectedBtn.addActionListener(e -> {
-//            int selectedRow = table.getSelectedRow();
-//            filesModel.removeFileOfRow(selectedRow);
-//            table.setModel(filesModel);
-        });
+        delSelectedBtn.addActionListener(new DelFileTableActionListener(table));
         appendPane.add(delSelectedBtn);
 
         jPanel.add(appendPane, BorderLayout.CENTER);
         return jPanel;
     }
 
-    public void wrapImgInfo(File file) {
-        JPanel comp = new JPanel();
-        comp.setLayout(new GridLayout(0, 4, 5, 5));
-
-        Metadata metadata = DKFileUtil.getMetadataOfFile(file);
-        for (Directory directory : metadata.getDirectories()) {
-            for (Tag tag : directory.getTags()) {
-                comp.add(new JLabel(tag.getTagName() + ":", JLabel.RIGHT));
-                comp.add(new JLabel(tag.getDescription(), JLabel.LEFT));
-            }
-        }
-    }
 
     @Override
     protected void initListener() {
@@ -137,13 +121,14 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     }
 
     private void initPopupMenu() {
-        menu.add(new JMenuItem("Winzip 8.0"));
+        JMenuItem removeFromTable = new JMenuItem(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_TREE_MENU_RMV"));
+        removeFromTable.addActionListener(new DelFileTableActionListener(table));
+        menu.add(removeFromTable);
+
         menu.addSeparator();
-        menu.add(new JMenuItem("Programs"));
-        menu.add(new JMenuItem("Document"));
-        menu.add(new JMenuItem("Settings"));
-        menu.add(new JMenuItem("Search"));
-        menu.add(new JMenuItem("Help and Support"));
-        menu.add(new JMenuItem("Run..."));
+
+        JMenuItem propertiesItem = new JMenuItem(DKSysUIUtil.getLocaleWithEllipsis("IMG_PROCESSING_FRAME_TREE_MENU_DETAIL"));
+        propertiesItem.addActionListener(new ImgTableMenuItemActionListener(table));
+        menu.add(propertiesItem);
     }
 }

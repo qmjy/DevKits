@@ -57,16 +57,15 @@ import oshi.util.FormatUtil;
 public class OsInfoDetailFrame extends DKAbstractFrame {
 
     private static final long serialVersionUID = 6295111163819170866L;
-    private JTabbedPane jTabbedPane;
+    private JTabbedPane jTabbedPane = new JTabbedPane();
 
     public OsInfoDetailFrame() {
         super(DKSysUIUtil.getLocale("SYS_INFO_TITLE"), 0.9f);
+
+        initUI(getDKPane());
+        initListener();
     }
 
-    @Override
-    protected void initData() {
-        this.jTabbedPane = new JTabbedPane();
-    }
 
     @Override
     protected void initUI(Container rootContainer) {
