@@ -8,6 +8,7 @@ import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
 import cn.devkits.client.util.DKSysUtil;
+import jdk.nashorn.internal.runtime.options.Option;
 import oshi.util.FormatUtil;
 
 import javax.swing.table.AbstractTableModel;
@@ -16,6 +17,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class FilesTableModel extends AbstractTableModel {
     /**
@@ -82,8 +84,11 @@ public class FilesTableModel extends AbstractTableModel {
      * @param rowIndex 指定行的文件模型
      * @return 文件对象
      */
-    public File getFileAt(int rowIndex) {
-        return new File(children.get(rowIndex));
+    public Optional<File> getFileAt(int rowIndex) {
+        if (rowIndex >= 0) {
+            return Optional.of(new File(children.get(rowIndex)));
+        }
+        return Optional.empty();
     }
 
     /**

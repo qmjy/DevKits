@@ -28,6 +28,7 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     private FilesTableModel filesModel = new FilesTableModel();
     private JTable table = new JTable(filesModel);
     private DKJImagePopupMenu menu = DKSysUIUtil.createDKJPopupMenu();
+    private JLabel statusLine = new JLabel(DKSysUIUtil.getLocaleWithEllipsis("COMMON_LABEL_TXT_READY"));
 
     public ImgProcessingFrame() {
         super(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_TITLE"));
@@ -51,8 +52,12 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     private Component createBottomPane() {
         JPanel bottomPane = DKSysUIUtil.createPaneWithBorder(Color.GRAY);
         bottomPane.setLayout(new BorderLayout());
-        bottomPane.add(new JLabel("这里是状态栏区域...."));
+        bottomPane.add(statusLine);
         return bottomPane;
+    }
+
+    public void updateStatusLine(String text) {
+        statusLine.setText(text);
     }
 
     private Component createRightPane(float rightWidth) {
@@ -71,11 +76,14 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     }
 
     private Component createLeftPane(float leftWidth) {
-        JPanel jPanel = DKSysUIUtil.createPaneWithBorder(Color.GRAY);
+        JPanel jPanel = new JPanel();
+        jPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 0, 1, Color.GRAY));
         jPanel.setPreferredSize(new Dimension((int) (getWidth() * leftWidth), getHeight()));
         jPanel.setLayout(new BorderLayout());
 
         table.setDefaultRenderer(File.class, new FileTableCellRender());
+        // arbitrary size adjustment to better account for icons
+        table.setRowHeight((int) (table.getRowHeight() * 1.3));
         table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         jPanel.add(table.getTableHeader(), BorderLayout.NORTH);
@@ -89,7 +97,7 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         jPanel.setLayout(new BorderLayout());
 
         JPanel appendPane = new JPanel();
-        appendPane.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
+        appendPane.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.GRAY));
         appendPane.setLayout(new FlowLayout());
 
         JButton addBtn = new JButton(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_BTNS_ADD_FILE"));
@@ -110,10 +118,21 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     @Override
     protected void initListener() {
         table.getSelectionModel().addListSelectionListener(new ImgTableListSelectionListener(this, table));
+        // 支持右键选择表格行和打开右键菜单
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
+                int r = table.rowAtPoint(e.getPoint());
+                if (r >= 0 && r < table.getRowCount()) {
+                    table.setRowSelectionInterval(r, r);
+                } else {
+                    table.clearSelection();
+                }
+
+                int rowindex = table.getSelectedRow();
+                if (rowindex < 0)
+                    return;
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
                     menu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }

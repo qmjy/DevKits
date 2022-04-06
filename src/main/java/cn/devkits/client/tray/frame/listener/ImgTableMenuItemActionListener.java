@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.Optional;
 
 public class ImgTableMenuItemActionListener implements ActionListener {
     private final JTable table;
@@ -30,16 +31,18 @@ public class ImgTableMenuItemActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         int selectedRow = table.getSelectedRow();
-        File file = filesModel.getFileAt(selectedRow);
+        Optional<File> fileAt = filesModel.getFileAt(selectedRow);
+        if(fileAt.isPresent()){
+            File file = fileAt.get();
+            JDialog jDialog = new JDialog();
+            jDialog.setTitle(file.getName());
+            int height = 300;
+            Rectangle center = DKSysUIUtil.getCenter((int) (height / DKSysUIUtil.GOLDEN_RATIO), height);
+            jDialog.setBounds(center);
+            wrapImgInfo(jDialog, file);
 
-        JDialog jDialog = new JDialog();
-        jDialog.setTitle(file.getName());
-        int height = 300;
-        Rectangle center = DKSysUIUtil.getCenter((int) (height / DKSysUIUtil.GOLDEN_RATIO), height);
-        jDialog.setBounds(center);
-        wrapImgInfo(jDialog, file);
-
-        jDialog.setVisible(true);
+            jDialog.setVisible(true);
+        }
     }
 
 

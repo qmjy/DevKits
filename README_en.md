@@ -28,6 +28,7 @@ For to be a free programmer.
 - Camera
 - The system tray supports displaying CPU utilization in animation
 - WIFI management
+- Image Processing (Image processing and format conversion)
 
 
 ## Runtime Version

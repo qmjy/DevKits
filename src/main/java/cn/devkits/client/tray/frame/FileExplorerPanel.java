@@ -124,7 +124,7 @@ public class FileExplorerPanel extends JPanel {
         filesTable.setRowHeight((int) (filesTable.getRowHeight() * 1.3));
         add(new JScrollPane(filesTable), BorderLayout.CENTER);
 
-        this.statusBar = new JLabel("Read to go...");
+        this.statusBar = new JLabel(DKSysUIUtil.getLocaleWithEllipsis("COMMON_LABEL_TXT_READY"));
         add(statusBar, BorderLayout.SOUTH);
     }
 
