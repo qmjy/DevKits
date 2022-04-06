@@ -75,7 +75,7 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         jPanel.setPreferredSize(new Dimension((int) (getWidth() * leftWidth), getHeight()));
         jPanel.setLayout(new BorderLayout());
 
-        table.setDefaultRenderer(Object.class, new FileTableCellRender());
+        table.setDefaultRenderer(File.class, new FileTableCellRender());
         table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         jPanel.add(table.getTableHeader(), BorderLayout.NORTH);

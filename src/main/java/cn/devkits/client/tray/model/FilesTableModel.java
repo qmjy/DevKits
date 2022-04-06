@@ -22,7 +22,7 @@ public class FilesTableModel extends AbstractTableModel {
      * serialVersionUID
      */
     private static final long serialVersionUID = 1654386662658602678L;
-    protected File currentDir;
+    protected String currentDir;
     private List<String> children = new ArrayList<>();
 
     protected String[] columnNames = new String[]{"COMMON_LABEL_FILE_NAME", "COMMON_LABEL_FILE_PATH",
@@ -43,11 +43,11 @@ public class FilesTableModel extends AbstractTableModel {
         }
     }
 
-    public FilesTableModel(File dir) {
+    public FilesTableModel(String dir) {
         this.currentDir = dir;
-        String[] list = dir.list();
+        String[] list = new File(dir).list();
         for (String s : list) {
-            children.add(s);
+            children.add(dir + File.separator + s);
         }
     }
 
@@ -56,9 +56,10 @@ public class FilesTableModel extends AbstractTableModel {
      *
      * @param dir 文件根路径
      */
-    public void updateRoot(File dir) {
+    public void updateRoot(String dir) {
         this.currentDir = dir;
-        String[] list = dir.list();
+        //注意：list返回的不是全路径
+        String[] list = new File(dir).list();
         for (String s : list) {
             children.add(s);
         }
@@ -150,6 +151,10 @@ public class FilesTableModel extends AbstractTableModel {
         return children.size();
     }
 
+    @Override
+    public Class getColumnClass(int columnIndex) {
+        return getValueAt(0, columnIndex).getClass();
+    }
 
     @Override
     public Object getValueAt(int row, int col) {
@@ -159,7 +164,7 @@ public class FilesTableModel extends AbstractTableModel {
             case 0:
                 return f;
             case 1:
-                return f.getParent();
+                return new File(f.getAbsolutePath()).getParent();
             case 2:
                 return DKDateTimeUtil.long2Str(f.lastModified());
             case 3:

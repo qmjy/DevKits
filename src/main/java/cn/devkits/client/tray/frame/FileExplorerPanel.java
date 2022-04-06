@@ -117,9 +117,9 @@ public class FileExplorerPanel extends JPanel {
 
         add(jPanel, BorderLayout.NORTH);
 
-        this.model = new FilesTableModel(new File(HOME_PATH));
+        this.model = new FilesTableModel(HOME_PATH);
         this.filesTable = new JTable(model);
-        filesTable.setDefaultRenderer(Object.class, new FileTableCellRender());
+        filesTable.setDefaultRenderer(File.class, new FileTableCellRender());
         // arbitrary size adjustment to better account for icons
         filesTable.setRowHeight((int) (filesTable.getRowHeight() * 1.3));
         add(new JScrollPane(filesTable), BorderLayout.CENTER);
@@ -223,7 +223,7 @@ public class FileExplorerPanel extends JPanel {
             currentPathTextField.setText(path);
         }
 
-        model.updateRoot(new File(path));
+        model.updateRoot(path);
         filesTable.validate();
         filesTable.updateUI();
     }
