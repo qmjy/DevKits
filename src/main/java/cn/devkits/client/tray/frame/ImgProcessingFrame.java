@@ -106,7 +106,7 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         JButton addFolderBtn = new JButton(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_BTNS_ADD_FOLDER"));
         addFolderBtn.addActionListener(new SelectFileTableActionListener(table, false));
         appendPane.add(addFolderBtn);
-        JButton delSelectedBtn = new JButton(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_BTNS_DEL_FILE"));
+        JButton delSelectedBtn = new JButton(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_BTNS_RMV_FILE"));
         delSelectedBtn.addActionListener(new DelFileTableActionListener(table));
         appendPane.add(delSelectedBtn);
 
