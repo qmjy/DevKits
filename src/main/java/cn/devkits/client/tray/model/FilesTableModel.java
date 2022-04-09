@@ -60,6 +60,7 @@ public class FilesTableModel extends AbstractTableModel {
      */
     public void updateRoot(String dir) {
         this.currentDir = dir;
+        children.clear();
         //注意：list返回的不是全路径
         String[] list = new File(dir).list();
         for (String s : list) {

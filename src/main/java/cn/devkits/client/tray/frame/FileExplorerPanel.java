@@ -137,7 +137,6 @@ public class FileExplorerPanel extends JPanel {
             }
         });
 
-
         currentPathTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -151,14 +150,12 @@ public class FileExplorerPanel extends JPanel {
         filesTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                int rowNum = filesTable.getSelectedRow();
+                File file = (File) filesTable.getValueAt(rowNum, 0);
                 if (e.getClickCount() == 1) {
-                    int rowNum = filesTable.getSelectedRow();
-                    String fileName = (String) filesTable.getValueAt(rowNum, 1);
-                    updateStatusBar(fileName);
+                    updateStatusBar(file.getName());
                 } else if (e.getClickCount() == 2) {
-                    int rowNum = filesTable.getSelectedRow();
-                    String fileName = (String) filesTable.getValueAt(rowNum, 1);
-                    openFileOrDir(fileName);
+                    openFileOrDir(file.getName());
                 }
             }
         });
@@ -224,8 +221,8 @@ public class FileExplorerPanel extends JPanel {
         }
 
         model.updateRoot(path);
-        filesTable.validate();
-        filesTable.updateUI();
+        filesTable.setModel(model);
+        filesTable.repaint();
     }
 
     private void updateStatusBar(String fileName) {

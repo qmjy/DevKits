@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -83,7 +85,8 @@ public final class DKSysUIUtil {
      */
     public static JPanel createPaneWithBorder(Color color) {
         JPanel jPanel = new JPanel();
-        jPanel.setBorder(BorderFactory.createLineBorder(color));
+        Border lineBorder = BorderFactory.createLineBorder(color);
+        jPanel.setBorder(new CompoundBorder(lineBorder, new EmptyBorder(5, 10, 5, 10)));
         return jPanel;
     }
 
