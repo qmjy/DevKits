@@ -332,6 +332,26 @@ public final class DKFileUtil {
     }
 
     /**
+     * 输出指定字符串内容到指定文件
+     *
+     * @param file     待写入的文件
+     * @param dataList 待写入的数据
+     * @return 文件写入是否成功
+     */
+    public static boolean writeFile(File file, List<String> dataList) {
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+            IOUtils.writeLines(dataList, null, writer);
+            return true;
+        } catch (IOException e) {
+        } finally {
+            IoUtils.closeQuietly(writer);
+        }
+        return false;
+    }
+
+    /**
      * empty folder
      *
      * @param ouputFolder the folder need to empty

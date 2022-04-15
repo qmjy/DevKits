@@ -8,10 +8,11 @@ import cn.devkits.client.tray.frame.listener.SelectFileTableActionListener;
 import cn.devkits.client.tray.model.FileTableCellRender;
 import cn.devkits.client.tray.model.FilesTableModel;
 import cn.devkits.client.util.DKSysUIUtil;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -33,7 +34,7 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     private JLabel statusLine = new JLabel(DKSysUIUtil.getLocaleWithEllipsis("COMMON_LABEL_TXT_READY"));
 
     public ImgProcessingFrame() {
-        super(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_TITLE"));
+        super(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_TITLE"), 1.2f);
         initPopupMenu();
         initUI(getDKPane());
         initListener();
@@ -66,15 +67,32 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         JPanel jPanel = new JPanel();
         jPanel.setPreferredSize(new Dimension((int) (getWidth() * rightWidth), getHeight()));
         jPanel.setLayout(new BorderLayout());
-        jPanel.add(createTabPanel(), BorderLayout.CENTER);
+        jPanel.add(createProcessPanel(), BorderLayout.CENTER);
         return jPanel;
     }
 
-    private JTabbedPane createTabPanel() {
-        JTabbedPane jTabbedPane = new JTabbedPane();
-        jTabbedPane.add(DKSysUIUtil.getLocale("IMG_PROCESSING_R_TAB_NAME_PROCESS"), new JLabel());
-        jTabbedPane.add(DKSysUIUtil.getLocale("IMG_PROCESSING_R_TAB_NAME_FORMAT"), new JLabel());
-        return jTabbedPane;
+    private JPanel createProcessPanel() {
+        FormLayout layout = new FormLayout(
+                "right:max(50dlu;p), 4dlu, 75dlu, 7dlu, right:p, 4dlu, 75dlu",
+                "p, 2dlu, p, 3dlu, p, 3dlu, p, 7dlu, p, 2dlu, p, 3dlu, p, 3dlu, p");
+        PanelBuilder builder = new PanelBuilder(layout);
+        builder.setDefaultDialogBorder();
+        CellConstraints cc = new CellConstraints();
+        builder.addSeparator(DKSysUIUtil.getLocale("IMG_PROCESSING_R_OP_PARAM_ORIGIN_PROPERTIES"), cc.xyw(1, 1, 7));
+        builder.addLabel("Identifier", cc.xy(1, 3));
+        builder.add(new JTextField(), cc.xy(3, 3));
+        builder.addSeparator(DKSysUIUtil.getLocale("IMG_PROCESSING_R_OP_PARAM_OUTPUT_PROPERTIES"), cc.xyw(1, 5, 7));
+        builder.add(new JPanel(), cc.xyw(3, 5, 5));
+        builder.addLabel("len[mm]", cc.xy(1, 7));
+        builder.add(new JTextField(), cc.xy(3, 7));
+
+        builder.addSeparator(DKSysUIUtil.getLocale("IMG_PROCESSING_R_OP_PARAM_OUTPUT_EXTENSION"), cc.xyw(1, 9, 7));
+        builder.addLabel("da[mm]", cc.xy(1, 11));
+        builder.add(new JTextField(), cc.xy(3, 11));
+
+        JPanel panel = builder.getPanel();
+        panel.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocale("IMG_PROCESSING_R_OP_PARAM_OUTPUT")));
+        return panel;
     }
 
     private Component createLeftPane(float leftWidth) {
@@ -124,16 +142,10 @@ public class ImgProcessingFrame extends DKAbstractFrame {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                int r = table.rowAtPoint(e.getPoint());
-                if (r >= 0 && r < table.getRowCount()) {
-                    table.setRowSelectionInterval(r, r);
-                } else {
-                    table.clearSelection();
-                }
-
-                int rowindex = table.getSelectedRow();
-                if (rowindex < 0)
+                DKSysUIUtil.enableRightClickSelect(e, table);
+                if (table.getSelectedRow() < 0) {
                     return;
+                }
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
                     menu.show(e.getComponent(), e.getX(), e.getY());
                 }

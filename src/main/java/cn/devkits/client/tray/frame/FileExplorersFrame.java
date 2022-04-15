@@ -4,6 +4,8 @@
 
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.component.FileExplorerPanel;
+
 import javax.swing.*;
 import java.awt.*;
 

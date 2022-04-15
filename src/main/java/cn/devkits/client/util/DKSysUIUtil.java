@@ -31,6 +31,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.text.MessageFormat;
@@ -230,6 +231,21 @@ public final class DKSysUIUtil {
             LOGGER.error("Init Look And Feel error:" + e1.getMessage());
         } catch (UnsupportedLookAndFeelException e) {
             LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
+        }
+    }
+
+    /**
+     * 开启表格右键选中行效果
+     *
+     * @param e     鼠标事件
+     * @param table 待开启的表格
+     */
+    public static void enableRightClickSelect(MouseEvent e, JTable table) {
+        int r = table.rowAtPoint(e.getPoint());
+        if (r >= 0 && r < table.getRowCount()) {
+            table.setRowSelectionInterval(r, r);
+        } else {
+            table.clearSelection();
         }
     }
 

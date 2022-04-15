@@ -43,7 +43,7 @@ public class SelectFileTableActionListener implements ActionListener {
         jfc.setMultiSelectionEnabled(true);
         jfc.setCurrentDirectory(DKSysUtil.getHomeDir());
         jfc.setDialogTitle(DKSysUIUtil.getLocale("FILE_CHOOSER_DIALOG_TITLE_EXPORT"));
-        int i = jfc.showSaveDialog(table.getParent());
+        int i = jfc.showOpenDialog(table.getParent());
         if (i == JFileChooser.APPROVE_OPTION) {
             File[] selectedFiles = jfc.getSelectedFiles();
             if (isSelectFile) {

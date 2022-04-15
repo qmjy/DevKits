@@ -20,11 +20,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class FilesTableModel extends AbstractTableModel {
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 1654386662658602678L;
-    protected String currentDir;
+
     private List<String> children = new ArrayList<>();
 
     protected String[] columnNames = new String[]{"COMMON_LABEL_FILE_NAME", "COMMON_LABEL_FILE_PATH",
@@ -46,7 +42,6 @@ public class FilesTableModel extends AbstractTableModel {
     }
 
     public FilesTableModel(String dir) {
-        this.currentDir = dir;
         String[] list = new File(dir).list();
         for (String s : list) {
             children.add(dir + File.separator + s);
@@ -59,25 +54,15 @@ public class FilesTableModel extends AbstractTableModel {
      * @param dir 文件根路径
      */
     public void updateRoot(String dir) {
-        this.currentDir = dir;
         children.clear();
         //注意：list返回的不是全路径
         String[] list = new File(dir).list();
-        for (String s : list) {
-            children.add(s);
+        if (list != null) {
+            for (String s : list) {
+                children.add(dir + File.separator + s);
+            }
         }
     }
-
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
-    }
-
-    @Override
-    public String getColumnName(int col) {
-        return DKSysUIUtil.getLocale(columnNames[col]);
-    }
-
 
     /**
      * 获取表格模型的指定行
@@ -151,6 +136,15 @@ public class FilesTableModel extends AbstractTableModel {
         return false;
     }
 
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+
+    @Override
+    public String getColumnName(int col) {
+        return DKSysUIUtil.getLocale(columnNames[col]);
+    }
 
     @Override
     public int getRowCount() {
@@ -164,6 +158,9 @@ public class FilesTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int col) {
+        if (row < 0 || row >= children.size()) {
+            return null;
+        }
         String filePath = children.get(row);
         File f = new File(filePath);
         switch (col) {
@@ -188,7 +185,7 @@ public class FilesTableModel extends AbstractTableModel {
 
     private String getFileType(File f) {
         if (f.isDirectory()) {
-            return "Folder";
+            return DKSysUIUtil.getLocale("COMMON_LABEL_FILE_FOLDER");
         }
 
         String fileName = f.getName();

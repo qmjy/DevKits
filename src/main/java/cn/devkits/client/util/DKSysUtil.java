@@ -301,6 +301,16 @@ public abstract class DKSysUtil {
     }
 
     /**
+     * 获取桌面地址
+     *
+     * @return 桌面地址
+     */
+    public static String getDesktopPath() {
+        File desktopDir = DKFileUtil.getFileSysView().getHomeDirectory();
+        return desktopDir.getAbsolutePath();
+    }
+
+    /**
      * 获取用户目录：字符串
      *
      * @return home dir

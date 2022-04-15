@@ -2,7 +2,7 @@
  * Copyright (c) 2019-2020 QMJY.CN All rights reserved.
  */
 
-package cn.devkits.client.tray.frame;
+package cn.devkits.client.component;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -57,12 +57,12 @@ public class FileExplorerPanel extends JPanel {
     private JButton forwardBtn;
     private JTextField currentPathTextField;
 
-    private JTable filesTable;
+    private FilesTableModel model = new FilesTableModel(HOME_PATH);
+    private JTable filesTable = new JTable(model);
     private JLabel statusBar;
     private List<String> history = Lists.newArrayList(HOME_PATH);
     private int historyIndex = 0;
 
-    private FilesTableModel model;
 
     public FileExplorerPanel() {
         super(new BorderLayout());
@@ -117,8 +117,6 @@ public class FileExplorerPanel extends JPanel {
 
         add(jPanel, BorderLayout.NORTH);
 
-        this.model = new FilesTableModel(HOME_PATH);
-        this.filesTable = new JTable(model);
         filesTable.setDefaultRenderer(File.class, new FileTableCellRender());
         // arbitrary size adjustment to better account for icons
         filesTable.setRowHeight((int) (filesTable.getRowHeight() * 1.3));
@@ -152,16 +150,18 @@ public class FileExplorerPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 int rowNum = filesTable.getSelectedRow();
                 File file = (File) filesTable.getValueAt(rowNum, 0);
-                if (e.getClickCount() == 1) {
-                    updateStatusBar(file.getName());
-                } else if (e.getClickCount() == 2) {
-                    openFileOrDir(file.getName());
+                if (file != null) {
+                    if (e.getClickCount() == 1) {
+                        DKSysUIUtil.enableRightClickSelect(e, filesTable);
+                        updateStatusBar(file.getName());
+                    } else if (e.getClickCount() == 2) {
+                        openFileOrDir(file.getName());
+                    }
                 }
             }
         });
 
         backBtn.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = history.get(--historyIndex);
@@ -172,7 +172,6 @@ public class FileExplorerPanel extends JPanel {
         });
 
         forwardBtn.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = history.get(++historyIndex);
@@ -242,7 +241,6 @@ public class FileExplorerPanel extends JPanel {
         return Optional.empty();
     }
 
-
     private void openFileOrDir(String fileName) {
         Optional<File> selectFile = getSelectFile(fileName);
         if (selectFile.isPresent()) {
@@ -254,5 +252,4 @@ public class FileExplorerPanel extends JPanel {
             }
         }
     }
-
 }
