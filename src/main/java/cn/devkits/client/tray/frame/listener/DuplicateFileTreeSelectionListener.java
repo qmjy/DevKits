@@ -5,6 +5,8 @@ import cn.devkits.client.util.DKFileUtil;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.FormLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,17 +133,25 @@ public class DuplicateFileTreeSelectionListener implements TreeSelectionListener
         Metadata metadata = DKFileUtil.getMetadataOfFile(new File(filePath));
         if (metadata != null) {
             for (Directory directory : metadata.getDirectories()) {
-                JPanel component = new JPanel();
-                component.setLayout(new FlowLayout(FlowLayout.LEFT));
-                propertiesTabbedPane.addTab(directory.getName(), component);
-                for (Tag tag : directory.getTags()) {
-                    component.add(new JLabel(tag.getTagName() + "：" + tag.getDescription()));
-                }
+                FormLayout layout = new FormLayout(
+                        "right:max(40dlu;p), 4dlu, 200dlu", ""); // add rows dynamically
+                DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+                builder.setDefaultDialogBorder();
+
                 if (directory.hasErrors()) {
                     for (String error : directory.getErrors()) {
                         LOGGER.error("ERROR: {0}", error);
                     }
+                } else {
+                    for (Tag tag : directory.getTags()) {
+                        JLabel keyLabel = new JLabel(tag.getTagName() + ":", JLabel.RIGHT);
+                        keyLabel.setFont(keyLabel.getFont().deriveFont(Font.BOLD));
+                        final JLabel valLabel = new JLabel(tag.getDescription(), JLabel.LEFT);
+                        builder.append(keyLabel, valLabel);
+                        builder.nextLine();
+                    }
                 }
+                propertiesTabbedPane.addTab(directory.getName(), new JScrollPane(builder.getPanel()));
             }
         }
     }

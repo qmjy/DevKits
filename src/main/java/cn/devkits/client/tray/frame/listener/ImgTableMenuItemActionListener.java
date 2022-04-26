@@ -126,7 +126,7 @@ public class ImgTableMenuItemActionListener implements ActionListener {
         Metadata metadata = DKFileUtil.getMetadataOfFile(file);
         for (Directory directory : metadata.getDirectories()) {
             builder.appendSeparator(directory.getName());
-            fileMetaListData.add("[" + directory + "]");
+            fileMetaListData.add("[" + directory.getName() + "]");
 
             Map<String, String> dataMap = new LinkedHashMap<>();
             for (Tag tag : directory.getTags()) {

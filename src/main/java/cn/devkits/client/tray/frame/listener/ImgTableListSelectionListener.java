@@ -1,6 +1,5 @@
 package cn.devkits.client.tray.frame.listener;
 
-import cn.devkits.client.tray.frame.DKAbstractFrame;
 import cn.devkits.client.tray.frame.ImgProcessingFrame;
 import cn.devkits.client.tray.model.FilesTableModel;
 
@@ -33,7 +32,7 @@ public class ImgTableListSelectionListener implements ListSelectionListener {
             Optional<File> fileAt = selectionModel.getFileAt(selectedRow);
             if (fileAt.isPresent()) {
                 File file = fileAt.get();
-                parent.updateStatusLine(file.getName());
+                parent.updateSelectFile(file);
             }
 
         }

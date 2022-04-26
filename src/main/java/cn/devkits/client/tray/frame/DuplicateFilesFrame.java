@@ -4,7 +4,9 @@
 
 package cn.devkits.client.tray.frame;
 
+import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
 import cn.devkits.client.tray.frame.listener.DuplicateFileTreeSelectionListener;
+import cn.devkits.client.tray.frame.listener.ImgTableMenuItemActionListener;
 import cn.devkits.client.tray.frame.listener.StartEndActionListener;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
@@ -69,7 +71,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
     public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 2 + 1;
 
     private JTree tree = null;
-    private JPopupMenu jtreeMenu = null;
+    private JPopupMenu jtreeMenu = DKSysUIUtil.createDKJPopupMenu();
     private JLabel statusLine = null;
     private JTextField searchPath;
     private JButton browseBtn;
@@ -255,8 +257,6 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
     }
 
     private void initPopupMenu() {
-        this.jtreeMenu = new JPopupMenu();
-
         JMenuItem copyPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_COPY_PATH"));
         copyPath2Clipboard.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
