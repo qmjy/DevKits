@@ -319,6 +319,11 @@ public abstract class DKSysUtil {
         return System.getProperty("user.home");
     }
 
+    public static String getUserHome() {
+        return getHomePath();
+    }
+
+
     /**
      * 获取用户目录：文件对象
      *

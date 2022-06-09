@@ -76,13 +76,15 @@ public class TrayItemWindowListener implements ActionListener {
             case IMG_PROCESSING:
                 frame = new ImgProcessingFrame();
                 break;
+            case WECHAT:
+                frame = new WechatAssistFrame();
+                break;
             case HOSTS:
                 openHostFile();
                 return;
             default:
                 break;
         }
-
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }

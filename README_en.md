@@ -15,20 +15,21 @@ For to be a free programmer.
 
 ## Feature
 
-- Server Port Detection
-- Large Duplicate Files Detection
+- Server port detection
+- Large duplicate files detection
 - QQ Screenshot
 - Custom logon background image of Windows 7
 - Multi File Explorer
 - QR Decode(Upload Image, Camera, WebSite)
-- Open Local Hosts File
+- Open local hosts file
 - XML & JSON Format
-- Computer System Information Detection
+- Computer system information detection
 - Todo Reminder(Tray Message or Email)
 - Camera
 - The system tray supports displaying CPU utilization in animation
 - WIFI management
 - Image Processing (Image processing and format conversion)
+- Decode the image file from Wechat message
 
 
 ## Runtime Version

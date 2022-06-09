@@ -381,6 +381,18 @@ public final class DKSysUIUtil {
         clip.setContents(tText, null);
     }
 
+    /**
+     * 获取微信用户数据目录
+     *
+     * @return 微信用户数据目录
+     */
+    public static String getWechatDataPath() {
+        if (DKSysUtil.isWindows()) {
+            return DKSysUtil.getHomePath() + File.separator + "Documents";
+        }
+        return "";
+    }
+
 
     /**
      * 获取当前操作系统中所有可视窗口

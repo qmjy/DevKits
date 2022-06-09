@@ -22,7 +22,7 @@ import cn.devkits.client.tray.listener.TrayItemWindowListener;
 import cn.devkits.client.util.DKSysUIUtil;
 import cn.devkits.client.util.DKSysUtil;
 
-import javax.swing.JDialog;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Container;
@@ -127,6 +127,8 @@ public class AppStarter implements Runnable {
 
     private PopupMenu createTrayMenu(TrayIcon trayIcon) {
         PopupMenu popupMenu = new PopupMenu();
+        // 辅助增强工具
+        popupMenu.add(initAssistMenu());
         // 网络工具
         popupMenu.add(initNetworkMenu());
         // 开发工具
@@ -160,6 +162,12 @@ public class AppStarter implements Runnable {
         popupMenu.add(quit);
 
         return popupMenu;
+    }
+
+    private Menu initAssistMenu() {
+        Menu assistMenu = new Menu(DKSysUIUtil.getLocale("ASSIST_TOOLS"));
+        MenuItemFactory.createWindowItem(assistMenu, MenuItemEnum.WECHAT);
+        return assistMenu;
     }
 
     private MenuItem initNetworkMenu() {
