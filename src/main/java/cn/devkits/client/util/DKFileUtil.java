@@ -10,6 +10,7 @@ import cn.devkits.client.DKConstants;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,10 +29,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 /**
  * 文件类工具类
@@ -45,6 +44,17 @@ public final class DKFileUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     /**
+     * 常见图片的字节码头
+     */
+    private static final Map<String, byte[]> STANDARD_OF_IMG_HEADER = ImmutableMap.<String, byte[]>builder()
+            .put(".jpg", new byte[]{(byte) 0xFF, (byte) 0xD8})
+            .put(".png", new byte[]{(byte) 0x89, (byte) 0x50})
+            .put(".gif", new byte[]{(byte) 0x47, (byte) 0x49})
+            .put(".bmp", new byte[]{(byte) 0x42, (byte) 0x4D})
+            .put(".webp", new byte[]{(byte) 0x52, (byte) 0x49})
+            .build();
+
+    /**
      * 获取文件系统
      *
      * @return FileSystemView
@@ -52,6 +62,134 @@ public final class DKFileUtil {
     public static FileSystemView getFileSysView() {
         return FileSystemView.getFileSystemView();
     }
+
+    /**
+     * 解码微信聊天图片文件
+     *
+     * @param file 待解析文件
+     * @return 解析后的文件内容
+     */
+    public static byte[] decodeImgOfWechat(File file) {
+        Optional<Map<String, String>> code = getCode(file);
+        if (code.isPresent()) {
+            Map.Entry<String, String> next = code.get().entrySet().iterator().next();
+            try {
+                byte[] tempBytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+                return xor(tempBytes, next.getValue());
+            } catch (IOException e) {
+                LOGGER.error("IOException: {0}", e.getMessage());
+            }
+        } else {
+            LOGGER.error("not jpg,png,gif,webp,bmp!");
+        }
+        return new byte[0];
+    }
+
+    /**
+     * 解码微信聊天图片文件到指定文件
+     *
+     * @param inFile    待解析的文件
+     * @param outputDir 解析后的输出目录
+     * @return 解析结果：是否成功
+     */
+    public static boolean decodeImgOfWechat(File inFile, String outputDir) {
+        Optional<Map<String, String>> code = getCode(inFile);
+        if (code.isPresent()) {
+            Map.Entry<String, String> next = code.get().entrySet().iterator().next();
+            String decodeFile = outputDir + File.separator + inFile.getName() + next.getKey();
+
+            InputStream in = null;
+            BufferedOutputStream out = null;
+            try {
+                in = new BufferedInputStream(new FileInputStream(inFile));
+                out = new BufferedOutputStream(new FileOutputStream(decodeFile, true));
+                byte[] tempBytes = new byte[in.available()];
+                for (int i = 0; (i = in.read(tempBytes)) != -1; ) {
+                    byte[] xorBytes = xor(tempBytes, next.getValue());
+                    out.write(xorBytes, 0, i);
+                }
+                return true;
+            } catch (FileNotFoundException e) {
+                LOGGER.error("File not found: {0}", e.getMessage());
+            } catch (IOException e) {
+                LOGGER.error("IOException: {0}", e.getMessage());
+            } finally {
+                IoUtils.closeQuietly(in, out);
+            }
+        } else {
+            LOGGER.error("not jpg,png,gif,webp,bmp!");
+        }
+        return false;
+    }
+
+    //异或算法： A ^ B ^ A = B
+    private static Optional<Map<String, String>> getCode(File f) {
+        byte[] readHeaders = loadFileHeader(f);
+
+        Iterator<Map.Entry<String, byte[]>> iterator = STANDARD_OF_IMG_HEADER.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, byte[]> next = iterator.next();
+            String extension = next.getKey();
+            byte[] fileHeaders = next.getValue();
+
+            int c = readHeaders[0] ^ fileHeaders[0];
+            int idfCode = readHeaders[1] ^ c;
+            if (idfCode == fileHeaders[1]) {
+                Map<String, String> map = new HashMap<String, String>() {{
+                    String code = Integer.toHexString(c);
+                    put(extension, code);
+                }};
+                return Optional.of(map);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static byte[] xor(byte[] tempBytes, String code) {
+        byte[] result = new byte[tempBytes.length];
+        for (int i = 0; i < tempBytes.length; i++) {
+            result[i] = (byte) (tempBytes[i] ^ hexToByte(code));
+        }
+        return result;
+    }
+
+    private static byte[] loadFileHeader(File f) {
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(f);
+            byte[] fileHeader = new byte[2];
+            fileInputStream.read(fileHeader);
+            fileInputStream.close();
+//            printHexString(fileHeader);
+            return fileHeader;
+        } catch (IOException e) {
+            LOGGER.error("File not found: {0}", e.getMessage());
+        } finally {
+            IoUtils.closeQuietly(fileInputStream);
+        }
+        return new byte[0];
+    }
+
+    /**
+     * Hex字符串转byte
+     *
+     * @param inHex 待转换的Hex字符串
+     * @return 转换后的byte
+     */
+    public static byte hexToByte(String inHex) {
+        return (byte) Integer.parseInt(inHex, 16);
+    }
+
+    //将指定byte数组以16进制的形式打印到控制台
+    public static void printHexString(byte[] b) {
+        for (int i = 0; i < b.length; i++) {
+            String hex = Integer.toHexString(b[i] & 0xFF);
+            if (hex.length() == 1) {
+                hex = '0' + hex;
+            }
+        }
+    }
+
 
     /**
      * 等比缩放以适配父容器尺寸。如果新对象尺寸小于父容器，则直接返回对象尺寸

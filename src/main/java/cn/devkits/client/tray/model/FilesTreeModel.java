@@ -37,8 +37,21 @@ public class FilesTreeModel extends DefaultMutableTreeNode {
         return node == null ? true : !(node.isDirectory());
     }
 
+    /**
+     * 获取当前节点代码的文件对象
+     *
+     * @return 当前节点代表的文件对象
+     */
     public File getNode() {
         return node;
+    }
+
+    public String getNodePath() {
+        return node.getAbsolutePath();
+    }
+
+    public String getNodeParentPath() {
+        return node.getParent();
     }
 
 

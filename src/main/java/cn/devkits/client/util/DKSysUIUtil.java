@@ -14,6 +14,7 @@ import com.sun.jna.platform.WindowUtils;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -80,6 +83,69 @@ public final class DKSysUIUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKSysUIUtil.class);
 
     /**
+     * 创建文件类右键默认菜单
+     *
+     * @param parent 父容器
+     * @param tree   菜单绑定的容器
+     * @return 创建后的基础菜单
+     */
+    public static JPopupMenu createDefaultFileBaseMenu(JFrame parent, JTree tree) {
+        DKJImagePopupMenu popupMenu = createDKJPopupMenu();
+
+        JMenuItem copyPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocale("POPUP_MENU_FILE_COPY_PATH"));
+        copyPath2Clipboard.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            DKSysUIUtil.setSystemClipboard(node.getUserObject().toString());
+        });
+        popupMenu.add(copyPath2Clipboard);
+        JMenuItem copyParentPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocale("POPUP_MENU_FILE_COPY_PARENT_PATH"));
+        copyParentPath2Clipboard.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            DKSysUIUtil.setSystemClipboard(new File(node.getUserObject().toString()).getParent());
+        });
+        popupMenu.add(copyParentPath2Clipboard);
+        popupMenu.addSeparator();
+        JMenuItem openFolder = new JMenuItem(DKSysUIUtil.getLocale("POPUP_MENU_FILE_SHOW_IN_EXPLORER"));
+        openFolder.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            DKFileUtil.openFolder(node.getUserObject().toString());
+        });
+        popupMenu.add(openFolder);
+        JMenuItem openFile = new JMenuItem(DKSysUIUtil.getLocale("POPUP_MENU_FILE_OPEN"));
+        openFile.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            DKFileUtil.openFile(node.getUserObject().toString());
+        });
+        popupMenu.add(openFile);
+        popupMenu.addSeparator();
+        JMenuItem delete = new JMenuItem(DKSysUIUtil.getLocale("POPUP_MENU_FILE_DELETE"));
+        delete.addActionListener(e -> {
+            int deleteOption = JOptionPane.showConfirmDialog(parent, DKSysUIUtil.getLocale(
+                    "POPUP_MENU_FILE_DEL_DIALOG_CONTENT"), DKSysUIUtil.getLocale(
+                    "POPUP_MENU_FILE_DEL_DIALOG_TITLE"), JOptionPane.YES_NO_OPTION);
+            if (deleteOption == JOptionPane.YES_OPTION) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                File file = new File(node.getUserObject().toString());
+                if (FileUtils.deleteQuietly(file)) {
+                    DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+                    model.reload();
+                }
+            }
+        });
+        popupMenu.add(delete);
+        return popupMenu;
+    }
+
+    /**
+     * 获取自定义央视JPopupMenu
+     *
+     * @return JPopupMenu
+     */
+    public static DKJImagePopupMenu createDKJPopupMenu() {
+        return new DKJImagePopupMenu("Devkits");
+    }
+
+    /**
      * 创建带边框的Panel
      *
      * @param color 边框颜色
@@ -125,15 +191,6 @@ public final class DKSysUIUtil {
         return jLabel;
     }
 
-
-    /**
-     * 获取自定义央视JPopupMenu
-     *
-     * @return JPopupMenu
-     */
-    public static DKJImagePopupMenu createDKJPopupMenu() {
-        return new DKJImagePopupMenu("Devkits");
-    }
 
     /**
      * 获取系统默认语言字符

@@ -4,10 +4,9 @@
 
 package cn.devkits.client.tray.frame;
 
-import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
 import cn.devkits.client.tray.frame.listener.DuplicateFileTreeSelectionListener;
-import cn.devkits.client.tray.frame.listener.ImgTableMenuItemActionListener;
 import cn.devkits.client.tray.frame.listener.StartEndActionListener;
+import cn.devkits.client.tray.listener.FilesMouseListener;
 import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
@@ -22,7 +21,6 @@ import javax.swing.*;
 import javax.swing.SpringLayout.Constraints;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -71,7 +69,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
     public static final int FIXED_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 2 + 1;
 
     private JTree tree = null;
-    private JPopupMenu jtreeMenu = DKSysUIUtil.createDKJPopupMenu();
+    private JPopupMenu jtreeMenu;
     private JLabel statusLine = null;
     private JTextField searchPath;
     private JButton browseBtn;
@@ -108,7 +106,9 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         treeNode = new DefaultMutableTreeNode(DKSysUIUtil.getLocale("DUP_TREE_NODE_ROOT"));
         treeModel = new DefaultTreeModel(treeNode);
         tree = new JTree(treeModel);
-        initPopupMenu();
+
+        jtreeMenu = DKSysUIUtil.createDefaultFileBaseMenu(this, tree);
+
 
         // ToolTipManager.sharedInstance().registerComponent(tree);
         // TreeCellRenderer renderer = new LargeDuplicateFilesTreeCellRenderer();
@@ -256,61 +256,6 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         return northRootPane;
     }
 
-    private void initPopupMenu() {
-        JMenuItem copyPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_COPY_PATH"));
-        copyPath2Clipboard.addActionListener(e -> {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            DKSysUIUtil.setSystemClipboard(node.getUserObject().toString());
-        });
-        jtreeMenu.add(copyPath2Clipboard);
-        JMenuItem copyParentPath2Clipboard = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_COPY_PARENT_PATH"));
-        copyParentPath2Clipboard.addActionListener(e -> {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            DKSysUIUtil.setSystemClipboard(new File(node.getUserObject().toString()).getParent());
-        });
-        jtreeMenu.add(copyParentPath2Clipboard);
-        jtreeMenu.addSeparator();
-        JMenuItem openFolder = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_SHOW_IN_EXPLORER"));
-        openFolder.addActionListener(e -> {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            DKFileUtil.openFolder(node.getUserObject().toString());
-        });
-        jtreeMenu.add(openFolder);
-        JMenuItem openFile = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_OPEN"));
-        openFile.addActionListener(e -> {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            DKFileUtil.openFile(node.getUserObject().toString());
-        });
-        jtreeMenu.add(openFile);
-        jtreeMenu.addSeparator();
-        JMenuItem delete = new JMenuItem(DKSysUIUtil.getLocale("DUP_FILE_MENU_DELETE"));
-        delete.addActionListener(e -> {
-            int deleteOption = JOptionPane.showConfirmDialog(this, DKSysUIUtil.getLocale(
-                    "DUP_FILE_MENU_DEL_DIALOG_CONTENT"), DKSysUIUtil.getLocale(
-                    "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.YES_NO_OPTION);
-            if (deleteOption == JOptionPane.YES_OPTION) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-                if (node.getLevel() == 2) {//第三层叶子节点
-                    File file = new File(node.getUserObject().toString());
-                    boolean b = FileUtils.deleteQuietly(file);
-                    if (b) {
-                        //TODO 文件删除收树刷新
-                    } else {
-                        JOptionPane.showMessageDialog(this, DKSysUIUtil.getLocale(
-                                "DUP_FILE_MENU_DEL_FAILED_CONTENT"), DKSysUIUtil.getLocale(
-                                "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.ERROR_MESSAGE);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, DKSysUIUtil.getLocale(
-                            "DUP_FILE_MENU_DEL_DIALOG_WARNING_CONTENT"), DKSysUIUtil.getLocale(
-                            "DUP_FILE_MENU_DEL_DIALOG_TITLE"), JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
-        jtreeMenu.add(delete);
-    }
-
-
     @Override
     protected void initListener() {
         // 窗口关闭时释放线程池资源
@@ -351,45 +296,31 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(new DuplicateFileTreeSelectionListener(rightPane, rightPaneLayout, md5FilesMap, RIGHT_PANE_NAMES));
 
-        // 叶子节点双击打开文件所在目录
         tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    showPopupMenu(e);
-                    return;
-                }
-                // 鼠标左键
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    JTree tree = (JTree) e.getSource();
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-                    if (e.getClickCount() == 2 && node.getLevel() == 2) {
-                        File file = new File(node.getUserObject().toString());
-                        DKFileUtil.openFile(file.getParentFile());
+                if (needShow()) {
+                    if (e.isPopupTrigger()) {
+                        FilesMouseListener.showPopupMenu(e, tree, jtreeMenu);
                     }
                 }
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    showPopupMenu(e);
-                }
-            }
-
-            @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    showPopupMenu(e);
+                if (needShow()) {
+                    if (e.isPopupTrigger()) {
+                        FilesMouseListener.showPopupMenu(e, tree, jtreeMenu);
+                    }
                 }
             }
 
-            private void showPopupMenu(MouseEvent e) {
-                TreePath tp = tree.getClosestPathForLocation(e.getX(), e.getY());
-                if (tp != null) {
-                    tree.setSelectionPath(tp);
+            private boolean needShow() {
+                if (tree.getLastSelectedPathComponent() == null) {
+                    return false;
                 }
-                jtreeMenu.show(e.getComponent(), e.getX(), e.getY());
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                return node.getLevel() == 2;
             }
         });
     }
