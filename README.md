@@ -60,6 +60,12 @@ mvn clean package assembly:single
 
 Devkits 采用 [MIT](https://choosealicense.com/licenses/mit/) 和 [Anti-996 License](https://github.com/996icu/996.ICU/blob/master/LICENSE_CN)开源协议。
 
+
+## 项目关注度
+
+[![Stargazers over time](https://starchart.cc/qmjy/DevKits.svg)](https://starchart.cc/qmjy/DevKits)
+
+
 ## 感谢支持
 
 本项目采用Jetbrains IDEA开发，感谢Jetbrains对开源项目的免费支持，谢谢。

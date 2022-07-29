@@ -61,6 +61,11 @@ Any problem or suggesstion, [contact to me]((mailto:admin@devkits.cn)) or post t
 
 Devkits is released under the [MIT](https://choosealicense.com/licenses/mit/) and [Anti-996 License](https://github.com/996icu/996.ICU/blob/master/LICENSE_CN)
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/qmjy/DevKits.svg)](https://starchart.cc/qmjy/DevKits)
+
+
 ## Thanks
 
 This project is developed by JetBrains idea. Thank JetBrains for its free support for open source projects. 
