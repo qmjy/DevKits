@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.google.common.eventbus.EventBus;
-import cn.devkits.client.asyn.AppStarter;
+import cn.devkits.client.async.AppStarter;
 import cn.devkits.client.util.DKSysUIUtil;
 
 import javax.imageio.ImageIO;
@@ -66,8 +66,8 @@ public class App {
 
     /**
      * more look and feel:<br>
-     * 1.http://www.javasoft.de/synthetica/screenshots/plain/ <br>
-     * 2.https://www.cnblogs.com/clarino/p/8668160.html
+     * 1. http://www.javasoft.de/synthetica/screenshots/plain/ <br>
+     * 2. https://www.cnblogs.com/clarino/p/8668160.html
      */
     private static void initLookAndFeel() {
         // UIManager.getSystemLookAndFeelClassName() get system defualt;

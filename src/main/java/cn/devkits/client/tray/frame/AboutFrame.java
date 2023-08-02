@@ -129,7 +129,9 @@ public class AboutFrame extends DKAbstractFrame {
                     URI uri = e.getURL().toURI();
                     boolean browseURL = DKSysUIUtil.browseURL(uri);
                     if (!browseURL) {
-                        JOptionPane.showMessageDialog(this, "Open URL with system browser failed: " + uri, "Browse URL Failed", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this,
+                                "Open URL with system browser failed: " + uri, "Browse URL Failed",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (URISyntaxException e1) {
                     LOGGER.error("URL exception: " + e1.getMessage());

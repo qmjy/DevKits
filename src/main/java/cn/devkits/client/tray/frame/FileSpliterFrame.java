@@ -8,9 +8,9 @@ import cn.devkits.client.component.InsetPanel;
 import cn.devkits.client.tray.frame.assist.BrowserActionListener;
 import cn.devkits.client.tray.frame.listener.FileSplitSegmentsParamCheckListener;
 import cn.devkits.client.tray.model.FileSpliterModel;
-import cn.devkits.client.tray.pattern.ExcelFileSpliterStrategyImpl;
+import cn.devkits.client.tray.pattern.ExcelFileSplitterStrategyImpl;
 import cn.devkits.client.tray.pattern.FileSpliterStrategy;
-import cn.devkits.client.tray.pattern.TextFileSpliterStrategyImpl;
+import cn.devkits.client.tray.pattern.TextFileSplitterStrategyImpl;
 import cn.devkits.client.util.DKConfigUtil;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
@@ -426,10 +426,10 @@ class ApplyActionListener implements ActionListener {
         FileSpliterStrategy strategy = null;
         switch (DKSysUtil.arraysSearch(frame.getFileTypeItems(), frame.getCurrentFileType())) {
             case 0:
-                strategy = new TextFileSpliterStrategyImpl(frame.getTextFileSpliterParamTypes(), current, param, splitModel);
+                strategy = new TextFileSplitterStrategyImpl(frame.getTextFileSpliterParamTypes(), current, param, splitModel);
                 break;
             case 1:
-                strategy = new ExcelFileSpliterStrategyImpl();
+                strategy = new ExcelFileSplitterStrategyImpl();
                 break;
             default:
                 break;

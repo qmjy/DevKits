@@ -24,7 +24,5 @@ public interface FileSpliterStrategy {
      * 分割为固定大小段的文件
      * @param size 固定大小,单位KB
      */
-    void segmentSplitByFixedSize(float size);
-
-
+    void segmentSplitByFixedSize(long size);
 }

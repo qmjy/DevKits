@@ -38,4 +38,13 @@ public class DKJavaMailSenderImpl extends JavaMailSenderImpl {
     public void setFrom(String from) {
         this.from = from;
     }
+
+    public static class WindowsService{
+    }
+
+    public static class MacService  {
+    }
+
+    public static class LinuxService {
+    }
 }

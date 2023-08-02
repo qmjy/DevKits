@@ -30,7 +30,7 @@ import java.io.File;
  */
 @Configuration
 @PropertySource("classpath:application.properties")
-@ComponentScan({"cn.devkits.client", "cn.devkits.client.asyn", "cn.devkits.client.beans"})
+@ComponentScan({"cn.devkits.client", "cn.devkits.client.async", "cn.devkits.client.config", "cn.devkits.client.beans"})
 @MapperScan("cn.devkits.client.mapper")
 public class AppSpringContext {
 
