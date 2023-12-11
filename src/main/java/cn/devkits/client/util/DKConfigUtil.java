@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -20,12 +23,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author fengshao liu
  * @version 1.0.0
- * @time 2019年9月6日 下午10:29:28
+ * @datetime 2019年9月6日 下午10:29:28
  */
 public class DKConfigUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKConfigUtil.class);
 
-    private static DKConfigUtil INSTANCE = new DKConfigUtil();
+    private static final DKConfigUtil INSTANCE = new DKConfigUtil();
     private Model model;
 
     private DKConfigUtil() {
@@ -35,7 +38,7 @@ public class DKConfigUtil {
     private void loadVersionProperties(boolean isDevelopMode) {
         MavenXpp3Reader reader = new MavenXpp3Reader();
         try {
-            InputStream input = isDevelopMode ? new FileInputStream(getDevelopModelFilePath()) : DKConfigUtil.class.getResourceAsStream("/META-INF/maven/cn.devkits.client/devkits/pom.xml");
+            InputStream input = isDevelopMode ? Files.newInputStream(Paths.get(getDevelopModelFilePath())) : DKConfigUtil.class.getResourceAsStream("/META-INF/maven/cn.devkits.client/devkits/pom.xml");
             model = reader.read(input);
         } catch (IOException | XmlPullParserException e) {
             LOGGER.error("Load pom.xml file failed: " + e.getMessage());
@@ -43,7 +46,7 @@ public class DKConfigUtil {
     }
 
     private String getDevelopModelFilePath() {
-        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String path = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
         if (path.startsWith("/")) {
             path = path.substring(1);
         }

@@ -8,25 +8,19 @@ import cn.devkits.client.App;
 import cn.devkits.client.DKConstants;
 import cn.devkits.client.service.impl.TodoTaskServiceImpl;
 import cn.devkits.client.tray.model.TodoTaskModel;
-import cn.devkits.client.util.DKDateTimeUtil;
 import cn.devkits.client.util.DKSysUIUtil;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.time.ExecutionTime;
+import com.cronutils.parser.CronParser;
 
-import org.springframework.scheduling.support.CronSequenceGenerator;
-
-import java.util.Date;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
+import java.awt.*;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -107,9 +101,12 @@ public class TodoListFrame extends DKAbstractFrame {
     }
 
     private String getNextTime(String corn) {
-        CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(corn);
-        Date date = cronSequenceGenerator.next(new Date());
-        return DKDateTimeUtil.getDatetimeStr(date, DKDateTimeUtil.DATE_TIME_PATTERN_DEFAULT);
+
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J);
+        CronParser parser = new CronParser(cronDefinition);
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(corn));
+        Optional<ZonedDateTime> zonedDateTime = executionTime.nextExecution(ZonedDateTime.now());
+        return zonedDateTime.toString();
     }
 
     private Component createReminderPane(JTable jTable, String[] head, DKConstants.TODO_REMINDER reminder) {

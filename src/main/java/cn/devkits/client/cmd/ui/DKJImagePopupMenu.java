@@ -21,6 +21,9 @@ public class DKJImagePopupMenu extends JPopupMenu {
     }
 
     private ImageIcon createImage(String text) {
+
+
+
         FontMetrics fm = Toolkit.getDefaultToolkit().getFontMetrics(font);
         int height = fm.stringWidth(text) + 20;
         BufferedImage bi = new BufferedImage(30, height, BufferedImage.TYPE_INT_ARGB);

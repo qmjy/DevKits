@@ -4,6 +4,14 @@
 
 package cn.devkits.client.service.impl;
 
+import cn.devkits.client.mapper.EmailMapper;
+import cn.devkits.client.service.EmailService;
+import cn.devkits.client.tray.model.EmailCfgModel;
+import cn.devkits.client.util.DKStringUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import com.drew.lang.annotations.NotNull;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +19,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import cn.devkits.client.mapper.EmailMapper;
-import cn.devkits.client.service.EmailService;
-import cn.devkits.client.tray.model.EmailCfgModel;
-import cn.devkits.client.util.DKStringUtil;
-import cn.devkits.client.util.DKSysUIUtil;
-
-import com.sun.istack.internal.NotNull;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;

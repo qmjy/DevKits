@@ -49,7 +49,7 @@ import oshi.util.FormatUtil;
  *
  * @author shaofeng liu
  * @version 1.0.0
- * @time 2019年10月20日 下午9:37:03
+ * @datetime 2019年10月20日 下午9:37:03
  */
 public abstract class DKSysUtil {
 

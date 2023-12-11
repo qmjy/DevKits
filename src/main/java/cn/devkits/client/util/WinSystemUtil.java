@@ -16,7 +16,7 @@ import java.util.Map;
  * Windows相关实现
  *
  * @author Shaofeng Liu
- * @Date 2022/03/10
+ * @datetime 2022/03/10
  */
 public class WinSystemUtil extends DKSysUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(WinSystemUtil.class);

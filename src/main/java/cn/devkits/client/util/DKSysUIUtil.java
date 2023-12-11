@@ -24,6 +24,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.swing.plaf.synth.SynthLookAndFeel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -278,15 +280,27 @@ public final class DKSysUIUtil {
         jDialog.setBounds(getCenter(width, height));
     }
 
-    public static void setLookAndFeel(String lookAndFeelName) {
+    public static void setLookAndFeel(String lookAndFeel) {
         try {
-            UIManager.setLookAndFeel(lookAndFeelName);
+            UIManager.setLookAndFeel(lookAndFeel);
             Window[] windows = Frame.getWindows();
             for (Window win : windows) {
                 SwingUtilities.updateComponentTreeUI(win);
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
-            LOGGER.error("Init Look And Feel error:" + e1.getMessage());
+        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException e) {
+            LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
+        } catch (IllegalAccessException e) {
+            LOGGER.error("IllegalAccessException:" + e.getMessage());
+        }
+    }
+
+    public static void setLookAndFeel(LookAndFeel lookAndFeel) {
+        try {
+            UIManager.setLookAndFeel(lookAndFeel);
+            Window[] windows = Frame.getWindows();
+            for (Window win : windows) {
+                SwingUtilities.updateComponentTreeUI(win);
+            }
         } catch (UnsupportedLookAndFeelException e) {
             LOGGER.error("UnsupportedLookAndFeelException:" + e.getMessage());
         }

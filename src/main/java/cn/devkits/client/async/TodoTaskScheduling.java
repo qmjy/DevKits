@@ -26,6 +26,7 @@ import cn.devkits.client.util.DKDateTimeUtil;
 
 import javax.swing.JOptionPane;
 import java.awt.TrayIcon;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -131,8 +132,8 @@ class TodoTrigger implements Trigger {
     }
 
     @Override
-    public Date nextExecutionTime(TriggerContext triggerContext) {
+    public Instant nextExecution(TriggerContext triggerContext) {
         CronTrigger cronTrigger = new CronTrigger(expression);
-        return cronTrigger.nextExecutionTime(triggerContext);
+        return cronTrigger.nextExecution(triggerContext);
     }
 }

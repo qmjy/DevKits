@@ -18,7 +18,7 @@ import java.awt.event.WindowListener;
 
 /**
  * <p>
- * refit from: https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/WebcamViewerExample.java
+ * refit from: <a href="https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/WebcamViewerExample.java">WebcamViewerExample.java</a>
  * </p>
  *
  * @author Shaofeng Liu
@@ -190,6 +190,5 @@ public class CameraFrame extends JFrame implements WebcamListener, WindowListene
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         System.err.println(String.format("Exception in thread %s", t.getName()));
-        e.printStackTrace();
     }
 }

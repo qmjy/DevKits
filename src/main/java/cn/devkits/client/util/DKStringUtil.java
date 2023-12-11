@@ -4,13 +4,9 @@
 
 package cn.devkits.client.util;
 
+import com.drew.lang.annotations.NotNull;
 import com.google.common.net.InetAddresses;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-
+import com.google.gson.*;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -19,19 +15,16 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 字符串格式化工具
  *
  * @author shaofeng liu
  * @version 1.0.0
- * @time 2019年11月25日 下午11:18:58
+ * @datetime 2019年11月25日 下午11:18:58
  */
 public class DKStringUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DKStringUtil.class);
@@ -53,7 +46,7 @@ public class DKStringUtil {
      */
     public static int countSubStr(@NotNull String full, String subStr) {
         int count = 0;
-        while (full.indexOf(subStr) >= 0) {
+        while (full.contains(subStr)) {
             full = full.substring(full.indexOf(subStr) + subStr.length());
             count++;
         }
@@ -119,13 +112,10 @@ public class DKStringUtil {
      */
     public static boolean isPositiveFloat(String input) {
         try {
-            Float valueOf2 = Float.valueOf(input);
-            if (valueOf2 > 0) {
-                return true;
-            }
-            return false;
+            float valueOf2 = Float.parseFloat(input);
+            return valueOf2 > 0;
         } catch (NumberFormatException e) {
-            LOGGER.debug("Fomat float value failed: {}", input);
+            LOGGER.debug("Format float value failed: {}", input);
         }
         return false;
     }
@@ -140,12 +130,10 @@ public class DKStringUtil {
         if (uglyJSONString == null || uglyJSONString.isEmpty()) {
             throw new IllegalArgumentException("The input json string cannot be set to null or empty.");
         }
-
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonParser jp = new JsonParser();
 
         try {
-            JsonElement je = jp.parse(uglyJSONString);
+            JsonElement je = JsonParser.parseString(uglyJSONString);
             return gson.toJson(je);
         } catch (JsonSyntaxException e) {
             LOGGER.error("Parse Json Failed: {}", uglyJSONString);

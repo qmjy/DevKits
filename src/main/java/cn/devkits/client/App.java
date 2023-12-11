@@ -14,10 +14,12 @@ import cn.devkits.client.util.DKSysUIUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.AWTException;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.io.IOException;
+import java.util.Objects;
 
 
 /**
@@ -30,7 +32,7 @@ import java.io.IOException;
 public class App {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
     private static AnnotationConfigApplicationContext context;
-    private static EventBus eventBus = new EventBus("DevkitsEvents");
+    private static final EventBus eventBus = new EventBus("DevkitsEvents");
     private static TrayIcon trayIcon;
 
     public static void main(String[] args) {
@@ -47,7 +49,7 @@ public class App {
 
     private static TrayIcon createTrayIcon() {
         try {
-            TrayIcon trayIcon = new TrayIcon(ImageIO.read(App.class.getClassLoader().getResource("logo.png")));
+            TrayIcon trayIcon = new TrayIcon(ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("logo.png"))));
             trayIcon.setImageAutoSize(true);
             // 添加工具提示文本
             trayIcon.setToolTip("开发工具包" + System.lineSeparator() + "官网：www.devkits.cn");
@@ -70,9 +72,8 @@ public class App {
      * 2. https://www.cnblogs.com/clarino/p/8668160.html
      */
     private static void initLookAndFeel() {
-        // UIManager.getSystemLookAndFeelClassName() get system defualt;
-        String lookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-        DKSysUIUtil.setLookAndFeel(lookAndFeel);
+        // UIManager.getSystemLookAndFeelClassName() get system default;
+        DKSysUIUtil.setLookAndFeel(new NimbusLookAndFeel());
     }
 
     public static AnnotationConfigApplicationContext getContext() {

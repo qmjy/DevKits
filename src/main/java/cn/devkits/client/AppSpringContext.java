@@ -26,7 +26,7 @@ import java.io.File;
  *
  * @author shaofeng liu
  * @version 1.0.0
- * @time 2019年11月19日 下午9:50:59
+ * @datetime 2019年11月19日 下午9:50:59
  */
 @Configuration
 @PropertySource("classpath:application.properties")
