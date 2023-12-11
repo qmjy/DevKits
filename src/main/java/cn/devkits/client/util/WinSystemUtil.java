@@ -34,7 +34,7 @@ public class WinSystemUtil extends DKSysUtil {
         //跳过前面4行无用数据
         for (int i = 4; i < wifiDetails.size(); i++) {
             String line = wifiDetails.get(i);
-            if (line.trim().length() == 0) {
+            if (line.trim().isEmpty()) {
                 stringMapMap.put(key, values);
                 values = new HashMap<>();
                 continue;
@@ -84,9 +84,12 @@ public class WinSystemUtil extends DKSysUtil {
         List<String> wifiDetails = executeWinCmd("netsh wlan show profile");
         for (String wifiDetail : wifiDetails) {
             if (wifiDetail.indexOf(":") > 0) {
-                String wifiName = wifiDetail.split(":")[1];
-                if (wifiName.trim().length() > 0) {
-                    objects.add(wifiName.trim());
+                String[] split = wifiDetail.split(":");
+                if (split.length == 2) {
+                    String wifiName = split[1];
+                    if (!wifiName.trim().isEmpty()) {
+                        objects.add(wifiName.trim());
+                    }
                 }
             }
         }
@@ -97,7 +100,7 @@ public class WinSystemUtil extends DKSysUtil {
      * 获取指定wifi的密码
      *
      * @param wifiName WIFI name
-     * @return the password of the input wifi
+     * @return the password of the input Wi-Fi
      */
     @Override
     public String getPwdOfSsid(String wifiName) {
@@ -127,12 +130,12 @@ public class WinSystemUtil extends DKSysUtil {
             builder.redirectErrorStream(true);
             Process p = builder.start();
             br = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName("GBK")));
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
                 dataList.add(line);
             }
         } catch (IOException e) {
-            LOGGER.info("Can't execute runtime command: {0}！", cmd);
+            LOGGER.info("Can't execute runtime command: {}！", cmd);
         } finally {
             if (br != null) {
                 IoUtils.closeQuietly(br);

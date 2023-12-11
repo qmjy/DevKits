@@ -3,6 +3,7 @@ package cn.devkits.client.util;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.Objects;
 
 import com.drew.metadata.Metadata;
 import org.junit.Test;
@@ -11,7 +12,7 @@ public class DKFileUtilTest {
 
     @Test
     public void testGetMetadataOfFile() {
-        String file = this.getClass().getResource("/logo.png").getFile().toString();
+        String file = Objects.requireNonNull(this.getClass().getResource("/logo.png")).getFile();
         Metadata metadata = DKFileUtil.getMetadataOfFile(new File(file));
         System.out.println();
     }
@@ -28,7 +29,7 @@ public class DKFileUtilTest {
 
     @Test
     public void testIsImg() {
-        String file = this.getClass().getResource("/logo.png").getFile().toString();
+        String file = Objects.requireNonNull(this.getClass().getResource("/logo.png")).getFile();
         assertTrue(DKFileUtil.isRealImg(new File(file)));
     }
 
@@ -41,6 +42,4 @@ public class DKFileUtilTest {
             assertEquals("1 KiB", DKFileUtil.formatBytes(1024));
         }
     }
-
-
 }
