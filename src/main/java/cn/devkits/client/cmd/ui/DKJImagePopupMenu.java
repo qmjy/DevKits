@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * https://blog.csdn.net/huiyi789/article/details/84125323
  */
 public class DKJImagePopupMenu extends JPopupMenu {
-    private Font font = new Font("Dialog", Font.BOLD, 13);
+    private final Font font = new Font("Dialog", Font.BOLD, 13);
     private ImageIcon imageIcon = null;
 
     public DKJImagePopupMenu(ImageIcon imageIcon) {
