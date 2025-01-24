@@ -5,15 +5,11 @@
 package cn.devkits.client.util;
 
 import cn.devkits.client.App;
-
 import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
-
 import com.sun.jna.platform.DesktopWindow;
 import com.sun.jna.platform.WindowUtils;
-
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +20,6 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import javax.swing.plaf.synth.SynthLookAndFeel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -232,7 +226,7 @@ public final class DKSysUIUtil {
      * @return 字典查询结果，并且会追加一个冒号
      */
     public static String getLocaleWithColon(String code) {
-        return getLocale(code) + ":";
+        return getLocale(code) + ": ";
     }
 
     /**
@@ -248,12 +242,12 @@ public final class DKSysUIUtil {
     /**
      * 获取系统默认语言字符
      *
-     * @param code    字典查询的code
-     * @param defualt 语言字典不存在时的，则会显示此默认值
+     * @param code       字典查询的code
+     * @param defaultVal 语言字典不存在时的，则会显示此默认值
      * @return 字典查询结果
      */
-    public static String getLocale(String code, String defualt) {
-        return App.getContext().getMessage(code, null, defualt, Locale.getDefault());
+    public static String getLocale(String code, String defaultVal) {
+        return App.getContext().getMessage(code, null, defaultVal, Locale.getDefault());
     }
 
     /**
@@ -265,7 +259,7 @@ public final class DKSysUIUtil {
      */
     public static Rectangle getCenter(int width, int height) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        return new Rectangle((int) ((screenSize.width - width) / 2), (int) ((screenSize.height - height) / 2), (int) width, (int) height);
+        return new Rectangle((screenSize.width - width) / 2, (screenSize.height - height) / 2, width, height);
     }
 
 
@@ -329,14 +323,14 @@ public final class DKSysUIUtil {
     public static void fitTableColumns(JTable myTable) {
         JTableHeader header = myTable.getTableHeader();
         int rowCount = myTable.getRowCount();
-        Enumeration columns = myTable.getColumnModel().getColumns();
+        Enumeration<TableColumn> columns = myTable.getColumnModel().getColumns();
         while (columns.hasMoreElements()) {
-            TableColumn column = (TableColumn) columns.nextElement();
+            TableColumn column = columns.nextElement();
             int col = header.getColumnModel().getColumnIndex(column.getIdentifier());
             int width = (int) myTable.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(myTable, column.getIdentifier(), false, false, -1, col).getPreferredSize().getWidth();
             for (int row = 0; row < rowCount; row++) {
-                int preferedWidth = (int) myTable.getCellRenderer(row, col).getTableCellRendererComponent(myTable, myTable.getValueAt(row, col), false, false, row, col).getPreferredSize().getWidth();
-                width = Math.max(width, preferedWidth);
+                int preWidth = (int) myTable.getCellRenderer(row, col).getTableCellRendererComponent(myTable, myTable.getValueAt(row, col), false, false, row, col).getPreferredSize().getWidth();
+                width = Math.max(width, preWidth);
             }
             header.setResizingColumn(column); // 此行很重要
             column.setWidth(width + myTable.getIntercellSpacing().width);
@@ -345,7 +339,7 @@ public final class DKSysUIUtil {
 
     /**
      * 更新jtable表格在JScrollPane占用高度过高的问题<br>
-     * https://coderanch.com/t/336316/java/JScrollPane-packed-content
+     * <a href="https://coderanch.com/t/336316/java/JScrollPane-packed-content">参考</a>
      *
      * @param table 待更新表格
      * @return 表格的实际宽高
@@ -369,8 +363,8 @@ public final class DKSysUIUtil {
     public static void expandAll(JTree tree, TreePath parent, boolean expand) {
         TreeNode node = (TreeNode) parent.getLastPathComponent();
         if (node.getChildCount() >= 0) {
-            for (Enumeration e = node.children(); e.hasMoreElements(); ) {
-                TreeNode n = (TreeNode) e.nextElement();
+            for (Enumeration<? extends TreeNode> e = node.children(); e.hasMoreElements(); ) {
+                TreeNode n = e.nextElement();
                 TreePath path = parent.pathByAddingChild(n);
                 expandAll(tree, path, expand);
             }
@@ -394,10 +388,25 @@ public final class DKSysUIUtil {
         if (i >= components.length - 1 || j >= components[0].length - 1) {
             return true;
         }
-        if (components[i][j + 1] == null) {
-            return true;
+        return components[i][j + 1] == null;
+    }
+
+    /**
+     * 如果是双屏或者宽屏则优化尺寸
+     *
+     * @return 友好的屏幕尺寸
+     */
+    public static Dimension getScreenFriendlySize() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        if (screenSize.getWidth() / screenSize.getHeight() < (16.0 / 9)) {
+            return new Dimension((int) (screenSize.getWidth() * 0.5), (int) (screenSize.getHeight() * 0.6));
+        } else if (Math.abs(screenSize.getWidth() / screenSize.getHeight() - (21.0 / 9)) < 0.01) {
+            return new Dimension((int) (screenSize.getWidth() * 0.3), (int) (screenSize.getHeight() * 0.6));
+        } else if (Math.abs(screenSize.getWidth() / screenSize.getHeight() - (32.0 / 9)) < 0.01) {
+            return new Dimension((int) (screenSize.getWidth() * 0.25), (int) (screenSize.getHeight() * 0.6));
+        } else {
+            return screenSize;
         }
-        return false;
     }
 
 
@@ -434,8 +443,8 @@ public final class DKSysUIUtil {
 
         // Set the container's bottom edge to the bottom edge
         // of its tallest component + padding.
-        for (int i = 0; i < components.length; i++) {
-            SpringLayout.Constraints cons = layout.getConstraints(components[i]);
+        for (Component component : components) {
+            SpringLayout.Constraints cons = layout.getConstraints(component);
             maxHeightSpring = Spring.max(maxHeightSpring, cons.getConstraint(SpringLayout.SOUTH));
         }
         pCons.setConstraint(SpringLayout.SOUTH, Spring.sum(Spring.constant(pad), maxHeightSpring));
@@ -489,14 +498,14 @@ public final class DKSysUIUtil {
     }
 
     private static String createFileNameFilterDescriptionFromExtensions(String description, String[] extensions) {
-        String fullDescription = (description == null) ? "(" : description + " (";
+        StringBuilder fullDescription = new StringBuilder((description == null) ? "(" : description + " (");
         // build the description from the extension list
-        fullDescription += "." + extensions[0];
+        fullDescription.append(".").append(extensions[0]);
         for (int i = 1; i < extensions.length; i++) {
-            fullDescription += ", .";
-            fullDescription += extensions[i];
+            fullDescription.append(", .");
+            fullDescription.append(extensions[i]);
         }
-        fullDescription += ")";
-        return fullDescription;
+        fullDescription.append(")");
+        return fullDescription.toString();
     }
 }

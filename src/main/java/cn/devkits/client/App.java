@@ -4,20 +4,17 @@
 
 package cn.devkits.client;
 
+import cn.devkits.client.async.AppStarter;
+import cn.devkits.client.util.DKSysUIUtil;
+import com.google.common.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.google.common.eventbus.EventBus;
-import cn.devkits.client.async.AppStarter;
-import cn.devkits.client.util.DKSysUIUtil;
-
 import javax.imageio.ImageIO;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import java.awt.AWTException;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 

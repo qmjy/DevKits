@@ -6,7 +6,7 @@
 
     <groupId>cn.devkits.client</groupId>
     <artifactId>devkits</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.2</version>
     <name>DevKits</name>
     <url>https://www.devkits.cn</url>
 
@@ -45,20 +45,32 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>6.1.1</version>
+            <version>6.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>6.1.1</version>
+            <version>6.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.5.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>3.5.4</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
-            <version>3.5.2</version>
+            <version>3.5.3</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
@@ -230,7 +242,7 @@
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.5</version>
         </dependency>
 
         <dependency>

@@ -9,19 +9,18 @@ import cn.devkits.client.util.DKSysUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serial;
 
 /**
  * 基础Frame,为所有Frame提供基础公共能力
  *
  * @author Shaofeng Liu
  */
-public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
+public abstract class DKAbstractFrame extends JFrame {
+    @Serial
     private static final long serialVersionUID = 6346125541327870409L;
 
     private static final int DEFAULT_LOAD_FACTOR = 1;
-
-    protected int currentWidth = WINDOW_SIZE_WIDTH;
-    protected int currentHeight = WINDOW_SIZE_HEIGHT;
 
     protected DKSysUtil currentSystemUtil = DKSysUtil.getCurrentSystemUtil();
 
@@ -57,24 +56,8 @@ public abstract class DKAbstractFrame extends JFrame implements DKFrameable {
      */
     protected DKAbstractFrame(String title, float widthLoadFactor, float heightLoadFactor) {
         super(title);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        if (widthLoadFactor > 0 && heightLoadFactor > 0) {
-
-            if (currentWidth * widthLoadFactor > screenSize.getWidth()) {
-                currentWidth = (int) screenSize.getWidth();
-            } else {
-                currentWidth *= widthLoadFactor;
-            }
-
-            if (currentHeight * heightLoadFactor > screenSize.getHeight()) {
-                currentHeight = (int) screenSize.getHeight();
-            } else {
-                currentHeight *= heightLoadFactor;
-            }
-        }
-
-        this.setBounds(DKSysUIUtil.getCenter(currentWidth, currentHeight));
+        Dimension screenFriendlySize = DKSysUIUtil.getScreenFriendlySize();
+        this.setBounds(DKSysUIUtil.getCenter((int) (screenFriendlySize.getWidth() * widthLoadFactor), (int) (screenFriendlySize.getHeight() * heightLoadFactor)));
     }
 
     /**

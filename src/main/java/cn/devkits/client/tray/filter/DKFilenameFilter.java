@@ -14,7 +14,7 @@ import cn.devkits.client.util.DKSysUIUtil;
 
 public class DKFilenameFilter implements FilenameFilter {
 
-    private JComboBox<String> fileTypeComboBox;
+    private final JComboBox<String> fileTypeComboBox;
 
     public DKFilenameFilter(DuplicateFilesFrame frame) {
         this.fileTypeComboBox = frame.getFileTypeComboBox();

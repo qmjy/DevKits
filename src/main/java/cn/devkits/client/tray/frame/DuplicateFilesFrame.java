@@ -29,6 +29,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 重复大文件检查<br>
- * Oracle Swing DEMO:https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#
+ * <a href="https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#">Oracle Swing DEMO</a>
  * GlassPaneDemo
  *
  * @author Shaofeng Liu
@@ -49,6 +50,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
 
     public static final String[] BUTTONS_TEXT = {DKSysUIUtil.getLocale("DUP_INPUT_LAB_START_DETECT"), DKSysUIUtil.getLocale("DUP_INPUT_LAB_STOP_DETECT")};
 
+    @Serial
     private static final long serialVersionUID = 6081895254576694963L;
     private static final Logger LOGGER = LoggerFactory.getLogger(DuplicateFilesFrame.class);
 
@@ -137,7 +139,7 @@ public class DuplicateFilesFrame extends DKAbstractFrame {
                 g.drawLine(0, 0, d.width, 0);
             }
         };
-        statusLine.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, 25));
+        statusLine.setPreferredSize(new Dimension((int) DKSysUIUtil.getScreenFriendlySize().getWidth(), 25));
         rootContainer.add(statusLine, BorderLayout.SOUTH);
 
         initDataModel();

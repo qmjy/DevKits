@@ -21,6 +21,7 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -34,9 +35,10 @@ import java.util.List;
  */
 public class AboutFrame extends DKAbstractFrame {
 
+    @Serial
     private static final long serialVersionUID = 3737746590178589617L;
     private static final Logger LOGGER = LoggerFactory.getLogger(AboutFrame.class);
-    private JLabel name = new JLabel(DKSysUIUtil.getLocale("APP_LOGO"));
+    private final JLabel name = new JLabel(DKSysUIUtil.getLocale("APP_LOGO"));
 
     public AboutFrame() {
         super(DKSysUIUtil.getLocale("ABOUT_APP"), 0.7f, 0.6f);
@@ -222,7 +224,7 @@ public class AboutFrame extends DKAbstractFrame {
  */
 class OpenSourceTableModel implements TableModel {
 
-    private Model pomInfo;
+    private final Model pomInfo;
 
     public OpenSourceTableModel(Model pomInfo) {
         this.pomInfo = pomInfo;
@@ -240,20 +242,14 @@ class OpenSourceTableModel implements TableModel {
 
     @Override
     public String getColumnName(int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-                return "Index";
-            case 1:
-                return "Name";
-            case 2:
-                return "GroupId";
-            case 3:
-                return "ArtifactId";
-            case 4:
-                return "Version";
-            default:
-                return "";
-        }
+        return switch (columnIndex) {
+            case 0 -> "Index";
+            case 1 -> "Name";
+            case 2 -> "GroupId";
+            case 3 -> "ArtifactId";
+            case 4 -> "Version";
+            default -> "";
+        };
     }
 
     @Override
@@ -273,20 +269,14 @@ class OpenSourceTableModel implements TableModel {
         for (int i = 0; i < dependencies.size(); i++) {
             if (rowIndex == i) {
                 Dependency dependency = dependencies.get(i);
-                switch (columnIndex) {
-                    case 0:
-                        return rowIndex + 1;
-                    case 1:
-                        return dependency.getArtifactId() + "-" + dependency.getVersion();
-                    case 2:
-                        return dependency.getGroupId();
-                    case 3:
-                        return dependency.getArtifactId();
-                    case 4:
-                        return dependency.getVersion();
-                    default:
-                        return "";
-                }
+                return switch (columnIndex) {
+                    case 0 -> rowIndex + 1;
+                    case 1 -> dependency.getArtifactId() + "-" + dependency.getVersion();
+                    case 2 -> dependency.getGroupId();
+                    case 3 -> dependency.getArtifactId();
+                    case 4 -> dependency.getVersion();
+                    default -> "";
+                };
             }
         }
         return "";

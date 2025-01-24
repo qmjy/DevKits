@@ -4,14 +4,18 @@
 
 package cn.devkits.client.tray.frame;
 
-import cn.devkits.client.tray.frame.assist.TextLineNumber;
 import cn.devkits.client.util.DKStringUtil;
+import cn.devkits.client.util.DKSysUIUtil;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.Serial;
 
 /**
  * 代码格式化
@@ -22,6 +26,7 @@ import java.awt.event.*;
  */
 public class CodeFormatFrame extends DKAbstractFrame {
 
+    @Serial
     private static final long serialVersionUID = -3324482544348779089L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CodeFormatFrame.class);
@@ -39,9 +44,10 @@ public class CodeFormatFrame extends DKAbstractFrame {
     @Override
     protected void initUI(Container rootContainer) {
         JTabbedPane tabbedPane = new JTabbedPane();
-        addTabContent(tabbedPane, "Json Format");
-        addTabContent(tabbedPane, "XML Format");
-        tabbedPane.setPreferredSize(new Dimension(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HEIGHT));
+        addTabContent(tabbedPane, SyntaxConstants.SYNTAX_STYLE_JSON, "Json Format");
+        addTabContent(tabbedPane, SyntaxConstants.SYNTAX_STYLE_XML, "XML Format");
+        Dimension screenFriendlySize = DKSysUIUtil.getScreenFriendlySize();
+        tabbedPane.setPreferredSize(new Dimension((int) screenFriendlySize.getWidth(), (int) screenFriendlySize.getHeight()));
 
         rootContainer.add(tabbedPane);
     }
@@ -76,23 +82,26 @@ public class CodeFormatFrame extends DKAbstractFrame {
     }
 
 
-    private void addTabContent(JTabbedPane tabbedPane, String title) {
+    private void addTabContent(JTabbedPane tabbedPane, String styleKey, String title) {
         currentComponent = new JSplitPane();
 
-        JTextArea leftTextArea = new JTextArea("Ugly String(Auto format after key release.)");
-        JTextArea rightTextArea = new JTextArea("Format String");
+        RSyntaxTextArea leftTextArea = new RSyntaxTextArea(20, 60);
+        leftTextArea.setSyntaxEditingStyle(styleKey);
+        leftTextArea.setCodeFoldingEnabled(true);
 
-        leftTextArea.addKeyListener(new JsonKeyListener(rightTextArea, title));
+        RSyntaxTextArea rightTextArea = new RSyntaxTextArea(20, 60);
+        rightTextArea.setSyntaxEditingStyle(styleKey);
+        rightTextArea.setCodeFoldingEnabled(true);
 
-        JScrollPane leftScrollPane = new JScrollPane(leftTextArea);
-        leftScrollPane.setRowHeaderView(new TextLineNumber(leftTextArea));
-        currentComponent.setLeftComponent(leftScrollPane);
+//        leftTextArea.addKeyListener(new JsonKeyListener(rightTextArea, title));
 
-        JScrollPane rightScrollPane = new JScrollPane(rightTextArea);
-        rightScrollPane.setRowHeaderView(new TextLineNumber(rightTextArea));
+        RTextScrollPane sp = new RTextScrollPane(leftTextArea);
+        currentComponent.setLeftComponent(sp);
+
+        RTextScrollPane rightScrollPane = new RTextScrollPane(rightTextArea);
         currentComponent.setRightComponent(rightScrollPane);
 
-        currentComponent.setDividerLocation(WINDOW_SIZE_WIDTH / 2);
+        currentComponent.setDividerLocation(0.5d);
 
         tabbedPane.addTab(title, currentComponent);
         tabbedPane.setEnabledAt(0, true);
@@ -100,8 +109,8 @@ public class CodeFormatFrame extends DKAbstractFrame {
 
 
     class JsonKeyListener extends KeyAdapter {
-        private JTextArea rightTextArea;
-        private String title;
+        private final JTextArea rightTextArea;
+        private final String title;
 
         public JsonKeyListener(JTextArea rightTextArea, String title) {
             this.rightTextArea = rightTextArea;

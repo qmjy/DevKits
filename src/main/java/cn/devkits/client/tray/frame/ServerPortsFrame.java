@@ -10,13 +10,12 @@ import cn.devkits.client.util.DKStringUtil;
 import cn.devkits.client.util.DKSysUIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import raven.toast.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -31,6 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @datetime 2019年8月26日 下午9:23:46
  */
 public class ServerPortsFrame extends DKAbstractFrame {
+    @Serial
     private static final long serialVersionUID = -6406148296636175804L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerPortsFrame.class);
@@ -39,7 +39,7 @@ public class ServerPortsFrame extends DKAbstractFrame {
     // 端口检查线程，充分利用CPU，尽量让IO吞吐率达到最大阈值
     private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() * 250;
 
-    private ArrayBlockingQueue<SocketReachableModel> msgQuene = new ArrayBlockingQueue<SocketReachableModel>(64);
+    private final ArrayBlockingQueue<SocketReachableModel> msgQuene = new ArrayBlockingQueue<SocketReachableModel>(64);
 
     private JTextField addressInputField;
 
@@ -159,11 +159,11 @@ public class ServerPortsFrame extends DKAbstractFrame {
     }
 
     class UpdateConsoleThread extends Thread {
-        private List<String> ports = new ArrayList<String>();
-        private long start;
-        private JPanel northPanel;
-        private String address;
-        private ExecutorService pool;
+        private final List<String> ports = new ArrayList<String>();
+        private final long start;
+        private final JPanel northPanel;
+        private final String address;
+        private final ExecutorService pool;
 
         public UpdateConsoleThread(ExecutorService pool, JPanel northPanel, String address, long startTime) {
             this.pool = pool;
@@ -177,16 +177,13 @@ public class ServerPortsFrame extends DKAbstractFrame {
             while (true) {
                 if (pool.isTerminated() && msgQuene.isEmpty()) {
                     String duration = String.valueOf(System.currentTimeMillis() - start - 1 * 1000);
-                    userConsole.insert(DKSysUIUtil.getLocaleWithParam("TAKE_TIME", duration) + System.getProperty("line.separator"), 0);
+                    userConsole.insert(DKSysUIUtil.getLocaleWithParam("TAKE_TIME", duration) + System.lineSeparator(), 0);
                     String portsStr = String.join(",", ports);
 
-                    userConsole.insert(DKSysUIUtil.getLocaleWithParam("PORT_LISTENING_MSG", address, portsStr) + System.getProperty("line.separator"), 0);
+                    userConsole.insert(DKSysUIUtil.getLocaleWithParam("PORT_LISTENING_MSG", address, portsStr) + System.lineSeparator(), 0);
 
-                    Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    Transferable tText = new StringSelection(portsStr);
-                    clip.setContents(tText, null);
-
-                    JOptionPane.showMessageDialog(northPanel, DKSysUIUtil.getLocale("PORT_COPIED_MSG"));
+                    DKSysUIUtil.setSystemClipboard(portsStr);
+                    Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, DKSysUIUtil.getLocale("PORT_COPIED_MSG"));
                     return;
                 }
 
@@ -208,8 +205,8 @@ public class ServerPortsFrame extends DKAbstractFrame {
 
     class CheckPortThread extends Thread {
 
-        private String address;
-        private int port;
+        private final String address;
+        private final int port;
 
         public CheckPortThread(String address, int port) {
             this.address = address;
@@ -220,7 +217,6 @@ public class ServerPortsFrame extends DKAbstractFrame {
         public void run() {
             try {
                 if (DKNetworkUtil.socketReachable(address, port)) {
-
                     msgQuene.put(new SocketReachableModel(port, true, DKSysUIUtil.getLocaleWithParam("PORT_LISTENING", port) + System.getProperty("line.separator")));
                 }
                 // else
