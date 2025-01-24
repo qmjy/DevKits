@@ -9,7 +9,7 @@ import com.sun.jna.platform.win32.WinReg;
 /**
  * <p>
  * Windows 操作系统注册表管理工具类
- * 相关实现参考：https://blog.csdn.net/yang382197207/article/details/80079052、https://blog.csdn.net/amdd9582/article/details/83025287
+ * 相关实现参考：<a href="https://blog.csdn.net/yang382197207/article/details/80079052">Windows特定文件添加右键菜单</a>、<a href="https://blog.csdn.net/amdd9582/article/details/83025287">注册表添加桌面右键二级菜单</a>
  * </p>
  *
  * @author Shaofeng Liu
@@ -17,7 +17,7 @@ import com.sun.jna.platform.win32.WinReg;
  */
 public final class WinRegisterUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(WinRegisterUtil.class);
-    private static WinRegisterUtil INSTANCE = new WinRegisterUtil();
+    private static final WinRegisterUtil INSTANCE = new WinRegisterUtil();
 
     private static final String SHELL_BASE_PATH = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CommandStore\\shell";
     private static final String SHELL_COMMAND_DK_QR = "Devkits.QR";

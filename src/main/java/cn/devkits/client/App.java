@@ -5,6 +5,7 @@
 package cn.devkits.client;
 
 import cn.devkits.client.async.AppStarter;
+import cn.devkits.client.rmi.server.ContextMenuHandler;
 import cn.devkits.client.util.DKSysUIUtil;
 import com.google.common.eventbus.EventBus;
 import org.slf4j.Logger;
@@ -16,6 +17,11 @@ import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -33,14 +39,45 @@ public class App {
     private static TrayIcon trayIcon;
 
     public static void main(String[] args) {
-        initLookAndFeel();
-        context = new AnnotationConfigApplicationContext(AppSpringContext.class);
-        if (SystemTray.isSupported()) {
-            trayIcon = createTrayIcon();
-            SwingUtilities.invokeLater(new AppStarter(trayIcon, args));
+        if (isRmiCmd(args)) {
+            System.exit(0);
         } else {
-            LOGGER.error("This system can not support tray function！");
+            initLookAndFeel();
+            context = new AnnotationConfigApplicationContext(AppSpringContext.class);
+            startRmiServer();
+            if (SystemTray.isSupported()) {
+                trayIcon = createTrayIcon();
+                SwingUtilities.invokeLater(new AppStarter(trayIcon, args));
+            } else {
+                LOGGER.error("This system can not support tray function！");
+            }
         }
+    }
+
+    private static boolean isRmiCmd(String[] args) {
+        try {
+            ContextMenuHandler obj = (ContextMenuHandler) Naming.lookup("//localhost/ContextMenuHandler");
+            System.out.println(obj.execute("", ""));
+            return true;
+        } catch (NotBoundException | RemoteException | MalformedURLException e) {
+            LOGGER.error("Execute command failed: {}", Arrays.toString(args));
+        }
+        return false;
+    }
+
+    private static void startRmiServer() {
+        try {
+            ContextMenuHandler mouseEventService = new ContextMenuHandler();
+            Naming.rebind("//localhost/ContextMenuHandler", mouseEventService);
+            checkOrInstallContextMenu();
+            System.out.println("RMI server is ready.");
+        } catch (RemoteException | MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void checkOrInstallContextMenu() {
+
     }
 
 

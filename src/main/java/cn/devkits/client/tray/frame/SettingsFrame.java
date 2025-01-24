@@ -77,7 +77,7 @@ public class SettingsFrame extends DKAbstractFrame {
         sysPane.setFocusable(false);
 
         // add standard components to the sysPane taskPane
-//        sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
+        // sysPane.add(new LanguageSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new EmailSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new FileServerSettingsAction(this, cardLayoutRootPanel)).setFocusable(false);
         sysPane.add(new SystemRegisterAction(this, cardLayoutRootPanel)).setFocusable(false);
@@ -89,11 +89,11 @@ public class SettingsFrame extends DKAbstractFrame {
         return new JScrollPane(taskPaneContainer);
     }
 
+    /**
+     * 窗口打开后设置默认分割面板比例
+     */
     @Override
     protected void initListener() {
-        /**
-         * 窗口打开后设置默认分割面板比例
-         */
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {

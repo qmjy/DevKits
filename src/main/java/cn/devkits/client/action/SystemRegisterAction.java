@@ -25,7 +25,7 @@ import jiconfont.swing.IconFontSwing;
  * </p>
  *
  * @author Shaofeng Liu
- * @since 2021/11/6ASSEDF
+ * @since 2021/11/6
  */
 public class SystemRegisterAction extends BaseAction {
 
