@@ -20,7 +20,7 @@ public final class WinRegisterUtil {
     private static final WinRegisterUtil INSTANCE = new WinRegisterUtil();
 
     private static final String SHELL_BASE_PATH = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CommandStore\\shell";
-    private static final String SHELL_COMMAND_DK_QR = "Devkits.QR";
+    private static final String SHELL_COMMAND_DK_QR = "Devkits";
     private static final String SHELL_COMMAND_DK_QR_CMD = "Devkits.QR\\command";
     private static final String SHELL_COMMAND_DK_BAR_CMD = "Devkits.BAR\\command";
 

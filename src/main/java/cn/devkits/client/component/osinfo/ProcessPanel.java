@@ -36,6 +36,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.BorderLayout;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,22 +56,23 @@ import oshi.util.FormatUtil;
  */
 public class ProcessPanel extends JPanel { // NOSONAR squid:S110
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final String[] COLUMNS = {"PID", "PPID", "Threads", "% CPU", "Cumulative", "VSZ", "RSS", "% Memory",
             "Process Name"};
     private static final double[] COLUMN_WIDTH_PERCENT = {0.07, 0.07, 0.07, 0.07, 0.09, 0.1, 0.1, 0.08, 0.35};
 
-    private transient Map<Integer, OSProcess> priorSnapshotMap = new HashMap<>();
+    private final transient Map<Integer, OSProcess> priorSnapshotMap = new HashMap<>();
 
-    private transient ButtonGroup cpuOption = new ButtonGroup();
-    private transient JRadioButton perProc = new JRadioButton("of one Processor");
-    private transient JRadioButton perSystem = new JRadioButton("of System");
+    private final transient ButtonGroup cpuOption = new ButtonGroup();
+    private final transient JRadioButton perProc = new JRadioButton("of one Processor");
+    private final transient JRadioButton perSystem = new JRadioButton("of System");
 
-    private transient ButtonGroup sortOption = new ButtonGroup();
-    private transient JRadioButton cpuButton = new JRadioButton("CPU %");
-    private transient JRadioButton cumulativeCpuButton = new JRadioButton("Cumulative CPU");
-    private transient JRadioButton memButton = new JRadioButton("Memory %");
+    private final transient ButtonGroup sortOption = new ButtonGroup();
+    private final transient JRadioButton cpuButton = new JRadioButton("CPU %");
+    private final transient JRadioButton cumulativeCpuButton = new JRadioButton("Cumulative CPU");
+    private final transient JRadioButton memButton = new JRadioButton("Memory %");
 
     public ProcessPanel(SystemInfo si) {
         super();

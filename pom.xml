@@ -38,7 +38,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <slf4j.version>1.7.30</slf4j.version>
     </properties>
 
     <dependencies>
@@ -130,7 +129,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>6.4.8</version>
+            <version>6.4.13</version>
         </dependency>
 
         <!-- http://cron-parser.com/ -->
@@ -226,13 +225,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <version>1.7.30</version>
         </dependency>
         <!--         https://mvnrepository.com/artifact/org.slf4j/slf4j-simple-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
+            <version>1.7.30</version>
             <!-- 注意，若无type为jar则报错-->
             <type>jar</type>
         </dependency>

@@ -31,13 +31,12 @@ import java.util.Optional;
  * @since 2020/8/5
  */
 public class TodoListFrame extends DKAbstractFrame {
-    private String[] reminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "内容", "创建时间"};
-    private String[] emailReminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "收件人", "内容", "创建时间"};
+    private final String[] reminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "内容", "创建时间"};
+    private final String[] emailReminderHeader = new String[]{"编号", "名称", "Corn", "下次执行时间", "收件人", "内容", "创建时间"};
 
-    private JTabbedPane jTabbedPane;
-    private JTable trayTable = new JTable();
-    private JTable emailTable = new JTable();
-    private JTable dialogTable = new JTable();
+    private final JTable trayTable = new JTable();
+    private final JTable emailTable = new JTable();
+    private final JTable dialogTable = new JTable();
 
     public TodoListFrame() {
         super(DKSysUIUtil.getLocale("TODO_LIST_TITLE"), 0.7f);
@@ -51,7 +50,7 @@ public class TodoListFrame extends DKAbstractFrame {
     protected void initUI(Container rootContainer) {
         intiJToolBar(rootContainer);
 
-        jTabbedPane = new JTabbedPane();
+        JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.addTab(DKSysUIUtil.getLocale("TODO_LIST_TAB_TRAY"), createReminderPane(trayTable, reminderHeader, DKConstants.TODO_REMINDER.TRAY));
         jTabbedPane.addTab(DKSysUIUtil.getLocale("TODO_LIST_TAB_EMAIL"), createReminderPane(emailTable, emailReminderHeader, DKConstants.TODO_REMINDER.EMAIL));
         jTabbedPane.addTab(DKSysUIUtil.getLocale("TODO_LIST_TAB_DIALOG"), createReminderPane(dialogTable, reminderHeader,

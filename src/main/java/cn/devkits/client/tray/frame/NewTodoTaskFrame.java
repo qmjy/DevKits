@@ -63,7 +63,7 @@ import static com.cronutils.model.CronType.SPRING;
  */
 public class NewTodoTaskFrame extends DKAbstractFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewTodoTaskFrame.class);
-    private TodoListFrame todoListFrame;
+    private final TodoListFrame todoListFrame;
     private JTextField nameTextField;
     private JTextField cornTextField;
     private JTextArea desTextArea;

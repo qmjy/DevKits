@@ -44,7 +44,7 @@ public class App {
         } else {
             initLookAndFeel();
             context = new AnnotationConfigApplicationContext(AppSpringContext.class);
-            startRmiServer();
+//            startRmiServer();
             if (SystemTray.isSupported()) {
                 trayIcon = createTrayIcon();
                 SwingUtilities.invokeLater(new AppStarter(trayIcon, args));

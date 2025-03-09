@@ -23,12 +23,10 @@ import java.nio.file.Paths;
  */
 public class WechatAssistFrame extends DKAbstractFrame {
     private JSplitPane jSplitPane;
-    private JTextField wechatDataPathInput;
     private String wechatDataPath;
-    private DefaultTreeModel rootModel;
+    private final DefaultTreeModel rootModel;
     private JTree tree;
     private JPopupMenu jTreeMenu;
-    private JPanel detailsPanel;
 
     public WechatAssistFrame() {
         super(DKSysUIUtil.getLocale("WECHAT_ASSIST_TITLE"), 1.2f);
@@ -61,7 +59,7 @@ public class WechatAssistFrame extends DKAbstractFrame {
         appendMenu();
 
         jSplitPane.setLeftComponent(new JScrollPane(tree));
-        detailsPanel = new JPanel();
+        JPanel detailsPanel = new JPanel();
         jSplitPane.setRightComponent(detailsPanel);
 
         return jSplitPane;
@@ -73,7 +71,7 @@ public class WechatAssistFrame extends DKAbstractFrame {
         jPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
 
         JLabel label = new JLabel(DKSysUIUtil.getLocaleWithColon("WECHAT_ASSIST_USER_DATA_PATH"));
-        wechatDataPathInput = new JTextField(wechatDataPath);
+        JTextField wechatDataPathInput = new JTextField(wechatDataPath);
         JButton browse = new JButton(DKSysUIUtil.getLocaleWithEllipsis("COMMON_BTNS_BROWSE"));
 
         jPanel.add(label);

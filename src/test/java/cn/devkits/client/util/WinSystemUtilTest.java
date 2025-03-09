@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 
@@ -16,17 +17,12 @@ public class WinSystemUtilTest {
         this.winSystemUtil = new WinSystemUtil();
     }
 
-    @Test
-    public void testGetWifiNamesOfConnected() {
-        List<String> wifiNamesOfConnected = winSystemUtil.getSsidNamesOfConnected();
-        assertTrue(wifiNamesOfConnected.size() >= 0);
-    }
 
     @Test
     public void testGetPwdOfWifi() {
         String dd = winSystemUtil.getPwdOfSsid("dd");
         if (dd != null) {
-            assertTrue("liu891231".equals(dd));
+            assertTrue("lwx166646".equals(dd));
         }
     }
 

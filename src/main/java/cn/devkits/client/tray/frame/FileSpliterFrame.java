@@ -411,7 +411,7 @@ public class FileSpliterFrame extends DKAbstractFrame implements DKFrameChosenab
  */
 class ApplyActionListener implements ActionListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplyActionListener.class);
-    private FileSpliterFrame frame;
+    private final FileSpliterFrame frame;
 
     public ApplyActionListener(FileSpliterFrame fileSpliterFrame) {
         this.frame = fileSpliterFrame;

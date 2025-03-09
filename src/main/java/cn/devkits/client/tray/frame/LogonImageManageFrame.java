@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -54,6 +55,7 @@ public class LogonImageManageFrame extends DKAbstractFrame implements DKFrameCho
     /**
      * serialVersionUID
      */
+    @Serial
     private static final long serialVersionUID = 950625064408939379L;
     // file path text
     private JTextField imgFilePathTextField;

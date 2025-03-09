@@ -154,25 +154,6 @@ public final class DKSysUIUtil {
         return jPanel;
     }
 
-    /**
-     * 创建绿色文本的的label
-     *
-     * @param text 待设定的文本内容
-     * @return 绿色文本的Label
-     */
-    public static JLabel createLabelWithGreenText(String text) {
-        return createLabelWithText(text, new Color(0, 200, 0));
-    }
-
-    /**
-     * 创建红色文本的的label
-     *
-     * @param text 待设定的文本内容
-     * @return 红色文本的Label
-     */
-    public static JLabel createLabelWithRedText(String text) {
-        return createLabelWithText(text, new Color(200, 0, 0));
-    }
 
     /**
      * 创建指定颜色文本的的label
@@ -180,7 +161,7 @@ public final class DKSysUIUtil {
      * @param text 待设定的文本内容
      * @return 指定颜色文本的Label
      */
-    public static JLabel createLabelWithText(String text, Color color) {
+    public static JLabel createLabelWithTextColor(String text, Color color) {
         JLabel jLabel = new JLabel(text);
         jLabel.setForeground(color);
         jLabel.setBorder(new EmptyBorder(5, 5, 5, 5));

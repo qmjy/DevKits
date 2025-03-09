@@ -8,10 +8,12 @@ import cn.devkits.client.component.FileExplorerPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serial;
 
 public class FileExplorersFrame extends DKAbstractFrame {
 
     /** serialVersionUID */
+    @Serial
     private static final long serialVersionUID = 3555313857984383501L;
 
     public FileExplorersFrame() {

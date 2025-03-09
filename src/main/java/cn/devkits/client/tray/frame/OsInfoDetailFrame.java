@@ -31,6 +31,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.io.Serial;
 import java.time.Instant;
 import java.util.List;
 
@@ -56,8 +57,9 @@ import oshi.util.FormatUtil;
  */
 public class OsInfoDetailFrame extends DKAbstractFrame {
 
+    @Serial
     private static final long serialVersionUID = 6295111163819170866L;
-    private JTabbedPane jTabbedPane = new JTabbedPane();
+    private final JTabbedPane jTabbedPane = new JTabbedPane();
 
     public OsInfoDetailFrame() {
         super(DKSysUIUtil.getLocale("SYS_INFO_TITLE"), 0.9f);

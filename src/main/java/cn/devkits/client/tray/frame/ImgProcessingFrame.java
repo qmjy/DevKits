@@ -1,12 +1,14 @@
 package cn.devkits.client.tray.frame;
 
 import cn.devkits.client.cmd.ui.DKJImagePopupMenu;
-import cn.devkits.client.tray.frame.listener.*;
+import cn.devkits.client.tray.frame.listener.DelFileTableActionListener;
+import cn.devkits.client.tray.frame.listener.ImgTableListSelectionListener;
+import cn.devkits.client.tray.frame.listener.ImgTableMenuItemActionListener;
+import cn.devkits.client.tray.frame.listener.SelectFileTableActionListener;
 import cn.devkits.client.tray.model.FileTableCellRender;
 import cn.devkits.client.tray.model.FilesTableModel;
 import cn.devkits.client.util.DKFileUtil;
 import cn.devkits.client.util.DKSysUIUtil;
-import cn.devkits.client.util.IoUtils;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -30,14 +32,12 @@ import java.io.IOException;
  */
 public class ImgProcessingFrame extends DKAbstractFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImgProcessingFrame.class);
-    private float PANE_WIDTH_L = 0.6f;
-    private float PANE_WIDTH_R = 1 - PANE_WIDTH_L;
 
-    private FilesTableModel filesModel = new FilesTableModel();
-    private JTable table = new JTable(filesModel);
-    private DKJImagePopupMenu menu = DKSysUIUtil.createDKJPopupMenu();
-    private JLabel statusLine = new JLabel(DKSysUIUtil.getLocaleWithEllipsis("COMMON_LABEL_TXT_READY"));
-    private JLabel previewLabel = new JLabel(DKSysUIUtil.getLocaleWithEllipsis("COMMON_LABEL_TXT_PREVIEW"), JLabel.CENTER);
+    private final FilesTableModel filesModel = new FilesTableModel();
+    private final JTable table = new JTable(filesModel);
+    private final DKJImagePopupMenu menu = DKSysUIUtil.createDKJPopupMenu();
+    private final JLabel statusLine = new JLabel(DKSysUIUtil.getLocaleWithEllipsis("COMMON_LABEL_TXT_READY"));
+    private final JLabel previewLabel = new JLabel(DKSysUIUtil.getLocaleWithEllipsis("COMMON_LABEL_TXT_PREVIEW"), JLabel.CENTER);
 
     public ImgProcessingFrame() {
         super(DKSysUIUtil.getLocale("IMG_PROCESSING_FRAME_TITLE"), 1.2f);
@@ -50,7 +50,9 @@ public class ImgProcessingFrame extends DKAbstractFrame {
     @Override
     protected void initUI(Container rootContainer) {
         Box horizontalBox = Box.createHorizontalBox();
+        float PANE_WIDTH_L = 0.6f;
         horizontalBox.add(createLeftPane(PANE_WIDTH_L));
+        float PANE_WIDTH_R = 1 - PANE_WIDTH_L;
         horizontalBox.add(createRightPane(PANE_WIDTH_R));
 
         rootContainer.add(BorderLayout.CENTER, horizontalBox);

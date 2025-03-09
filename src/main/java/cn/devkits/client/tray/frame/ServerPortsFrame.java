@@ -43,8 +43,6 @@ public class ServerPortsFrame extends DKAbstractFrame {
 
     private JTextField addressInputField;
 
-    private JButton searchBtn;
-
     private JTextArea userConsole;
 
     private JScrollPane scrollPane;
@@ -77,7 +75,7 @@ public class ServerPortsFrame extends DKAbstractFrame {
     }
 
     private void createSearchBtn(final JPanel northPanel) {
-        this.searchBtn = new JButton(DKSysUIUtil.getLocale("DETECT"));
+        JButton searchBtn = new JButton(DKSysUIUtil.getLocale("DETECT"));
         searchBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {

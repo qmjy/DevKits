@@ -50,6 +50,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -70,6 +71,7 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     /**
      * serialVersionUID
      */
+    @Serial
     private static final long serialVersionUID = -4030282787993924346L;
     private static final Logger LOGGER = LoggerFactory.getLogger(CodecFrame.class);
     private static final Dimension CAMERA_DIMENSION = WebcamResolution.VGA.getSize();
@@ -77,9 +79,6 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
     //整体布局
     private JPanel mainPane;
     private CardLayout cardLayout;
-
-    //编码控件
-    private JTabbedPane encodePanel;
 
     //解码控件
     private JTabbedPane decodePanel;
@@ -115,7 +114,8 @@ public class CodecFrame extends DKAbstractFrame implements Runnable, DKFrameChos
         decodePanel.addTab(DKSysUIUtil.getLocale("QR_CAMERA"), initCamePanel());
         decodePanel.addTab(DKSysUIUtil.getLocale("QR_SITE"), initSitePane());
 
-        this.encodePanel = new JTabbedPane();
+        //编码控件
+        JTabbedPane encodePanel = new JTabbedPane();
 
         encodePanel.addTab("Text", new JLabel());
         encodePanel.addTab("URL", new JLabel());

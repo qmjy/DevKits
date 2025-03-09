@@ -7,10 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Windows相关实现
@@ -43,7 +40,9 @@ public class WinSystemUtil extends DKSysUtil {
             if (line.trim().startsWith("SSID ")) {
                 key = split.length > 1 ? split[1].trim() : "隐藏的网络";
             } else {
-                values.put(split[0].trim(), split[1].trim());
+                if (split.length == 2) {
+                    values.put(split[0].trim(), split[1].trim());
+                }
             }
         }
         return stringMapMap;
@@ -78,8 +77,8 @@ public class WinSystemUtil extends DKSysUtil {
      * @return 成功连接过的wifi列表
      */
     @Override
-    public List<String> getSsidNamesOfConnected() {
-        ArrayList<String> objects = new ArrayList<>();
+    public Set<String> getSsidNamesOfConnected() {
+        Set<String> objects = new HashSet<>();
 
         List<String> wifiDetails = executeWinCmd("netsh wlan show profile");
         for (String wifiDetail : wifiDetails) {
@@ -108,7 +107,7 @@ public class WinSystemUtil extends DKSysUtil {
         for (String wifiDetail : wifiDetails) {
             if (wifiDetail.indexOf(":") > 0) {
                 String[] split = wifiDetail.split(":");
-                if ("关键内容".equals(split[0].trim())) {
+                if ("关键内容".equals(split[0].trim()) || "Key Content".equals(split[0].trim())) {
                     return split[1].trim();
                 }
             }

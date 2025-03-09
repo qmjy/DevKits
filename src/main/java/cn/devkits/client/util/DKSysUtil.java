@@ -91,7 +91,7 @@ public abstract class DKSysUtil {
      *
      * @return 当前连接的wifi详情
      */
-    public abstract List<String> getSsidNamesOfConnected();
+    public abstract Set<String> getSsidNamesOfConnected();
 
     /**
      * 获取指定wifi名称的密码

@@ -25,7 +25,6 @@ public class SettingsFrame extends DKAbstractFrame {
 
     private JSplitPane jSplitPane;
     private JPanel cardLayoutRootPanel;
-    private CardLayout rightCardLayout;
 
     public SettingsFrame() {
         super(DKSysUIUtil.getLocale("SETTINGS_TITLE"), 0.8f);
@@ -49,7 +48,7 @@ public class SettingsFrame extends DKAbstractFrame {
     private JPanel createRightPane() {
         JPanel jPanel = new JPanel();
 
-        this.rightCardLayout = new CardLayout();
+        CardLayout rightCardLayout = new CardLayout();
         jPanel.setLayout(rightCardLayout);
 
         return jPanel;

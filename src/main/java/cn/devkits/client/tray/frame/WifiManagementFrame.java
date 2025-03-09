@@ -22,14 +22,14 @@ import java.util.List;
 public class WifiManagementFrame extends DKAbstractFrame {
     private static final float PANE_WIDTH_L = 0.6f;
     private static final float PANE_WIDTH_R = 1 - PANE_WIDTH_L;
-    private static JLabel currentName = new JLabel("N/A");
-    private static JLabel currentPwd = new JLabel("N/A");
-    private static JLabel currentOnline = new JLabel("N/A");
-    private static JLabel currentQr = new JLabel();
+    private static final JLabel currentName = new JLabel("N/A");
+    private static final JLabel currentPwd = new JLabel("N/A");
+    private static final JLabel currentOnline = new JLabel("N/A");
+    private static final JLabel currentQr = new JLabel();
 
     private JList<String> listView;
 
-    private List<String> connectedSsids;
+    private Set<String> connectedSsids;
     private Map<String, Map<String, String>> availableSsids;
 
     /**
@@ -46,22 +46,20 @@ public class WifiManagementFrame extends DKAbstractFrame {
     @Override
     protected void initUI(Container rootContainer) {
         Box horizontalBox = Box.createHorizontalBox();
-        horizontalBox.add(createWifiListPane(PANE_WIDTH_L));
-        horizontalBox.add(createDetailPane(PANE_WIDTH_R));
+        horizontalBox.add(createWifiListPane());
+        horizontalBox.add(createDetailPane());
 
         rootContainer.add(BorderLayout.CENTER, horizontalBox);
         rootContainer.add(BorderLayout.SOUTH, createBottomPane());
     }
 
-    private Component createDetailPane(float width) {
+    private Component createDetailPane() {
         JPanel imagePreviewPane = new JPanel();
         imagePreviewPane.setLayout(new BorderLayout());
         imagePreviewPane.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocale("SSID_MANAGEMENT_DETAIL_INFO_TITLE")));
-        imagePreviewPane.setPreferredSize(new Dimension((int) (getWidth() * width), getHeight()));
+        imagePreviewPane.setPreferredSize(new Dimension((int) (getWidth() * WifiManagementFrame.PANE_WIDTH_R), getHeight()));
 
-        FormLayout layout = new FormLayout(
-                "left:pref, 4dlu, left:pref:grow, 4dlu",
-                "p, 4dlu, p, 4dlu, p, 4dlu, p, 4dlu, p, 10dlu, p, 4dlu");
+        FormLayout layout = new FormLayout("left:pref, 4dlu, left:pref:grow, 4dlu", "p, 4dlu, p, 4dlu, p, 4dlu, p, 4dlu, p, 10dlu, p, 4dlu");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
@@ -85,7 +83,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
     private Component createBottomPane() {
         Map<String, String> currentSsid = currentSystemUtil.getCurrentSsid();
         if (currentSsid.isEmpty()) {
-            return DKSysUIUtil.createLabelWithRedText(DKSysUIUtil.getLocale("SSID_MANAGEMENT_NO_NETWORK"));
+            return DKSysUIUtil.createLabelWithTextColor(DKSysUIUtil.getLocale("SSID_MANAGEMENT_NO_NETWORK"), Color.RED);
         } else {
             String ssid = currentSsid.get("SSID");
             currentName.setText(ssid);
@@ -100,11 +98,11 @@ public class WifiManagementFrame extends DKAbstractFrame {
             sb.append("信号").append(": ").append(currentSsid.get("信号")).append("  |  ");
             sb.append("传输速率 (Mbps)").append(": ").append(currentSsid.get("传输速率 (Mbps)"));
 
-            return DKSysUIUtil.createLabelWithGreenText(sb.toString());
+            return DKSysUIUtil.createLabelWithTextColor(sb.toString(),Color.GREEN);
         }
     }
 
-    private Component createWifiListPane(float width) {
+    private Component createWifiListPane() {
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new BorderLayout());
         jPanel.setBorder(BorderFactory.createTitledBorder(DKSysUIUtil.getLocale("SSID_MANAGEMENT_SSID_LIST_LABEL")));
@@ -112,7 +110,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
         listView = new JList<>(getSsidList());
         jPanel.add(new JScrollPane(listView), BorderLayout.CENTER);
 
-        jPanel.setPreferredSize(new Dimension((int) (getWidth() * width), getHeight()));
+        jPanel.setPreferredSize(new Dimension((int) (getWidth() * WifiManagementFrame.PANE_WIDTH_L), getHeight()));
         return jPanel;
     }
 
@@ -120,17 +118,8 @@ public class WifiManagementFrame extends DKAbstractFrame {
         connectedSsids = currentSystemUtil.getSsidNamesOfConnected();
         availableSsids = currentSystemUtil.getAvailableSsids();
 
-        List<String> objects = new ArrayList<>();
-        objects.addAll(connectedSsids);
-
-        Iterator<String> iterator = availableSsids.keySet().iterator();
-        while (iterator.hasNext()) {
-            String next = iterator.next();
-            if (objects.contains(next)) {
-                objects.add(next);
-            }
-        }
-        return new Vector<>(objects);
+        connectedSsids.addAll(availableSsids.keySet());
+        return new Vector<>(connectedSsids);
     }
 
     @Override
@@ -138,7 +127,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
         listView.addListSelectionListener(new SsidListViewSelectionListener(this));
     }
 
-    public  void updateSsidDetail(String selectedValue){
+    public void updateSsidDetail(String selectedValue) {
         currentName.setText(selectedValue);
         String pwd = currentSystemUtil.getPwdOfSsid(selectedValue);
         currentPwd.setText(pwd);
@@ -148,10 +137,16 @@ public class WifiManagementFrame extends DKAbstractFrame {
 
     private String getSignalOfSsid(String ssid) {
         if (availableSsids.containsKey(ssid)) {
-            return availableSsids.get(ssid).get("信号");
-        } else {
-            return "0%";
+            Map<String, String> map = availableSsids.get(ssid);
+            if (map.containsKey("信号")) {
+                return map.get("信号");
+            }
+
+            if (map.containsKey("Signal")) {
+                return map.get("Signal");
+            }
         }
+        return "0%";
     }
 
     private ImageIcon generateQrImg(String name, String pwd) {
@@ -160,6 +155,7 @@ public class WifiManagementFrame extends DKAbstractFrame {
             String qrTxt = "WIFI:T:WPA;S:" + name + ";P:" + pwd + ";;";
             int qrWidth = (int) (getWidth() * PANE_WIDTH_R * 0.75);
             BufferedImage bufferedImage = DKSysUtil.generateQrImg(qrTxt, qrWidth, qrWidth);
+            assert bufferedImage != null;
             return new ImageIcon(bufferedImage);
         } else {
             return null;
