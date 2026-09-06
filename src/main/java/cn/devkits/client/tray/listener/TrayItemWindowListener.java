@@ -46,6 +46,9 @@ public class TrayItemWindowListener implements ActionListener {
             case WIFI:
                 frame = new WifiManagementFrame();
                 break;
+            case FILE_RECEIVE:
+                frame = new FileReceiveFrame();
+                break;
             case CODE_FORMAT:
                 frame = new CodeFormatFrame();
                 break;

@@ -12,7 +12,6 @@ import cn.devkits.client.util.DKSysUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.Optional;
 
@@ -30,6 +29,10 @@ public class MenuItemFactory {
             case WIFI:
                 menuItem = new MenuItem(DKSysUIUtil.getLocaleWithEllipsis("SSID_MANAGEMENT"));
                 menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.WIFI));
+                break;
+            case FILE_RECEIVE:
+                menuItem = new MenuItem(DKSysUIUtil.getLocaleWithEllipsis("FILE_RECEIVE"));
+                menuItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.FILE_RECEIVE));
                 break;
             case WECHAT:
                 menuItem = new MenuItem(DKSysUIUtil.getLocaleWithEllipsis("WECHAT_DECODE"));

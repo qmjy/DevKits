@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevKits 文件发送</title>
+<style>
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; background: #f5f6fa; color: #333; }
+  .wrap { padding: 16px; max-width: 640px; margin: 0 auto; }
+  h2 { text-align: center; font-size: 20px; }
+  #pick { display: block; width: 100%; box-sizing: border-box; padding: 18px; font-size: 17px;
+          border: 2px dashed #4a90d9; border-radius: 12px; background: #fff; color: #4a90d9; }
+  .item { background: #fff; border-radius: 10px; padding: 12px 14px; margin-top: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .name { font-size: 15px; word-break: break-all; }
+  .bar-wrap { background: #e8e8e8; border-radius: 6px; height: 14px; margin-top: 8px; overflow: hidden; }
+  .bar { height: 100%; width: 0%; background: #4a90d9; transition: width .2s; }
+  .pct { font-size: 13px; color: #888; margin-top: 4px; }
+  .done .bar { background: #67c23a; }
+  .fail .bar { background: #e74c3c; }
+  .paused .bar { background: #f39c12; }
+  .foot { text-align: center; color: #aaa; font-size: 12px; margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>发送文件到电脑</h2>
+  <input type="file" id="pick" multiple>
+  <div id="list"></div>
+  <div class="foot"><a href="https://github.com/qmjy/DevKits" target="_blank">DevKits</a> - 局域网文件传输</div>
+</div>
+<script>
+  var pick = document.getElementById('pick');
+  var list = document.getElementById('list');
+  pick.addEventListener('change', function () {
+    var files = pick.files;
+    var i = 0;
+    var next = function () { if (i >= files.length) { pick.value = ''; } else { upload(files[i++], next); } };
+    next();
+  });
+
+  /**
+   * 上传单个文件，支持断点续传
+   * - 正常上传：POST 整个文件，无额外头
+   * - 暂停重试：收到 418 响应后，每隔 2 秒用 Range 头重试续传
+   */
+  function upload(file, done) {
+    var div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = '<div class="name"></div><div class="bar-wrap"><div class="bar"></div></div><div class="pct"></div>';
+    div.querySelector('.name').textContent = file.name;
+    list.appendChild(div);
+    var bar = div.querySelector('.bar');
+    var pct = div.querySelector('.pct');
+    var update = function (loaded, total, text) {
+      var p = total > 0 ? Math.min(100, Math.round(loaded * 100 / total)) : 0;
+      bar.style.width = p + '%';
+      pct.textContent = text + ' ' + p + '%';
+    };
+
+    var currentLoaded = 0; // 已上传的累计字节数（含之前暂停的）
+    var retryTimer = null;
+
+    function doUpload(fromByte) {
+      var xhr = new XMLHttpRequest();
+      var url = '/upload?name=' + encodeURIComponent(file.name);
+      xhr.open('POST', url, true);
+      if (fromByte > 0) {
+        // 断点续传：告诉服务端从 fromByte 开始写
+        xhr.setRequestHeader('Content-Range', 'bytes ' + fromByte + '-' + (file.size - 1) + '/' + file.size);
+      }
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          var totalLoaded = fromByte + e.loaded;
+          currentLoaded = totalLoaded;
+          update(totalLoaded, file.size, '发送中');
+        }
+      };
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          // 真正完成
+          currentLoaded = file.size;
+          update(file.size, file.size, '完成');
+          div.classList.remove('paused');
+          div.classList.add('done');
+          done();
+        } else if (xhr.status === 418) {
+          // 服务端暂停了！响应体格式 "PAUSED:XXX"，XXX 是服务端已接收的字节数
+          var pausedAt = parsePaused(xhr.responseText);
+          currentLoaded = pausedAt; // 同步断点，避免网络重连时从过期位置重试
+          div.classList.add('paused');
+          update(pausedAt, file.size, '已暂停，等待恢复');
+          // 每隔 2 秒重试，带上断点
+          retryTimer = setTimeout(function () {
+            doUpload(pausedAt);
+          }, 2000);
+        } else if (xhr.status === 409) {
+          // 被取消
+          update(file.size, file.size, '已取消');
+          div.classList.add('fail');
+          done();
+        } else {
+          // 其他错误
+          update(file.size, file.size, '失败');
+          div.classList.add('fail');
+          done();
+        }
+      };
+      xhr.onerror = function () {
+        // 网络错误也视为暂停，自动重试
+        div.classList.add('paused');
+        update(currentLoaded, file.size, '网络中断，自动重连中');
+        retryTimer = setTimeout(function () {
+          doUpload(currentLoaded);
+        }, 2000);
+      };
+      // 发送：如果有断点，只发剩余部分；否则发整个文件
+      var blob = (fromByte > 0) ? file.slice(fromByte) : file;
+      xhr.send(blob);
+    }
+
+    doUpload(0);
+
+    // 如果页面被关闭，清理重试定时器
+    div.addEventListener('remove', function () {
+      if (retryTimer) clearTimeout(retryTimer);
+    });
+  }
+
+  /** 解析暂停响应体 "PAUSED:XXX" 中的断点字节数 */
+  function parsePaused(body) {
+    if (!body) return 0;
+    var idx = body.indexOf('PAUSED:');
+    if (idx < 0) return 0;
+    var num = parseInt(body.substring(idx + 7), 10);
+    return isNaN(num) ? 0 : num;
+  }
+</script>
+</body>
+</html>

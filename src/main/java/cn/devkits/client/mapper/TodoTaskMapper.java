@@ -4,7 +4,6 @@
 
 package cn.devkits.client.mapper;
 
-import cn.devkits.client.DKConstants;
 import cn.devkits.client.tray.model.TodoTaskModel;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

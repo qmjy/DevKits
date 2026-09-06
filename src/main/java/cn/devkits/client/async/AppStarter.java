@@ -174,6 +174,7 @@ public class AppStarter implements Runnable {
         Menu networkMenu = new Menu(DKSysUIUtil.getLocale("NETWORK_TOOLS"));
         MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.SERVER_PORT);
         MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.WIFI);
+        MenuItemFactory.createWindowItem(networkMenu, MenuItemEnum.FILE_RECEIVE);
         return networkMenu;
     }
 

@@ -9,6 +9,8 @@
 
 	<!--控制台输出 -->
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- 输出到System.out，避免IDE控制台将所有级别日志显示为红色（System.err） -->
+		<target>System.out</target>
 		<encoder>
 			<!--解决乱码问题 -->
 			<charset>UTF-8</charset>

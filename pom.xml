@@ -44,13 +44,13 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>6.2.2</version>
+            <version>7.0.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>6.2.2</version>
+            <version>7.0.9</version>
         </dependency>
 
         <dependency>
@@ -122,7 +122,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>3.9.3</version>
+            <version>3.9.16</version>
         </dependency>
 
         <!-- 硬件信息获取：It's more powerful than Sigar -->
@@ -143,7 +143,7 @@
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
-            <version>2.0.1</version>
+            <version>2.0.2</version>
         </dependency>
 
         <!-- 提供Hex、DigestUtils、Base64等 -->
@@ -227,13 +227,12 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.30</version>
         </dependency>
-        <!--         https://mvnrepository.com/artifact/org.slf4j/slf4j-simple-->
+
+        <!-- 日志实现：使用logback接管slf4j，控制台输出走System.out，避免所有级别日志在IDE中显示为红色 -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
-            <!-- 注意，若无type为jar则报错-->
-            <type>jar</type>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.13</version>
         </dependency>
 
 
