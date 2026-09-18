@@ -4,6 +4,7 @@
 
 package cn.devkits.client.tray.listener;
 
+import cn.devkits.client.camera.WebCameraFrame;
 import cn.devkits.client.tray.MenuItemEnum;
 import cn.devkits.client.tray.frame.*;
 import cn.devkits.client.util.DKFileUtil;
@@ -85,8 +86,15 @@ public class TrayItemWindowListener implements ActionListener {
             case HOSTS:
                 openHostFile();
                 return;
+            case CAMERA:
+                frame = new WebCameraFrame();
+                break;
             default:
                 break;
+        }
+        if (frame == null) {
+            LOGGER.warn("No frame mapping found for menu item: {}", itemEnum);
+            return;
         }
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);

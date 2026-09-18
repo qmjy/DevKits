@@ -261,6 +261,11 @@ public class AppStarter implements Runnable {
         toolsItem.add(menuItem);
 
         computerItem.add(toolsItem);
+
+        MenuItem cameraItem = new MenuItem(DKSysUIUtil.getLocaleWithEllipsis("CAMERA"));
+        cameraItem.addActionListener(new TrayItemWindowListener(MenuItemEnum.CAMERA));
+        computerItem.add(cameraItem);
+
         return computerItem;
     }
 }
